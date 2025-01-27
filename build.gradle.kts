@@ -1,5 +1,5 @@
 plugins {
-    id("earth.terrarium.cloche") version "0.7.5"
+    id("earth.terrarium.cloche") version "0.7.7"
 }
 
 
@@ -17,7 +17,11 @@ cloche {
     }
 
     cloche.common {
-        mixins.from(file("src/common/main/resources/cynosure.mixins.json"))
+        mixins.from(file("src/common/cynosure.mixins.json"))
+
+        dependencies {
+            compileOnly("org.spongepowered:mixin:0.8.3")
+        }
     }
 
     fabric("fabric:1.20.1") {
