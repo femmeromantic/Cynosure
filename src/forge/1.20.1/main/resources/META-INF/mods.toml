@@ -18,7 +18,7 @@ A Library mod
 '''
 
 # forge
-[[dependencies.estrogen]]
+[[dependencies.cynosure]]
 modId = "forge"
 mandatory = true
 versionRange = "[47,)"
@@ -27,7 +27,7 @@ ordering = "NONE"
 # BOTH, CLIENT or SERVER
 side = "BOTH"
 # minecraft
-[[dependencies.estrogen]]
+[[dependencies.cynosure]]
 modId = "minecraft"
 mandatory = true
 versionRange = "${minecraft_version}"
