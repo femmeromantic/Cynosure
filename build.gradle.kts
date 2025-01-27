@@ -1,3 +1,6 @@
+import earth.terrarium.cloche.target.FabricTarget
+import earth.terrarium.cloche.target.ForgeTarget
+
 plugins {
     id("earth.terrarium.cloche") version "0.7.7"
 }
@@ -8,7 +11,7 @@ repositories {
 
     mavenCentral()
 
-    maven("https://maven.msrandom.net/repository/root")
+    maven("https://maven.msrandom.net/repository/root") // Most
 }
 
 cloche {
@@ -17,7 +20,11 @@ cloche {
     }
 
     cloche.common {
-        mixins.from(file("src/common/cynosure.mixins.json"))
+        mixins.from(file("src/common/main/cynosure.mixins.json"))
+
+        client {
+            mixins.from(file("src/common/client/cynosure-client.mixins.json"))
+        }
 
         dependencies {
             compileOnly("org.spongepowered:mixin:0.8.3")
@@ -42,5 +49,21 @@ cloche {
 
         client()
         server()
+    }
+
+    targets.withType<ForgeTarget> {
+        client {
+            runConfiguration {
+                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
+            }
+        }
+    }
+
+    targets.withType<FabricTarget> {
+        client {
+            runConfiguration {
+                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
+            }
+        }
     }
 }
