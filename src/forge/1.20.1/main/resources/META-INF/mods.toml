@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "LGPL-3.0"
+
+[[mods]]
+modId = "estrogen"
+version = "${project_version}-forge"
+displayName = "Cynosure"
+logoFile = "icon.png"
+logoBlur = false
+displayURL = "https://modrinth.com/mod/cynosure"
+issueTrackerURL = "https://github.com/MayaqqDev/cynosure/issues"
+authors = "Mayaqq"
+
+# Description
+description = '''
+A Library mod
+'''
+
+# forge
+[[dependencies.estrogen]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+# BEFORE, AFTER or NONE
+ordering = "NONE"
+# BOTH, CLIENT or SERVER
+side = "BOTH"
+# minecraft
+[[dependencies.estrogen]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${minecraft_version}"
+ordering = "NONE"
+side = "BOTH"
