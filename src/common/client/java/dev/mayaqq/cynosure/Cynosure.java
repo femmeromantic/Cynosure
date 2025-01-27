@@ -10,6 +10,6 @@ public class Cynosure {
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
     public static void init() {
-
+        LOGGER.info("Militech's answer to Arasaka's Soulkiller.");
     }
 }

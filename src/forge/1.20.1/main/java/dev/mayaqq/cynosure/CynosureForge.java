@@ -4,4 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod(Cynosure.MODID)
 public class CynosureForge {
+    public CynosureForge() {
+        Cynosure.init();
+    }
 }
