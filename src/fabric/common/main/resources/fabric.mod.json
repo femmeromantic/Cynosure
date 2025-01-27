@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "cynosure",
+  "version": "1.0.0",
+  "name": "Cynosure",
+  "description": "A Library Mod",
+  "authors": [
+    "Mayaqq"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/cynosure",
+    "sources": "https://github.com/MayaqqDev/cynosure",
+    "issues": "https://github.com/MayaqqDev/cynosure/issues"
+  },
+  "license": "LGPL-3.0",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.mayaqq.cynosure.Cynosure::init"
+    ],
+    "client": [
+      "dev.mayaqq.cynosure.client.CynosureClient::init"
+    ]
+  },
+  "mixins": [
+    "cynosure.mixins.json"
+  ]
+}
