@@ -16,6 +16,10 @@ cloche {
         modId.set("cynosure")
     }
 
+    cloche.common {
+        mixins.from(file("src/common/main/resources/cynosure.mixins.json"))
+    }
+
     fabric("fabric:1.20.1") {
         loaderVersion.set("0.16.9")
         minecraftVersion.set("1.20.1")
