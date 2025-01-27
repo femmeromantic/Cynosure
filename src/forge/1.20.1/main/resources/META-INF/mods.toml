@@ -3,8 +3,8 @@ loaderVersion = "[47,)"
 license = "LGPL-3.0"
 
 [[mods]]
-modId = "estrogen"
-version = "${project_version}-forge"
+modId = "cynosure"
+version = "1.0.0-forge"
 displayName = "Cynosure"
 logoFile = "icon.png"
 logoBlur = false
