@@ -1,8 +1,10 @@
+import earth.terrarium.cloche.metadata.ModMetadata
 import earth.terrarium.cloche.target.FabricTarget
 import earth.terrarium.cloche.target.ForgeTarget
+import earth.terrarium.cloche.target.MinecraftTarget
 
 plugins {
-    id("earth.terrarium.cloche") version "0.7.7"
+    id("earth.terrarium.cloche") version "0.7.10"
 }
 
 
@@ -17,6 +19,12 @@ repositories {
 cloche {
     metadata {
         modId.set("cynosure")
+        name.set("Cynosure")
+        description.set("Militech's answer to Arasaka's Soulkiller.")
+        license.set("LGPL-3.0")
+        icon.set("assets/cynosure/icon.png")
+        url.set("https://github.com/MayaqqDev/Cynosure")
+        sources.set("https://github.com/MayaqqDev/Cynosure")
     }
 
     cloche.common {
