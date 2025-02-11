@@ -1,10 +1,12 @@
-import earth.terrarium.cloche.metadata.ModMetadata
 import earth.terrarium.cloche.target.FabricTarget
 import earth.terrarium.cloche.target.ForgeTarget
-import earth.terrarium.cloche.target.MinecraftTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("earth.terrarium.cloche") version "0.7.10"
+    kotlin("jvm") version "2.1.0"
+    kotlin("plugin.serialization") version "2.1.0" apply false
 }
 
 
@@ -28,14 +30,33 @@ cloche {
     }
 
     cloche.common {
+        apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+
         mixins.from(file("src/common/main/cynosure.mixins.json"))
 
         client {
             mixins.from(file("src/common/client/cynosure-client.mixins.json"))
+
+            val main = sourceSets.getByName("main")
+            sourceSet.compileClasspath += main.compileClasspath
+            sourceSet.runtimeClasspath += main.runtimeClasspath
         }
 
         dependencies {
             compileOnly("org.spongepowered:mixin:0.8.3")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+        }
+
+        kotlin {
+            jvmToolchain(17)
+            explicitApiWarning()
+        }
+
+        tasks.withType<KotlinCompile> {
+            compilerOptions {
+                languageVersion.set(KotlinVersion.KOTLIN_2_1)
+            }
         }
     }
 
@@ -49,6 +70,16 @@ cloche {
         dependencies {
             fabricApi("0.92.2+1.20.1")
         }
+
+        kotlin {
+            jvmToolchain(17)
+            explicitApiWarning()
+        }
+
+        val compileKotlin: KotlinCompile by tasks
+        compileKotlin.compilerOptions {
+            languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        }
     }
 
     forge("forge:1.20.1") {
@@ -57,6 +88,16 @@ cloche {
 
         client()
         server()
+
+        kotlin {
+            jvmToolchain(17)
+            explicitApiWarning()
+        }
+
+        val compileKotlin: KotlinCompile by tasks
+        compileKotlin.compilerOptions {
+            languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        }
     }
 
     targets.withType<ForgeTarget> {
@@ -74,4 +115,9 @@ cloche {
             }
         }
     }
+}
+
+kotlin {
+    jvmToolchain(17)
+    explicitApiWarning()
 }
