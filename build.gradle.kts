@@ -1,10 +1,6 @@
-import earth.terrarium.cloche.metadata.ModMetadata
-import earth.terrarium.cloche.target.FabricTarget
-import earth.terrarium.cloche.target.ForgeTarget
-import earth.terrarium.cloche.target.MinecraftTarget
-
 plugins {
-    id("earth.terrarium.cloche") version "0.7.10"
+    kotlin("jvm") version "2.1.0"
+    id("earth.terrarium.cloche") version "0.7.24"
 }
 
 
@@ -40,38 +36,42 @@ cloche {
     }
 
     fabric("fabric:1.20.1") {
-        loaderVersion.set("0.16.9")
+        loaderVersion.set("0.16.10")
         minecraftVersion.set("1.20.1")
 
         client()
         server()
 
         dependencies {
-            fabricApi("0.92.2+1.20.1")
+            fabricApi("0.92.3+1.20.1")
         }
     }
 
     forge("forge:1.20.1") {
-        loaderVersion.set("47.1.3")
+        loaderVersion.set("47.3.33")
         minecraftVersion.set("1.20.1")
 
         client()
         server()
     }
 
-    targets.withType<ForgeTarget> {
-        client {
-            runConfiguration {
-                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
-            }
+    fabric("fabric:1.21.1") {
+        loaderVersion.set("0.16.10")
+        minecraftVersion.set("1.21.1")
+
+        client()
+        server()
+
+        dependencies {
+            fabricApi("0.115.1+1.21.1")
         }
     }
 
-    targets.withType<FabricTarget> {
-        client {
-            runConfiguration {
-                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
-            }
-        }
+    neoforge("neoforge:1.21.1") {
+        loaderVersion.set("21.1.127")
+        minecraftVersion.set("1.21.1")
+
+        client()
+        server()
     }
 }
