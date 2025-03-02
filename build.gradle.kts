@@ -17,6 +17,7 @@ repositories {
     maven(url = "https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
     maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
     maven(url = "https://maven.minecraftforge.net/") { name = "Forge" }
+    maven(url = "https://maven.resourcefulbees.com/repository/maven-public/") { name = "ResourcefulBees" }
     mavenLocal()
     mavenCentral()
 }
@@ -29,6 +30,7 @@ val fapi_version: String by project
 val flk_version: String by project
 val kff_version: String by project
 val parchment_version: String by project
+val byte_codecs_version: String by project
 
 cloche {
     metadata {
@@ -53,6 +55,7 @@ cloche {
             compileOnly("org.spongepowered:mixin:$mixin_version")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+            implementation("com.teamresourceful:bytecodecs:$byte_codecs_version")
 
         }
     }
@@ -73,6 +76,17 @@ cloche {
 
             fabricApi("$fapi_version+$mc_version")
             modApi("net.fabricmc:fabric-language-kotlin:$flk_version")
+        }
+
+        metadata {
+            entrypoint("main") {
+                adapter.set("kotlin")
+                value.set("dev.mayaqq.cynosure.CynosureFabric::init")
+            }
+            entrypoint("client") {
+                adapter.set("kotlin")
+                value.set("dev.mayaqq.cynosure.client.CynosureClientFabric::init")
+            }
         }
     }
 
