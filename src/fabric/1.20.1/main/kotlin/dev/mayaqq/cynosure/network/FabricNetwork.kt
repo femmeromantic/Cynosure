@@ -9,7 +9,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 
-class FabricNetwork(modid: String, protocolVersion: Int, channel: String) : Network {
+public class FabricNetwork(modid: String, protocolVersion: Int, channel: String) : Network {
 
     public val client: Network = if (FabricLoader.getInstance().environmentType.equals(EnvType.CLIENT)) {
         FabricClientNetwork(ResourceLocation(modid, "$channel/v$protocolVersion"))
