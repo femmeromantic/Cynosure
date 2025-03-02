@@ -1,123 +1,138 @@
-import earth.terrarium.cloche.target.FabricTarget
-import earth.terrarium.cloche.target.ForgeTarget
+@file:Suppress("PropertyName")
+
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("earth.terrarium.cloche") version "0.7.10"
+    id("earth.terrarium.cloche") version "0.8.1"
     kotlin("jvm") version "2.1.0"
-    kotlin("plugin.serialization") version "2.1.0" apply false
+    kotlin("plugin.serialization") version "2.1.0"
+    `maven-publish`
 }
-
 
 repositories {
+    maven(url = "https://maven.parchmentmc.org") { name = "Parchment" }
+    maven(url = "https://maven.fabricmc.net") { name = "FabricMC" }
+    maven(url = "https://maven.msrandom.net/repository/root") { name = "Ashley"}
+    maven(url = "https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
+    maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
+    maven(url = "https://maven.minecraftforge.net/") { name = "Forge" }
     mavenLocal()
-
     mavenCentral()
-
-    maven("https://maven.msrandom.net/repository/root") // Most
 }
+
+val mc_version: String by project
+val fabric_version: String by project
+val forge_version: String by project
+val mixin_version: String by project
+val fapi_version: String by project
+val flk_version: String by project
+val kff_version: String by project
+val parchment_version: String by project
 
 cloche {
     metadata {
-        modId.set("cynosure")
-        name.set("Cynosure")
-        description.set("Militech's answer to Arasaka's Soulkiller.")
-        license.set("LGPL-3.0")
-        icon.set("assets/cynosure/icon.png")
-        url.set("https://github.com/MayaqqDev/Cynosure")
-        sources.set("https://github.com/MayaqqDev/Cynosure")
+        modId = "cynosure"
+        name = "Cynosure"
+        description = "Militech's answer to Arasaka's Soulkiller."
+        license = "LGPL-3.0"
+        icon = "assets/cynosure/icon.png"
+        url = "https://github.com/MayaqqDev/Cynosure"
+        sources = "https://github.com/MayaqqDev/Cynosure"
     }
 
-    cloche.common {
-        apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+    mappings {
+        official()
+        parchment(parchment_version)
+    }
 
+    common {
         mixins.from(file("src/common/main/cynosure.mixins.json"))
 
         client {
             mixins.from(file("src/common/client/cynosure-client.mixins.json"))
 
+            // Idk if this is still needed
             val main = sourceSets.getByName("main")
             sourceSet.compileClasspath += main.compileClasspath
             sourceSet.runtimeClasspath += main.runtimeClasspath
         }
 
         dependencies {
-            compileOnly("org.spongepowered:mixin:0.8.3")
+            compileOnly("org.spongepowered:mixin:$mixin_version")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-        }
 
-        kotlin {
-            jvmToolchain(17)
-            explicitApiWarning()
-        }
-
-        tasks.withType<KotlinCompile> {
-            compilerOptions {
-                languageVersion.set(KotlinVersion.KOTLIN_2_1)
-            }
         }
     }
 
-    fabric("fabric:1.20.1") {
-        loaderVersion.set("0.16.9")
-        minecraftVersion.set("1.20.1")
+    fabric("fabric:$mc_version") {
+        loaderVersion = fabric_version
+        minecraftVersion = mc_version
 
-        client()
-        server()
+
+        runs {
+            client {
+                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
+            }
+            server()
+        }
 
         dependencies {
-            fabricApi("0.92.2+1.20.1")
-        }
-
-        kotlin {
-            jvmToolchain(17)
-            explicitApiWarning()
-        }
-
-        val compileKotlin: KotlinCompile by tasks
-        compileKotlin.compilerOptions {
-            languageVersion.set(KotlinVersion.KOTLIN_2_1)
+            fabricApi("$fapi_version+$mc_version")
+            modApi("net.fabricmc:fabric-language-kotlin:$flk_version")
         }
     }
 
-    forge("forge:1.20.1") {
-        loaderVersion.set("47.1.3")
-        minecraftVersion.set("1.20.1")
+    forge("forge:$mc_version") {
+        loaderVersion = forge_version
+        minecraftVersion = mc_version
 
-        client()
-        server()
-
-        kotlin {
-            jvmToolchain(17)
-            explicitApiWarning()
-        }
-
-        val compileKotlin: KotlinCompile by tasks
-        compileKotlin.compilerOptions {
-            languageVersion.set(KotlinVersion.KOTLIN_2_1)
-        }
-    }
-
-    targets.withType<ForgeTarget> {
-        client {
-            runConfiguration {
+        runs {
+            client {
                 arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
             }
+            server()
         }
-    }
 
-    targets.withType<FabricTarget> {
-        client {
-            runConfiguration {
-                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
-            }
+        dependencies {
+            api("thedarkcolour:kotlinforforge:$kff_version")
         }
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-    explicitApiWarning()
+java {
+    withSourcesJar()
+}
+
+tasks.withType<KotlinCompile> {
+    explicitApiMode = org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Warning
+    compilerOptions {
+        languageVersion = KotlinVersion.KOTLIN_2_0
+        freeCompilerArgs = listOf("-Xmulti-platform", "-Xno-check-actual", "-Xexpect-actual-classes")
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mod") {
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        val username = "sapphoCompanyUsername".let { System.getenv(it) ?: findProperty(it) }?.toString()
+        val password = "sapphoCompanyPassword".let { System.getenv(it) ?: findProperty(it) }?.toString()
+        if (username != null && password != null) {
+            maven("https://maven.is-immensely.gay/${properties["maven_category"]}") {
+                name = "sapphoCompany"
+                credentials {
+                    this.username = username
+                    this.password = password
+                }
+            }
+        } else {
+            println("Sappho Company credentials not present.")
+        }
+    }
 }
