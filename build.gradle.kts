@@ -49,15 +49,6 @@ cloche {
     common {
         mixins.from(file("src/common/main/cynosure.mixins.json"))
 
-        client {
-            mixins.from(file("src/common/client/cynosure-client.mixins.json"))
-
-            // Idk if this is still needed
-            val main = sourceSets.getByName("main")
-            sourceSet.compileClasspath += main.compileClasspath
-            sourceSet.runtimeClasspath += main.runtimeClasspath
-        }
-
         dependencies {
             compileOnly("org.spongepowered:mixin:$mixin_version")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
@@ -73,6 +64,7 @@ cloche {
 
 
         runs {
+            includedClient()
             client {
                 arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
             }

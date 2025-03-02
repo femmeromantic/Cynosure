@@ -8,7 +8,7 @@ import org.checkerframework.checker.guieffect.qual.UI
 
 
 @JvmInline
-public value class Color(private val value: Int) {
+public value class Color(public val value: Int) {
 
     public companion object {
         public val CODEC: Codec<Color> = alternatives(
@@ -32,8 +32,6 @@ public value class Color(private val value: Int) {
             else -> Result.failure(IllegalArgumentException("Invalid color format"))
         }
     }
-
-    public constructor(value: UInt) : this(value.toInt())
 
     public constructor(red: Int, green: Int, blue: Int, alpha: Int = 255)
             : this((alpha shl 24) or (red shl 16) or (green shl 8) or blue)

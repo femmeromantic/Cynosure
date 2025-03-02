@@ -1,4 +1,4 @@
-package dev.mayaqq.cynosure.data
+package dev.mayaqq.cynosure.mixin.client.data
 
 import dev.mayaqq.cynosure.utils.codecs.Either
 import kotlinx.serialization.KSerializer
@@ -12,7 +12,7 @@ import org.joml.Vector3f
 
 private val FLOAT = Float.serializer().descriptor
 
-object Vector3fSerializer : KSerializer<Vector3f> {
+public object Vector3fSerializer : KSerializer<Vector3f> {
     override val descriptor: SerialDescriptor =
         SerialDescriptor("dev.mayaqq.cynosure.Vector3f", FloatArraySerializer().descriptor)
 
@@ -35,7 +35,7 @@ object Vector3fSerializer : KSerializer<Vector3f> {
     }
 }
 
-object ResourceLocationSerializer : KSerializer<ResourceLocation> {
+public object ResourceLocationSerializer : KSerializer<ResourceLocation> {
     override val descriptor: SerialDescriptor = SerialDescriptor("dev.mayaqq.cynosure.ResourceLocation", String.serializer().descriptor)
 
     override fun deserialize(decoder: Decoder): ResourceLocation = ResourceLocation(decoder.decodeString())

@@ -1,22 +1,15 @@
-package dev.mayaqq.cynosure.models.textures
+package dev.mayaqq.cynosure.mixin.client.models.textures
 
 import com.mojang.blaze3d.platform.NativeImage
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.minecraft.client.renderer.texture.AbstractTexture
-import net.minecraft.client.renderer.texture.SpriteContents
 import net.minecraft.client.renderer.texture.Stitcher
-import net.minecraft.client.renderer.texture.TextureAtlas
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 
 
-fun loadTextures(map: Collection<ResourceLocation>): ResourceLocation = runBlocking {
+public fun loadTextures(map: Collection<ResourceLocation>): ResourceLocation = runBlocking {
 
     val results: MutableList<Deferred<NativeImage>> = mutableListOf()
 
@@ -44,7 +37,7 @@ public data class TextureData(val name: ResourceLocation, val width: Int, val he
 
 }
 
-class StitchedTexture : AbstractTexture() {
+public class StitchedTexture : AbstractTexture() {
     override fun load(p0: ResourceManager) {
         TODO("Not yet implemented")
     }

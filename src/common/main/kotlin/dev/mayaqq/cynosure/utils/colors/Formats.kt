@@ -6,7 +6,7 @@ public infix fun Color.with(format: ColorFormat): Int = format.encode(this)
 
 public enum class ColorFormat {
     ARGB {
-        override fun encode(c: Color): Int = c.getARGB().toInt()
+        override fun encode(c: Color): Int = c.argb.toInt()
 
         override fun decode(value: Int): Color = Color(value)
     },

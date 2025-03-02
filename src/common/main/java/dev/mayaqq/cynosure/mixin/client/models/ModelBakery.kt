@@ -1,10 +1,13 @@
-package dev.mayaqq.cynosure.models
+package dev.mayaqq.cynosure.mixin.client.models
 
-import dev.mayaqq.cynosure.models.baked.*
-import dev.mayaqq.cynosure.models.baked.STRIDE
+import dev.mayaqq.cynosure.mixin.client.models.baked.BakedModelTree
+import dev.mayaqq.cynosure.mixin.client.models.baked.CustomBakedModel
+import dev.mayaqq.cynosure.mixin.client.models.baked.Mesh
+import dev.mayaqq.cynosure.mixin.client.models.baked.PACK
+import dev.mayaqq.cynosure.mixin.client.models.baked.STRIDE
 import dev.mayaqq.cynosure.utils.*
-import dev.mayaqq.cynosure.utils.client.grow
-import dev.mayaqq.cynosure.utils.client.shrink
+import dev.mayaqq.cynosure.mixin.client.utils.client.grow
+import dev.mayaqq.cynosure.mixin.client.utils.client.shrink
 import it.unimi.dsi.fastutil.ints.IntArraySet
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import it.unimi.dsi.fastutil.ints.IntSet
@@ -14,10 +17,11 @@ import net.minecraft.core.Direction.Axis
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.Mth
 import org.joml.*
+import kotlin.collections.iterator
 
 private val BAKERY: ThreadLocal<ModelBakery> = ThreadLocal.withInitial(::ModelBakery)
 
-fun ModelData.bake(): Result<CustomBakedModel> = runCatching {
+public fun ModelData.bake(): Result<CustomBakedModel> = runCatching {
     if (groups.isEmpty()) BAKERY.get().bakeSimple(this) else BAKERY.get().bakeAnimatable(this)
 }
 
@@ -41,7 +45,7 @@ private class ModelBakery {
         return CustomBakedModel(bakeMesh(data.elements), ResourceLocation(""), data.renderType, minBound, maxBound)
     }
 
-    fun bakeAnimatable(data: ModelData): BakedModelTree  {
+    fun bakeAnimatable(data: ModelData): BakedModelTree {
         val ungrouped = 0..<data.elements.size into intSetOf(data.elements.size)
         val rootGroups = mutableMapOf<String, BakedModelTree>()
 
@@ -53,17 +57,20 @@ private class ModelBakery {
             }
         }
 
-        return BakedModelTree(if(ungrouped.isEmpty()) Mesh.EMPTY else bakeMesh(ungrouped.map(data.elements::get)),
-            ResourceLocation(""), data.renderType, Vector3f(minBound), Vector3f(maxBound), ZERO_VEC, rootGroups)
+        return BakedModelTree(
+            if (ungrouped.isEmpty()) Mesh.EMPTY else bakeMesh(ungrouped.map(data.elements::get)),
+            ResourceLocation(""), data.renderType, Vector3f(minBound), Vector3f(maxBound), ZERO_VEC, rootGroups
+        )
     }
 
-    private fun ModelElementGroup.compile(parent: ModelData, resolver: (Int) -> ModelElement): BakedModelTree = BakedModelTree(
-        bakeMesh(indices.map(resolver)),
-        ResourceLocation(""),
-        renderType ?: parent.renderType,
-        Vector3f(minBound), Vector3f(maxBound), origin,
-        subgroups.associate { it.name to it.compile(parent, resolver) }
-    )
+    private fun ModelElementGroup.compile(parent: ModelData, resolver: (Int) -> ModelElement): BakedModelTree =
+        BakedModelTree(
+            bakeMesh(indices.map(resolver)),
+            ResourceLocation(""),
+            renderType ?: parent.renderType,
+            Vector3f(minBound), Vector3f(maxBound), origin,
+            subgroups.associate { it.name to it.compile(parent, resolver) }
+        )
 
     private fun resetBounds() {
         minBound.set(Float.MAX_VALUE)

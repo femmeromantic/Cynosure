@@ -1,10 +1,11 @@
 @file:UseSerializers(Vector3fSerializer::class)
-package dev.mayaqq.cynosure.models
+
+package dev.mayaqq.cynosure.mixin.client.models
 
 import dev.mayaqq.cynosure.utils.codecs.Either
-import dev.mayaqq.cynosure.data.ResourceLocationSerializer
-import dev.mayaqq.cynosure.data.Vector3fSerializer
-import dev.mayaqq.cynosure.models.baked.ModelRenderType
+import dev.mayaqq.cynosure.mixin.client.data.ResourceLocationSerializer
+import dev.mayaqq.cynosure.mixin.client.data.Vector3fSerializer
+import dev.mayaqq.cynosure.mixin.client.models.baked.ModelRenderType
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -15,7 +16,7 @@ import org.joml.Vector3f
 
 
 @Serializable
-data class ModelElementRotation(
+public data class ModelElementRotation(
     val angle: Float,
     val axis: Direction.Axis,
     val origin: Vector3f,
@@ -23,7 +24,7 @@ data class ModelElementRotation(
 )
 
 @Serializable
-data class ModelElementFace(
+public data class ModelElementFace(
     val texture: String,
     val uv: FloatArray,
     val rotation: Float
@@ -34,12 +35,12 @@ data class ModelElementFace(
 
     private fun getShiftedIndex(index: Int): Int = ((index + rotation / 90) % 4).toInt()
 
-    fun getU(index: Int): Float {
+    public fun getU(index: Int): Float {
         val i: Int = getShiftedIndex(index)
         return this.uv[if (i != 0 && i != 1) 2 else 0] / 16f
     }
 
-    fun getV(index: Int): Float {
+    public fun getV(index: Int): Float {
         val i: Int = getShiftedIndex(index)
         return this.uv[if (i != 0 && i != 3) 3 else 1] / 16f
     }
@@ -66,7 +67,7 @@ data class ModelElementFace(
 }
 
 @Serializable
-data class ModelElement(
+public data class ModelElement(
     val from: Vector3f,
     val to: Vector3f,
     val faces: Map<Direction, ModelElementFace>,
@@ -75,21 +76,21 @@ data class ModelElement(
 )
 
 @Serializable
-data class ModelElementGroup(
+public data class ModelElementGroup(
     val name: String,
     val renderType: ModelRenderType? = null,
     val origin: Vector3f,
     val elements: List<Either<Int, ModelElementGroup>>
 )
 
-inline val ModelElementGroup.indices: List<Int>
+public inline val ModelElementGroup.indices: List<Int>
     get() = elements.mapNotNull { it.left }
 
-inline val ModelElementGroup.subgroups: List<ModelElementGroup>
+public inline val ModelElementGroup.subgroups: List<ModelElementGroup>
     get() = elements.mapNotNull { it.right }
 
 @Serializable
-data class ModelData(
+public data class ModelData(
     val renderType: ModelRenderType = ModelRenderType.CUTOUT,
     val textures: Map<String, @Serializable(ResourceLocationSerializer::class) ResourceLocation>,
     val elements: List<ModelElement>,
@@ -97,5 +98,5 @@ data class ModelData(
 )
 
 @OptIn(ExperimentalSerializationApi::class)
-fun ModelData.Companion.fromJson(json: JsonElement): Result<ModelData> = runCatching { Json.decodeFromJsonElement(json) }
+public fun ModelData.Companion.fromJson(json: JsonElement): Result<ModelData> = runCatching { Json.decodeFromJsonElement(json) }
 

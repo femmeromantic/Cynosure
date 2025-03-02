@@ -1,4 +1,4 @@
-package dev.mayaqq.cynosure.models.baked
+package dev.mayaqq.cynosure.mixin.client.models.baked
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.renderer.LightTexture
@@ -9,21 +9,21 @@ import org.joml.Vector3f
 import org.joml.Vector3fc
 import org.joml.Vector4f
 
-open class CustomBakedModel(
-    val mesh: Mesh,
-    val texture: ResourceLocation,
-    val renderType: ModelRenderType,
-    val minBound: Vector3fc,
-    val maxBound: Vector3fc
+public open class CustomBakedModel(
+    public val mesh: Mesh,
+    public val texture: ResourceLocation,
+    public val renderType: ModelRenderType,
+    public val minBound: Vector3fc,
+    public val maxBound: Vector3fc
 ) {
 
-    open fun render(
+    public open fun render(
         bufferSource: MultiBufferSource, matrices: PoseStack,
         color: Int = 0xFFFFFFF,
         light: Int = LightTexture.FULL_BRIGHT,
         overlay: Int = OverlayTexture.NO_OVERLAY
     ) {
-        if(mesh == Mesh.EMPTY) return
+        if(mesh == Mesh.Companion.EMPTY) return
 
         val posVec = Vector4f()
         val normalVec = Vector3f()

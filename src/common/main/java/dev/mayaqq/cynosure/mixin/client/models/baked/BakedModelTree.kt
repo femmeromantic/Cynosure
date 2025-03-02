@@ -1,14 +1,13 @@
-package dev.mayaqq.cynosure.models.baked
+package dev.mayaqq.cynosure.mixin.client.models.baked
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.VertexConsumer
-import dev.mayaqq.cynosure.models.animations.Animatable
+import dev.mayaqq.cynosure.mixin.client.models.animations.Animatable
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.resources.ResourceLocation
 import org.joml.Quaternionf
 import org.joml.Vector3fc
 
-class BakedModelTree(
+public class BakedModelTree(
     mesh: Mesh,
     texture: ResourceLocation,
     renderType: ModelRenderType,
@@ -87,8 +86,8 @@ class BakedModelTree(
     }
 }
 
-inline val Vector3fc.x get() = x()
+public inline val Vector3fc.x get() = x()
 
-inline val Vector3fc.y get() = y()
+public inline val Vector3fc.y get() = y()
 
-inline val Vector3fc.z get() = z()
+public inline val Vector3fc.z get() = z()
