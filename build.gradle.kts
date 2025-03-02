@@ -71,6 +71,7 @@ cloche {
         minecraftVersion = mc_version
 
 
+
         runs {
             client {
                 arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
@@ -79,6 +80,7 @@ cloche {
         }
 
         dependencies {
+
             fabricApi("$fapi_version+$mc_version")
             modApi("net.fabricmc:fabric-language-kotlin:$flk_version")
         }
@@ -100,6 +102,7 @@ cloche {
         }
     }
 }
+
 
 java {
     withSourcesJar()
