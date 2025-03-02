@@ -61,8 +61,6 @@ cloche {
         loaderVersion = fabric_version
         minecraftVersion = mc_version
 
-
-
         runs {
             includedClient()
             client {
