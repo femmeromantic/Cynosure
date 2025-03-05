@@ -87,6 +87,14 @@ cloche {
                 adapter.set("kotlin")
                 value.set("dev.mayaqq.cynosure.client.CynosureClientFabric::init")
             }
+            entrypoint("server") {
+                adapter.set("kotlin")
+                value.set("dev.mayaqq.cynosure.CynosureFabric::lateinit")
+            }
+            entrypoint("preLaunch") {
+                adapter = "kotlin"
+                value = "dev.mayaqq.cynosure.CynosureFabricPreLaunchKt::onPreLaunch"
+            }
         }
     }
 
