@@ -5,6 +5,5 @@ import dev.mayaqq.cynosure.events.api.post
 
 public object CynosureClient {
     public fun init() {
-        LateInitEvent.post()
     }
 }
