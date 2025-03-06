@@ -51,14 +51,14 @@ public open class EventBus {
 
     public fun <E : Event> register(clazz: Class<E>, priority: Int = 0, receiveCancelled: Boolean = false, handler: (E) -> Unit) {
         unregisterHandler(clazz)
-        listeners.getOrPut(clazz) { EventListeners() }.addListener(handler, priority, receiveCancelled)
+        listeners.getOrPut(clazz, ::EventListeners).addListener(handler, priority, receiveCancelled)
     }
 
-    public inline fun <reified T : Event> unregister(noinline callback: (T) -> Unit) {
-        unregister(T::class.java, callback = callback)
+    public inline fun <reified E : Event> unregister(noinline callback: (E) -> Unit) {
+        unregister(E::class.java, callback = callback)
     }
 
-    public fun <T : Event> unregister(type: Class<T>, callback: (T) -> Unit) {
+    public fun <E : Event> unregister(type: Class<E>, callback: (E) -> Unit) {
         unregisterHandler(type)
         listeners.values.forEach { it.removeListener(callback) }
     }
@@ -77,7 +77,7 @@ public open class EventBus {
         val event = method.parameterTypes[0]
         if (!Event::class.java.isAssignableFrom(event)) return
         unregisterHandler(event)
-        listeners.getOrPut(event as Class<Event>) { EventListeners() }.let {
+        listeners.getOrPut(event as Class<Event>, ::EventListeners).let {
             if(instance != null) it.addListener(method, instance, options)
         }
     }
