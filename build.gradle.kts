@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("earth.terrarium.cloche") version "0.8.1"
+    id("earth.terrarium.cloche") version "0.8.3"
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.0"
     `maven-publish`
@@ -86,6 +86,14 @@ cloche {
             entrypoint("client") {
                 adapter.set("kotlin")
                 value.set("dev.mayaqq.cynosure.client.CynosureClientFabric::init")
+            }
+            entrypoint("server") {
+                adapter.set("kotlin")
+                value.set("dev.mayaqq.cynosure.CynosureFabric::lateinit")
+            }
+            entrypoint("preLaunch") {
+                adapter = "kotlin"
+                value = "dev.mayaqq.cynosure.CynosureFabricPreLaunchKt::onPreLaunch"
             }
         }
     }
