@@ -5,9 +5,9 @@ import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 
 /**
- * Global event bus where all minecraft events are run
+ * Main event bus where all minecraft events are run
  */
-public object GlobalBus : EventBus()
+public object MainBus : EventBus()
 
 /**
  * Subscribe to an event bus. If the receiver is an instance or object any instance method marked with [Subscription]
@@ -15,7 +15,28 @@ public object GlobalBus : EventBus()
  * will be added to the event bus
  */
 public fun Any.subscribeTo(bus: EventBus) {
-    bus.addSubscriber(this)
+    val thing = if(this is KClass<*>) java else this
+    if(thing is Class<*>) {
+        thing.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
+            .forEach { bus.registerMethod(it) }
+    } else {
+        javaClass.declaredMethods.filter { !Modifier.isStatic(it.modifiers) }
+            .forEach { bus.registerMethod(it, thing) }
+    }
+}
+
+/**
+ * Unsubscribe from an event bus
+ */
+public fun Any.unsubscribeFrom(bus: EventBus) {
+    val thing = if(this is KClass<*>) java else this
+    if(thing is Class<*>) {
+        thing.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
+            .forEach { bus.unregisterMethod(it) }
+    } else {
+        javaClass.declaredMethods.filter { !Modifier.isStatic(it.modifiers) }
+            .forEach { bus.unregisterMethod(it) }
+    }
 }
 
 /**
@@ -51,29 +72,6 @@ public abstract class EventBus {
     ): Boolean = getHandler(event.javaClass).post(event, context, onError)
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Event> getHandler(event: Class<T>): EventHandler<T> = handlers.getOrPut(event) {
-        EventHandler(
-            event,
-            getEventClasses(event).mapNotNull { listeners[it] }.flatMap(EventListeners::getListeners)
-        )
-    } as EventHandler<T>
-
-    private fun unregisterHandler(clazz: Class<*>) = this.handlers.keys
-        .filter { it.isAssignableFrom(clazz) }
-        .forEach(this.handlers::remove)
-
-    internal fun addSubscriber(instance: Any) {
-        val thing = if(instance is KClass<*>) instance.java else instance
-        if(thing is Class<*>) {
-            thing.declaredMethods.filter { Modifier.isStatic(it.modifiers) }
-                .forEach { registerMethod(it, null) }
-        } else {
-            javaClass.declaredMethods.filter { !Modifier.isStatic(it.modifiers) }
-                .forEach { registerMethod(it, thing) }
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
     internal fun registerMethod(method: Method, instance: Any? = null) {
         if (method.parameterCount != 1) return
         val options = method.getAnnotation(Subscription::class.java) ?: return
@@ -85,6 +83,29 @@ public abstract class EventBus {
             if(instance != null) it.addListener(method, instance, options)
         }
     }
+
+    internal fun unregisterMethod(method: Method) {
+        if (method.parameterCount != 1) return
+        method.getAnnotation(Subscription::class.java) ?: return
+
+        val event = method.parameterTypes[0]
+        if (!Event::class.java.isAssignableFrom(event)) return
+        unregisterHandler(event)
+        listeners.values.forEach { it.removeListener(method) }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Event> getHandler(event: Class<T>): EventHandler<T> = handlers.getOrPut(event) {
+        EventHandler(
+            event,
+            getEventClasses(event).mapNotNull { listeners[it] }.flatMap(EventListeners::getListeners)
+        )
+    } as EventHandler<T>
+
+    private fun unregisterHandler(clazz: Class<*>) = this.handlers.keys
+        .filter { it.isAssignableFrom(clazz) }
+        .forEach(this.handlers::remove)
+
 
     private fun getEventClasses(clazz: Class<*>): List<Class<*>> {
         val classes = mutableListOf<Class<*>>()

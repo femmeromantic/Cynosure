@@ -2,7 +2,7 @@ package dev.mayaqq.cynosure
 
 import dev.mayaqq.cynosure.events.api.AutoSubscriber
 import dev.mayaqq.cynosure.events.api.EventBus
-import dev.mayaqq.cynosure.events.api.GlobalBus
+import dev.mayaqq.cynosure.events.api.MainBus
 import dev.mayaqq.cynosure.events.api.subscribeTo
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
@@ -48,7 +48,7 @@ public fun onPreLaunch() {
             try {
                 val bus =
                     (annotation.values?.get(1) as? Type)?.let { Class.forName(it.className).kotlin.objectInstance as EventBus }
-                        ?: GlobalBus
+                        ?: MainBus
 
                 val clazz = Class.forName(className)
                 // If the class is an object, subscribe the object instance instead of the class

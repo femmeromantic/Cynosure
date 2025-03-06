@@ -43,16 +43,16 @@ public abstract class ReturningEvent<R> : Event {
 }
 
 /**
- * Post this event to the event bus, defaults to the [GlobalBus]
+ * Post this event to the event bus, defaults to the [MainBus]
  */
-public fun Event.post(bus: EventBus = GlobalBus) {
+public fun Event.post(bus: EventBus = MainBus) {
     bus.post(this)
 }
 
 /**
- * Post this returning event to the event bus and get its result. Defaults to [GlobalBus]
+ * Post this returning event to the event bus and get its result. Defaults to [MainBus]
  */
-public fun <R> ReturningEvent<R>.post(bus: EventBus = GlobalBus): R? {
+public fun <R> ReturningEvent<R>.post(bus: EventBus = MainBus): R? {
     bus.post(this)
     return result
 }

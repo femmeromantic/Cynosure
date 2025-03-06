@@ -40,7 +40,7 @@ internal class EventListeners {
         listeners.add(
             Listener(
             method,
-            instance?.let { createEventConsumer(name, it, method) } ?: createStaticEventConsumer(name, method),
+            instance?.createEventConsumer(name, method) ?: createStaticEventConsumer(name, method),
             options.priority,
             options.receiveCancelled,
             EventPredicates(method)
@@ -52,17 +52,17 @@ internal class EventListeners {
      * a method from within code.
      */
     @Suppress("UNCHECKED_CAST")
-    private fun createEventConsumer(name: String, instance: Any, method: Method): Consumer<Any> {
+    private fun Any.createEventConsumer(name: String, method: Method): Consumer<Any> {
         try {
             val handle = MethodHandles.lookup().unreflect(method)
             return LambdaMetafactory.metafactory(
                 MethodHandles.lookup(),
                 "accept",
-                MethodType.methodType(Consumer::class.java, instance::class.java),
+                MethodType.methodType(Consumer::class.java, javaClass),
                 MethodType.methodType(Nothing::class.javaPrimitiveType, Object::class.java),
                 handle,
                 MethodType.methodType(Nothing::class.javaPrimitiveType, method.parameterTypes[0]),
-            ).target.bindTo(instance).invokeExact() as Consumer<Any>
+            ).target.bindTo(this).invokeExact() as Consumer<Any>
         } catch (e: Throwable) {
             throw IllegalArgumentException("Method $name is not a valid consumer", e)
         }

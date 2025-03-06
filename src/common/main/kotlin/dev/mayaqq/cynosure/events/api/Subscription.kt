@@ -34,12 +34,14 @@ public annotation class Subscription(
  *
  * Note: On fabric you have to set `"cynosure:autosubscription": true` in your fabric.mod.json custom properties for
  * automatic subscribers to work. This will tell cynosure to scan your mod's classpath for subscribers
+ *
+ * Note 2: An event bus has to be an object to be used in this annotation
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FILE, AnnotationTarget.CLASS)
 public annotation class AutoSubscriber(
     /**
-     * Event bus object to add the subscriptions to. Defaults to [GlobalBus]
+     * Event bus object to add the subscriptions to. Defaults to [MainBus]
      */
-    val bus: KClass<out EventBus> = GlobalBus::class
+    val bus: KClass<out EventBus> = MainBus::class
 )
