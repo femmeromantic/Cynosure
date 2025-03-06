@@ -39,10 +39,8 @@ public fun Any.unsubscribeFrom(bus: EventBus) {
     }
 }
 
-/**
- * Abstract because all event buses must be object declarations
- */
-public abstract class EventBus {
+
+public open class EventBus {
 
     private val listeners: MutableMap<Class<*>, EventListeners> = mutableMapOf()
     private val handlers: MutableMap<Class<*>, EventHandler<*>> = mutableMapOf()
