@@ -1,5 +1,7 @@
 package dev.mayaqq.cynosure.events.api
 
+import dev.mayaqq.cynosure.Cynosure
+
 /**
  * Base interface for all events
  * [isCancelled] returns true if the event should be considered cancelled and stop execution
@@ -21,13 +23,11 @@ public annotation class RootEventClass
 @RootEventClass
 public abstract class CancellableEvent : Event {
 
-    private var cancelled: Boolean = false
-
-    override val isCancelled: Boolean
-        get() = cancelled
+    final override var isCancelled: Boolean = false
+        private set
 
     public fun cancel() {
-        cancelled = true
+        isCancelled = true
     }
 }
 
@@ -37,6 +37,10 @@ public abstract class CancellableEvent : Event {
 @RootEventClass
 public abstract class ReturningEvent<R> : Event {
     public var result: R? = null
+        set(new) {
+            requireNotNull(new) { "Cannot unset the result of the event" }
+            field = new
+        }
 
     override val isCancelled: Boolean
         get() = result !== null
