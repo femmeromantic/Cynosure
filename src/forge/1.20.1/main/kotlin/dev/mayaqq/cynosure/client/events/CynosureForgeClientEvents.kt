@@ -32,14 +32,14 @@ public fun onLevelRender(event: RenderLevelStageEvent) {
         RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS -> LevelRenderEvent.AfterTranslucentTerrain(
             event.levelRenderer, event.poseStack, event.partialTick,
             event.camera, event.frustum, event.bufferSource
-        )
+        ).post()
         RenderLevelStageEvent.Stage.AFTER_PARTICLES -> LevelRenderEvent.AfterParticles(
             event.levelRenderer, event.poseStack, event.partialTick,
-            event.camera, event.frustum, null
+            event.camera, event.frustum, event.bufferSource
         ).post()
         RenderLevelStageEvent.Stage.AFTER_WEATHER -> LevelRenderEvent.Last(
             event.levelRenderer, event.poseStack, event.partialTick,
-            event.camera, event.frustum, null
+            event.camera, event.frustum, event.bufferSource
         ).post()
         RenderLevelStageEvent.Stage.AFTER_LEVEL -> LevelRenderEvent.End(
             event.levelRenderer, event.poseStack, event.partialTick,

@@ -88,7 +88,7 @@ public sealed class LevelRenderEvent(
         public var renderOutline: Boolean = true
         private set
 
-        public fun noBlockOutline() {
+        public fun preventBlockOutline() {
             renderOutline = false
         }
     }
@@ -107,7 +107,7 @@ public sealed class LevelRenderEvent(
         public var renderVanillaOutline: Boolean = true
         private set
 
-        public fun noVanillaOutline() {
+        public fun preventVanillaOutline() {
             renderVanillaOutline = false
         }
     }
