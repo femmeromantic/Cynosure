@@ -19,7 +19,7 @@ public object ReloadLevelRendererEvent : Event
 
 @RootEventClass
 public sealed class LevelRenderEvent(
-    public val levelRenderer: LevelRenderer,
+    public val renderer: LevelRenderer,
     public val poseStack: PoseStack,
     public val partialTick: Float,
     public val camera: Camera,
@@ -32,59 +32,59 @@ public sealed class LevelRenderEvent(
      * Note that frustum and bufferSource will not yet be available in this event
      */
     public class Start(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ): LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ): LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     /**
      * Fired Aftter terrain rendering setup is complete but before any terrain is rendered
      */
     public class BeforeTerrain(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     /**
      * Fired after solid, cutout and cutout mipped render layers have been rendered but before any entity rendering occurs
      */
     public class AfterTerrain(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     /**
      * Fired after entities are rendered but before block entities
      */
     public class AfterEntities(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class BeforeBlockOutline(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?,
         public val hitResult: HitResult?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource) {
         public var renderOutline: Boolean = true
         private set
 
@@ -94,7 +94,7 @@ public sealed class LevelRenderEvent(
     }
 
     public class BlockOutline(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
@@ -103,7 +103,7 @@ public sealed class LevelRenderEvent(
         public val entity: Entity,
         public val pos: BlockPos,
         public val state: BlockState
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource) {
         public var renderVanillaOutline: Boolean = true
         private set
 
@@ -113,47 +113,47 @@ public sealed class LevelRenderEvent(
     }
 
     public class DebugRender(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?,
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class AfterTranslucentTerrain(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class AfterParticles(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class Last(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class End(
-        levelRenderer: LevelRenderer,
+        renderer: LevelRenderer,
         poseStack: PoseStack,
         partialTick: Float,
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(renderer, poseStack, partialTick, camera, frustum, bufferSource)
 }
