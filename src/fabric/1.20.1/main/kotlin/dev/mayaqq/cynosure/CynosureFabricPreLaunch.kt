@@ -42,12 +42,12 @@ public fun onPreLaunch() {
             reader.accept(cn, ClassReader.SKIP_CODE or ClassReader.SKIP_FRAMES)
 
             val annotation = cn.visibleAnnotations
-                .find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
+                ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
                 ?: continue
 
             try {
                 val bus =
-                    (annotation.values?.get(1) as? Type)?.let { Class.forName(it.className).kotlin.objectInstance as EventBus }
+                    (annotation.values?.get(1) as? Type)?.let { Class.forName(it.className).kotlin.objectInstance as? EventBus }
                         ?: MainBus
 
                 val clazz = Class.forName(className)

@@ -77,9 +77,8 @@ public open class EventBus {
         val event = method.parameterTypes[0]
         if (!Event::class.java.isAssignableFrom(event)) return
         unregisterHandler(event)
-        listeners.getOrPut(event as Class<Event>, ::EventListeners).let {
-            if(instance != null) it.addListener(method, instance, options)
-        }
+        listeners.getOrPut(event as Class<Event>, ::EventListeners)
+            .addListener(method, instance, options)
     }
 
     internal fun unregisterMethod(method: Method) {
