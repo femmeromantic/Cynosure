@@ -4,19 +4,26 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.mayaqq.cynosure.client.events.CynosureWorldRenderEventHandler;
 import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nullable;
+import java.util.Objects;
+
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
+
+    @Shadow @Nullable private ClientLevel level;
 
     @Inject(
         method = "renderLevel",
@@ -51,6 +58,6 @@ public abstract class LevelRendererMixin {
         )
     )
     private void onRenderTripwire1(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci, @Local MultiBufferSource bufferSource) {
-        CynosureWorldRenderEventHandler.INSTANCE.afterTranslucentTerrain((LevelRenderer) (Object) this, poseStack, partialTick, camera, bufferSource);
+        CynosureWorldRenderEventHandler.INSTANCE.afterTranslucentTerrain(Objects.requireNonNull(level), (LevelRenderer) (Object) this, poseStack, partialTick, camera, bufferSource);
     }
 }
