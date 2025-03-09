@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.mayaqq.cynosure.client.events.render.BeginRenderHudEvent;
+import dev.mayaqq.cynosure.client.events.render.BeginHudRenderEvent;
 import dev.mayaqq.cynosure.client.render.gui.HudOverlay;
 import dev.mayaqq.cynosure.client.render.gui.OverlayRegistry;
 import dev.mayaqq.cynosure.client.render.gui.VanillaHud;
@@ -63,7 +63,7 @@ public abstract class GuiMixin {
         cancellable = true
     )
     private void onBeginRenderHud(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
-        var event = new BeginRenderHudEvent((Gui) (Object) this, guiGraphics, partialTick);
+        var event = new BeginHudRenderEvent((Gui) (Object) this, guiGraphics, partialTick);
         if(MainBus.INSTANCE.post(event, null, null)) ci.cancel();
         blendEnabled = false;
         depthTestEnabled = false;
