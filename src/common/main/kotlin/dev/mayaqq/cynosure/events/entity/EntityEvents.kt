@@ -1,5 +1,6 @@
 package dev.mayaqq.cynosure.events.entity
 
+import dev.mayaqq.cynosure.events.InteractionResultEvent
 import dev.mayaqq.cynosure.events.api.Event
 import dev.mayaqq.cynosure.events.api.ReturningEvent
 import net.minecraft.server.level.ServerPlayer
@@ -15,10 +16,7 @@ public class EntityInteractionEvent(
     public val player: Player,
     public val entity: Entity,
     public val hand: InteractionHand
-): ReturningEvent<InteractionResult>() {
-    override val isCancelled: Boolean
-        get() = super.isCancelled && result?.consumesAction() == true
-
+): InteractionResultEvent() {
     /**
      * Shorthand for getting the item stack in the active hand of the player
      */

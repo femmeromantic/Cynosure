@@ -17,7 +17,6 @@ import net.minecraft.world.phys.HitResult
  */
 public object ReloadLevelRendererEvent : Event
 
-@RootEventClass
 public sealed class LevelRenderEvent(
     public val renderer: LevelRenderer,
     public val poseStack: PoseStack,
