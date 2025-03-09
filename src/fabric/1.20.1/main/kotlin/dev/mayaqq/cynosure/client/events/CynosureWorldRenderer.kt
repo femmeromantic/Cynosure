@@ -1,17 +1,25 @@
 package dev.mayaqq.cynosure.client.events
 
-import dev.mayaqq.cynosure.CynosureInternal
-import dev.mayaqq.cynosure.client.events.render.WorldRenderEvent
-import dev.mayaqq.cynosure.events.api.MainBus
+import com.mojang.blaze3d.vertex.PoseStack
+import dev.mayaqq.cynosure.client.events.render.LevelRenderEvent
+import dev.mayaqq.cynosure.client.events.render.ReloadLevelRendererEvent
 import dev.mayaqq.cynosure.events.api.post
+import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.minecraft.client.Camera
+import net.minecraft.client.renderer.LevelRenderer
+import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.world.phys.HitResult
 
 internal object CynosureWorldRenderEventHandler : WorldRenderEvents.Start, WorldRenderEvents.AfterSetup, WorldRenderEvents.BeforeEntities,
     WorldRenderEvents.AfterEntities, WorldRenderEvents.BeforeBlockOutline, WorldRenderEvents.BlockOutline,
-    WorldRenderEvents.DebugRender, WorldRenderEvents.AfterTranslucent, WorldRenderEvents.Last, WorldRenderEvents.End {
+    WorldRenderEvents.DebugRender, WorldRenderEvents.AfterTranslucent, WorldRenderEvents.Last, WorldRenderEvents.End,
+        InvalidateRenderStateCallback
+{
 
+    var frustum: Frustum? = null
 
     fun init() {
         WorldRenderEvents.START.register(this)
@@ -24,30 +32,32 @@ internal object CynosureWorldRenderEventHandler : WorldRenderEvents.Start, World
         WorldRenderEvents.AFTER_TRANSLUCENT.register(this)
         WorldRenderEvents.LAST.register(this)
         WorldRenderEvents.END.register(this)
+        InvalidateRenderStateCallback.EVENT.register(this)
     }
 
     override fun onStart(context: WorldRenderContext) {
-        WorldRenderEvent.Start(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.Start(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
     override fun afterSetup(context: WorldRenderContext) {
-        WorldRenderEvent.BeforeTerrain(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.BeforeTerrain(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
+        this.frustum = context.frustum()
     }
 
     override fun beforeEntities(context: WorldRenderContext) {
-        WorldRenderEvent.AfterTerrain(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.AfterTerrain(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
     override fun afterEntities(context: WorldRenderContext) {
-        WorldRenderEvent.AfterEntities(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.AfterEntities(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
     override fun beforeBlockOutline(context: WorldRenderContext, hitResult: HitResult?): Boolean {
-        val event = WorldRenderEvent.BeforeBlockOutline(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        val event = LevelRenderEvent.BeforeBlockOutline(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers(), hitResult)
         event.post()
         return event.renderOutline
@@ -57,29 +67,37 @@ internal object CynosureWorldRenderEventHandler : WorldRenderEvents.Start, World
         context: WorldRenderContext,
         blockOutlineContext: WorldRenderContext.BlockOutlineContext
     ): Boolean {
-        val event = WorldRenderEvent.BlockOutline(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        val event = LevelRenderEvent.BlockOutline(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers(), blockOutlineContext.entity(), blockOutlineContext.blockPos(), blockOutlineContext.blockState())
         event.post()
         return event.renderVanillaOutline
     }
 
     override fun beforeDebugRender(context: WorldRenderContext) {
-        WorldRenderEvent.DebugRender(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.DebugRender(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
+    fun afterTranslucentTerrain(renderer: LevelRenderer, poseStack: PoseStack, partialTicks: Float, camera: Camera, bufferSoure: MultiBufferSource) {
+        LevelRenderEvent.AfterTranslucentTerrain(renderer, poseStack, partialTicks, camera, frustum, bufferSoure).post()
+    }
+
     override fun afterTranslucent(context: WorldRenderContext) {
-        WorldRenderEvent.AfterParticles(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.AfterParticles(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
     override fun onLast(context: WorldRenderContext) {
-        WorldRenderEvent.Last(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.Last(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
     }
 
     override fun onEnd(context: WorldRenderContext) {
-        WorldRenderEvent.End(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
+        LevelRenderEvent.End(context.worldRenderer(), context.matrixStack(), context.tickDelta(),
             context.camera(), context.frustum(), context.consumers()).post()
+    }
+
+    override fun onInvalidate() {
+        ReloadLevelRendererEvent.post()
     }
 }

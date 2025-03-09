@@ -1,4 +1,4 @@
-package dev.mayaqq.cynosure.forge.mixin;
+package dev.mayaqq.cynosure.forge.mixin.client;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderBuffers;

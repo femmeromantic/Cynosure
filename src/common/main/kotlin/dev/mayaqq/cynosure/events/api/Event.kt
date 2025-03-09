@@ -1,7 +1,5 @@
 package dev.mayaqq.cynosure.events.api
 
-import dev.mayaqq.cynosure.Cynosure
-
 /**
  * Base interface for all events
  * [isCancelled] returns true if the event should be considered cancelled and stop execution
@@ -49,8 +47,8 @@ public abstract class ReturningEvent<R> : Event {
 /**
  * Post this event to the event bus, defaults to the [MainBus]
  */
-public fun Event.post(bus: EventBus = MainBus, context: Any? = null, onError: ((Throwable) -> Unit)? = null) {
-    bus.post(this, context, onError)
+public fun Event.post(bus: EventBus = MainBus, context: Any? = null, onError: ((Throwable) -> Unit)? = null) : Boolean {
+    return bus.post(this, context, onError)
 }
 
 /**

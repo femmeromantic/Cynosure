@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("earth.terrarium.cloche") version "0.8.3"
+    id("earth.terrarium.cloche") version "0.8.10"
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.0"
     `maven-publish`
@@ -53,10 +53,10 @@ cloche {
 
         dependencies {
             compileOnly("org.spongepowered:mixin:$mixin_version")
+            compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
             implementation("com.teamresourceful:bytecodecs:$byte_codecs_version")
-
         }
     }
 
@@ -96,6 +96,8 @@ cloche {
                 value = "dev.mayaqq.cynosure.CynosureFabricPreLaunchKt::onPreLaunch"
             }
         }
+
+        mixins.from(file("src/fabric/1.20.1/main/cynosure.fabric.mixins.json"))
     }
 
     forge("forge:$mc_version") {
@@ -111,7 +113,11 @@ cloche {
 
         dependencies {
             api("thedarkcolour:kotlinforforge:$kff_version")
+            annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")
+            implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
         }
+
+        include("io.github.llamalad7:mixinextras-forge:0.4.1")
     }
 }
 

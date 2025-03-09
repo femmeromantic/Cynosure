@@ -12,8 +12,13 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.HitResult
 
+/**
+ * Invoked when the level renderer reloads
+ */
+public object ReloadLevelRendererEvent : Event
+
 @RootEventClass
-public sealed class WorldRenderEvent(
+public sealed class LevelRenderEvent(
     public val levelRenderer: LevelRenderer,
     public val poseStack: PoseStack,
     public val partialTick: Float,
@@ -22,6 +27,10 @@ public sealed class WorldRenderEvent(
     public val bufferSource: MultiBufferSource?
 ) : Event {
 
+    /**
+     * Fired at the beginning of [LevelRenderer.renderLevel].
+     * Note that frustum and bufferSource will not yet be available in this event
+     */
     public class Start(
         levelRenderer: LevelRenderer,
         poseStack: PoseStack,
@@ -29,8 +38,11 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ): WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ): LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
+    /**
+     * Fired Aftter terrain rendering setup is complete but before any terrain is rendered
+     */
     public class BeforeTerrain(
         levelRenderer: LevelRenderer,
         poseStack: PoseStack,
@@ -38,8 +50,11 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
+    /**
+     * Fired after solid, cutout and cutout mipped render layers have been rendered but before any entity rendering occurs
+     */
     public class AfterTerrain(
         levelRenderer: LevelRenderer,
         poseStack: PoseStack,
@@ -47,8 +62,11 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
+    /**
+     * Fired after entities are rendered but before block entities
+     */
     public class AfterEntities(
         levelRenderer: LevelRenderer,
         poseStack: PoseStack,
@@ -56,7 +74,7 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class BeforeBlockOutline(
         levelRenderer: LevelRenderer,
@@ -66,12 +84,12 @@ public sealed class WorldRenderEvent(
         frustum: Frustum?,
         bufferSource: MultiBufferSource?,
         public val hitResult: HitResult?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
         public var renderOutline: Boolean = true
         private set
 
         public fun noBlockOutline() {
-            renderOutline = true
+            renderOutline = false
         }
     }
 
@@ -85,12 +103,12 @@ public sealed class WorldRenderEvent(
         public val entity: Entity,
         public val pos: BlockPos,
         public val state: BlockState
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource) {
         public var renderVanillaOutline: Boolean = true
         private set
 
         public fun noVanillaOutline() {
-            renderVanillaOutline = true
+            renderVanillaOutline = false
         }
     }
 
@@ -101,7 +119,16 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?,
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+
+    public class AfterTranslucentTerrain(
+        levelRenderer: LevelRenderer,
+        poseStack: PoseStack,
+        partialTick: Float,
+        camera: Camera,
+        frustum: Frustum?,
+        bufferSource: MultiBufferSource?
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class AfterParticles(
         levelRenderer: LevelRenderer,
@@ -110,7 +137,7 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class Last(
         levelRenderer: LevelRenderer,
@@ -119,7 +146,7 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 
     public class End(
         levelRenderer: LevelRenderer,
@@ -128,5 +155,5 @@ public sealed class WorldRenderEvent(
         camera: Camera,
         frustum: Frustum?,
         bufferSource: MultiBufferSource?
-    ) : WorldRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
+    ) : LevelRenderEvent(levelRenderer, poseStack, partialTick, camera, frustum, bufferSource)
 }
