@@ -1,11 +1,14 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.mayaqq.cynosure.mixin",
+  "package": "dev.mayaqq.cynosure.forge.mixin",
   "compatibilityLevel": "JAVA_17",
+  "mixins": [
+
+  ],
   "client": [
-    "client.LevelRendererMixin",
-    "client.RenderBuffersMixin"
+    "client.LevelRendererAccessor",
+    "client.LevelRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

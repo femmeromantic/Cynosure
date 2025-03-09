@@ -21,13 +21,11 @@ public annotation class RootEventClass
 @RootEventClass
 public abstract class CancellableEvent : Event {
 
-    private var cancelled: Boolean = false
-
-    override val isCancelled: Boolean
-        get() = cancelled
+    final override var isCancelled: Boolean = false
+        private set
 
     public fun cancel() {
-        cancelled = true
+        isCancelled = true
     }
 }
 
@@ -37,6 +35,10 @@ public abstract class CancellableEvent : Event {
 @RootEventClass
 public abstract class ReturningEvent<R> : Event {
     public var result: R? = null
+        set(new) {
+            requireNotNull(new) { "Cannot unset the result of the event" }
+            field = new
+        }
 
     override val isCancelled: Boolean
         get() = result !== null
@@ -45,14 +47,14 @@ public abstract class ReturningEvent<R> : Event {
 /**
  * Post this event to the event bus, defaults to the [MainBus]
  */
-public fun Event.post(bus: EventBus = MainBus) {
-    bus.post(this)
+public fun Event.post(bus: EventBus = MainBus, context: Any? = null, onError: ((Throwable) -> Unit)? = null) : Boolean {
+    return bus.post(this, context, onError)
 }
 
 /**
  * Post this returning event to the event bus and get its result. Defaults to [MainBus]
  */
-public fun <R> ReturningEvent<R>.post(bus: EventBus = MainBus): R? {
-    bus.post(this)
+public fun <R> ReturningEvent<R>.post(bus: EventBus = MainBus, context: Any? = null, onError: ((Throwable) -> Unit)? = null): R? {
+    bus.post(this, context, onError)
     return result
 }
