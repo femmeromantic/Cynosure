@@ -6,8 +6,10 @@ import dev.mayaqq.cynosure.MODID
 import dev.mayaqq.cynosure.client.events.RegisterParticleFactoriesEvent
 import dev.mayaqq.cynosure.client.render.gui.OverlayRegistry
 import dev.mayaqq.cynosure.client.render.gui.VanillaHud
+import dev.mayaqq.cynosure.events.api.post
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.particle.ParticleProvider
+import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraftforge.api.distmarker.Dist
@@ -28,19 +30,7 @@ public object CynosureForgeClient {
     @OptIn(CynosureInternal::class)
     @SubscribeEvent
     public fun registerParticles(event: RegisterParticleProvidersEvent) {
-        RegisterParticleFactoriesEvent(object : RegisterParticleFactoriesEvent.ParticleFactoryRegistrator {
-            override fun <T : ParticleOptions> registerPending(
-                type: ParticleType<T>,
-                factoryProvider: RegisterParticleFactoriesEvent.PendingProvider<T>
-            ) {
-                event.registerSpriteSet(type, factoryProvider::create)
-            }
-
-            override fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>) {
-                event.registerSpecial(type, provider)
-            }
-
-        })
+        ForgeParticleRegistrationEvent(event).post()
     }
 
     @OptIn(CynosureInternal::class)
@@ -54,4 +44,15 @@ public object CynosureForgeClient {
             }
         }
     }
+}
+
+private class ForgeParticleRegistrationEvent(val delegate: RegisterParticleProvidersEvent) : RegisterParticleFactoriesEvent() {
+    override fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>) {
+        delegate.registerSpecial(type, provider)
+    }
+
+    override fun <T : ParticleOptions> register(type: ParticleType<T>, factoryProvider: (SpriteSet) -> ParticleProvider<T>) {
+        delegate.registerSpriteSet(type, factoryProvider)
+    }
+
 }
