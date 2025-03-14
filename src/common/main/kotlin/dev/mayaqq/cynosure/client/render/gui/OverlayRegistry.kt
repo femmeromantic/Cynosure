@@ -18,7 +18,7 @@ public object OverlayRegistry {
         }
 
         val output: MutableMap<VanillaHud, List<HudOverlay>> = EnumMap(VanillaHud::class.java)
-        for((key, list) in map) {
+        for(key in VanillaHud.entries) {
             output[key] = map[key]?.sorted()?.map { it.overlay } ?: emptyList()
         }
 
