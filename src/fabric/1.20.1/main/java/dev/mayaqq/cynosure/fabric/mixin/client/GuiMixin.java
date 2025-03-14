@@ -13,8 +13,11 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.world.entity.player.Player;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,6 +31,10 @@ import java.util.Map;
 @Mixin(value = Gui.class, priority = 1500)
 public abstract class GuiMixin {
 
+    @Shadow protected abstract Player getCameraPlayer();
+
+    @Shadow protected abstract void renderPlayerHealth(GuiGraphics guiGraphics);
+
     @Unique
     private Map<VanillaHud, List<HudOverlay>> hudOverlays = null;
 
@@ -35,18 +42,13 @@ public abstract class GuiMixin {
     private boolean blendEnabled = false;
 
     @Unique
-    private boolean depthTestEnabled = false;
-
-    @Unique
     private void renderPhaseOverlays(VanillaHud phase, GuiGraphics guiGraphics, float partialTick) {
         for(HudOverlay overlay : hudOverlays.get(phase)) {
             RenderSystem.enableBlend();
-            RenderSystem.disableDepthTest();
             overlay.render((Gui) (Object) this, guiGraphics, partialTick);
         }
         // Restore render state
         if(blendEnabled) RenderSystem.enableBlend(); else RenderSystem.disableBlend();
-        if(depthTestEnabled) RenderSystem.enableDepthTest(); else RenderSystem.disableDepthTest();
     }
 
     @Inject(
@@ -66,18 +68,6 @@ public abstract class GuiMixin {
         var event = new BeginHudRenderEvent((Gui) (Object) this, guiGraphics, partialTick);
         if(MainBus.INSTANCE.post(event, null, null)) ci.cancel();
         blendEnabled = false;
-        depthTestEnabled = false;
-    }
-
-    @Inject(
-        method = "render",
-        at = @At(
-            value = "INVOKE",
-            target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableDepthTest()V"
-        )
-    )
-    private void saveDepthTestState(CallbackInfo ci) {
-        depthTestEnabled = true;
     }
 
     @Inject(
@@ -242,6 +232,7 @@ public abstract class GuiMixin {
             renderPhaseOverlays(VanillaHud.CROSSHAIR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.BOSS_BAR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, graphics, partialTick);
+            renderPhaseOverlays(VanillaHud.FOOD_LEVEL, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.MOUNT_HEALTH, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.JUMP_BAR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.XP_BAR, graphics, partialTick);
@@ -272,15 +263,45 @@ public abstract class GuiMixin {
         renderPhaseOverlays(VanillaHud.BOSS_BAR, guiGraphics, partialTick);
     }
 
-    @Inject(
+    @WrapOperation(
         method = "render",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;canHurtPlayer()Z"
         )
     )
-    private void beforeHealth(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
-        renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, guiGraphics, partialTick);
+    private boolean ifHealthAndFoodHidden(MultiPlayerGameMode instance, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
+        boolean bl = original.call(instance);
+        if (!bl) {
+            renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, graphics, partialTick);
+            renderPhaseOverlays(VanillaHud.FOOD_LEVEL, graphics, partialTick);
+        }
+        capturedPartialTick = partialTick;
+        return bl;
+    }
+
+    @Unique
+    private float capturedPartialTick = 0f;
+
+    @Inject(
+        method = "renderPlayerHealth",
+        at = @At("HEAD")
+    )
+    private void beforePlayerHealth(GuiGraphics guiGraphics, CallbackInfo ci) {
+        renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, guiGraphics, capturedPartialTick);
+        if(getCameraPlayer() == null) renderPhaseOverlays(VanillaHud.FOOD_LEVEL, guiGraphics, capturedPartialTick);
+    }
+
+    @Inject(
+        method = "renderPlayerHealth",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/Gui;getVehicleMaxHearts(Lnet/minecraft/world/entity/LivingEntity;)I",
+            shift = At.Shift.AFTER
+        )
+    )
+    private void beforeFoodLevel(GuiGraphics guiGraphics, CallbackInfo ci) {
+        renderPhaseOverlays(VanillaHud.FOOD_LEVEL, guiGraphics, capturedPartialTick);
     }
 
     @Inject(
