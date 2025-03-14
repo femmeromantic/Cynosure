@@ -27,10 +27,17 @@ public object CynosureForgeClient {
         CynosureClient.init()
     }
 
-    @OptIn(CynosureInternal::class)
     @SubscribeEvent
     public fun registerParticles(event: RegisterParticleProvidersEvent) {
-        ForgeParticleRegistrationEvent(event).post()
+        object : RegisterParticleFactoriesEvent() {
+            override fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>) {
+                event.registerSpecial(type, provider)
+            }
+
+            override fun <T : ParticleOptions> register(type: ParticleType<T>, factoryProvider: (SpriteSet) -> ParticleProvider<T>) {
+                event.registerSpriteSet(type, factoryProvider)
+            }
+        }.post()
     }
 
     @OptIn(CynosureInternal::class)
@@ -44,15 +51,4 @@ public object CynosureForgeClient {
             }
         }
     }
-}
-
-private class ForgeParticleRegistrationEvent(val delegate: RegisterParticleProvidersEvent) : RegisterParticleFactoriesEvent() {
-    override fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>) {
-        delegate.registerSpecial(type, provider)
-    }
-
-    override fun <T : ParticleOptions> register(type: ParticleType<T>, factoryProvider: (SpriteSet) -> ParticleProvider<T>) {
-        delegate.registerSpriteSet(type, factoryProvider)
-    }
-
 }
