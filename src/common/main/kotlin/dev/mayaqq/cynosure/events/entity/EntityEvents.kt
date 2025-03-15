@@ -9,6 +9,8 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
@@ -40,7 +42,12 @@ public sealed class EntityTrackingEvent(
     public class Stop(entity: Entity, player: ServerPlayer) : EntityTrackingEvent(entity, player)
 }
 
-public sealed class LivingEntityEvent(public val entity: Entity) : CancellableEvent() {
-    public class Death(entity: Entity, public val source: DamageSource) : LivingEntityEvent(entity)
-    public class Mount(entity: Entity, public val mount: Entity?, public val isMounting: Boolean) : LivingEntityEvent(entity)
+public sealed class LivingEntityEvent(public val entity: LivingEntity) : CancellableEvent() {
+    public class Death(entity: LivingEntity, public val source: DamageSource) : LivingEntityEvent(entity)
+    public class AttributeEvent(public val attributeBuilder: AttributeSupplier.Builder) : Event
 }
+
+public class MountEvent(public val entity: Entity, public val mount: Entity?, public val isMounting: Boolean) : Event
+
+public class EntityDamageSourceEvent(public val entity: Entity, public val source: DamageSource) : ReturningEvent<DamageSource?>()
+public class EntityDamageEvent(public val entity: Entity, public val source: DamageSource, public val amount: Float) : ReturningEvent<Float?>()
