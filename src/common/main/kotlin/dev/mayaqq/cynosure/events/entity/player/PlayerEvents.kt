@@ -9,3 +9,10 @@ public sealed class PlayerTickEvents(public val player: Player) : Event {
 
     public class Begin(player: Player) : PlayerTickEvents(player)
 }
+
+public sealed class PlayerConnectionEvents(public val player: Player) : Event {
+
+    public class Join(player: Player) : PlayerConnectionEvents(player)
+
+    public class Leave(player: Player) : PlayerConnectionEvents(player)
+}
