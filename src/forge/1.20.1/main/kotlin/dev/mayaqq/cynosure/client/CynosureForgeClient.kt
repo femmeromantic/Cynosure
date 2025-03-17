@@ -6,8 +6,10 @@ import dev.mayaqq.cynosure.MODID
 import dev.mayaqq.cynosure.client.events.RegisterParticleFactoriesEvent
 import dev.mayaqq.cynosure.client.render.gui.OverlayRegistry
 import dev.mayaqq.cynosure.client.render.gui.VanillaHud
+import dev.mayaqq.cynosure.events.api.post
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.particle.ParticleProvider
+import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraftforge.api.distmarker.Dist
@@ -25,22 +27,17 @@ public object CynosureForgeClient {
         CynosureClient.init()
     }
 
-    @OptIn(CynosureInternal::class)
     @SubscribeEvent
     public fun registerParticles(event: RegisterParticleProvidersEvent) {
-        RegisterParticleFactoriesEvent(object : RegisterParticleFactoriesEvent.ParticleFactoryRegistrator {
-            override fun <T : ParticleOptions> registerPending(
-                type: ParticleType<T>,
-                factoryProvider: RegisterParticleFactoriesEvent.PendingProvider<T>
-            ) {
-                event.registerSpriteSet(type, factoryProvider::create)
-            }
-
+        object : RegisterParticleFactoriesEvent() {
             override fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>) {
                 event.registerSpecial(type, provider)
             }
 
-        })
+            override fun <T : ParticleOptions> register(type: ParticleType<T>, factoryProvider: (SpriteSet) -> ParticleProvider<T>) {
+                event.registerSpriteSet(type, factoryProvider)
+            }
+        }.post()
     }
 
     @OptIn(CynosureInternal::class)

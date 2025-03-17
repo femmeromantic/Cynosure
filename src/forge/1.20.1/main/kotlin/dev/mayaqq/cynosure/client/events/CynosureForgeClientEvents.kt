@@ -2,6 +2,8 @@
 package dev.mayaqq.cynosure.client.events
 
 import dev.mayaqq.cynosure.MODID
+import dev.mayaqq.cynosure.client.events.render.BeginHudRenderEvent
+import dev.mayaqq.cynosure.client.events.render.EndHudRenderEvent
 import dev.mayaqq.cynosure.client.events.render.LevelRenderEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.forge.mixin.client.LevelRendererAccessor
@@ -11,6 +13,7 @@ import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraftforge.api.distmarker.Dist
+import net.minecraftforge.client.event.RenderGuiEvent
 import net.minecraftforge.client.event.RenderHighlightEvent
 import net.minecraftforge.client.event.RenderLevelStageEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
@@ -69,3 +72,12 @@ public fun onDrawHiglight(event: RenderHighlightEvent.Block) {
     } else event.isCanceled = true
 }
 
+@SubscribeEvent
+public fun onBeginRenderHud(event: RenderGuiEvent.Pre) {
+    event.isCanceled = BeginHudRenderEvent(Minecraft.getInstance().gui, event.guiGraphics, event.partialTick).post()
+}
+
+@SubscribeEvent
+public fun onEndRenderHud(event: RenderGuiEvent.Post) {
+    EndHudRenderEvent(Minecraft.getInstance().gui, event.guiGraphics, event.partialTick).post()
+}
