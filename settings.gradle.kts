@@ -9,3 +9,9 @@ pluginManagement {
         maven(url = "https://maven.msrandom.net/repository/root")
     }
 }
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
+    }
+}

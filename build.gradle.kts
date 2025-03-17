@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("earth.terrarium.cloche") version "0.8.10"
-    kotlin("jvm") version "2.1.0"
-    kotlin("plugin.serialization") version "2.1.0"
+    alias(libs.plugins.cloche)
+    kotlin("jvm") version libs.versions.kotlin
+    kotlin("plugin.serialization") version libs.versions.kotlin
     `maven-publish`
 }
 
@@ -22,16 +22,6 @@ repositories {
     mavenCentral()
 }
 
-val mc_version: String by project
-val fabric_version: String by project
-val forge_version: String by project
-val mixin_version: String by project
-val fapi_version: String by project
-val flk_version: String by project
-val kff_version: String by project
-val parchment_version: String by project
-val byte_codecs_version: String by project
-
 cloche {
     metadata {
         modId = "cynosure"
@@ -45,37 +35,35 @@ cloche {
 
     mappings {
         official()
-        parchment(parchment_version)
+        parchment(libs.versions.parchment.get())
     }
 
     common {
         mixins.from(file("src/common/main/cynosure.mixins.json"))
 
         dependencies {
-            compileOnly("org.spongepowered:mixin:$mixin_version")
-            compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-            implementation("com.teamresourceful:bytecodecs:$byte_codecs_version")
+            compileOnly(libs.mixin)
+            compileOnly(libs.mixinextras)
+            implementation(libs.kotlinx.serialization)
+            implementation(libs.kotlinx.coroutines)
+            implementation(libs.bytecodecs)
         }
     }
 
-    fabric("fabric:$mc_version") {
-        loaderVersion = fabric_version
-        minecraftVersion = mc_version
+    fabric("fabric:${libs.versions.minecraft.get()}") {
+        loaderVersion = libs.versions.fabric.get()
+        minecraftVersion = libs.versions.minecraft.get()
 
         runs {
             includedClient()
-            client {
-                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
-            }
+            client()
             server()
         }
 
         dependencies {
 
-            fabricApi("$fapi_version+$mc_version")
-            modApi("net.fabricmc:fabric-language-kotlin:$flk_version")
+            fabricApi("${libs.versions.fapi.get()}+${libs.versions.minecraft.get()}")
+            modApi(libs.fabric.kotlin)
         }
 
         metadata {
@@ -100,24 +88,22 @@ cloche {
         mixins.from(file("src/fabric/1.20.1/main/cynosure.fabric.mixins.json"))
     }
 
-    forge("forge:$mc_version") {
-        loaderVersion = forge_version
-        minecraftVersion = mc_version
+    forge("forge:${libs.versions.minecraft.get()}") {
+        loaderVersion = libs.versions.forge.get()
+        minecraftVersion = libs.versions.minecraft.get()
 
         runs {
-            client {
-                arguments("--username", "Mayaqq", "--uuid", "a1732122-e22e-4edf-883c-09673eb55de8")
-            }
+            client()
             server()
         }
 
         dependencies {
-            api("thedarkcolour:kotlinforforge:$kff_version")
-            annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1")
-            implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+            api(libs.forge.kotlin)
+            annotationProcessor(libs.mixinextras)
+            implementation(libs.forge.mixinextras)
         }
 
-        include("io.github.llamalad7:mixinextras-forge:0.4.1")
+        include(libs.forge.mixinextras)
     }
 }
 
