@@ -4,11 +4,13 @@ import dev.mayaqq.cynosure.events.InteractionResultEvent
 import dev.mayaqq.cynosure.events.api.CancellableEvent
 import dev.mayaqq.cynosure.events.api.Event
 import dev.mayaqq.cynosure.events.api.ReturningEvent
+import dev.mayaqq.cynosure.events.api.RootEventClass
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.player.Player
@@ -42,12 +44,13 @@ public sealed class EntityTrackingEvent(
     public class Stop(entity: Entity, player: ServerPlayer) : EntityTrackingEvent(entity, player)
 }
 
+@RootEventClass
 public sealed class LivingEntityEvent(public val entity: LivingEntity) : CancellableEvent() {
     public class Death(entity: LivingEntity, public val source: DamageSource) : LivingEntityEvent(entity)
-    public class AttributeEvent(public val attributeBuilder: AttributeSupplier.Builder) : Event
 }
 
 public class MountEvent(public val entity: Entity, public val mount: Entity?, public val isMounting: Boolean) : Event
 
-public class EntityDamageSourceEvent(public val entity: Entity, public val source: DamageSource) : ReturningEvent<DamageSource?>()
-public class EntityDamageEvent(public val entity: Entity, public val source: DamageSource, public val amount: Float) : ReturningEvent<Float?>()
+public class EntityDamageSourceEvent(public val entity: Entity, public val source: DamageSource) : ReturningEvent<DamageSource>()
+
+public class EntityDamageEvent(public val entity: Entity, public val source: DamageSource, public val amount: Float) : ReturningEvent<Float>()

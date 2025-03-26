@@ -4,6 +4,8 @@ import dev.mayaqq.cynosure.events.api.AutoSubscriber
 import dev.mayaqq.cynosure.events.api.EventBus
 import dev.mayaqq.cynosure.events.api.MainBus
 import dev.mayaqq.cynosure.events.api.subscribeTo
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import org.objectweb.asm.ClassReader
@@ -17,23 +19,27 @@ private const val AUTOSUB_KEY = "cynosure:autosubscriptions"
 
 private val AUTOSUB_ANNOTATION = AutoSubscriber::class.qualifiedName!!
 
+
 private fun String.descriptorToClassName(): String = substringAfter('L')
     .substringBefore(';')
     .replace('/', '.')
 
-@OptIn(ExperimentalPathApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 public fun onPreLaunch() {
-    for(mod in FabricLoader.getInstance().allMods) {
-        if(!(mod.metadata.containsCustomValue(AUTOSUB_KEY)
-                    && mod.metadata.getCustomValue(AUTOSUB_KEY).asBoolean)) continue
 
-        val classPaths = mod.rootPaths.asSequence().flatMap { path ->
-            path.walk()
-                .filter { it.extension == "class" }
-                .map { path.relativize(it) }
+    val scope = CoroutineScope(Dispatchers.Default)
+    val job= FabricLoader.getInstance().allMods.asFlow()
+        .filter { mod ->
+            mod.metadata.containsCustomValue(AUTOSUB_KEY)
+                    && mod.metadata.getCustomValue(AUTOSUB_KEY).asBoolean
+        }.flatMapMerge {
+            it.rootPaths.asFlow().flatMapMerge { path ->
+                path.walk().asFlow()
+                    .filter { it.extension == "class" }
+                    .map { path.relativize(it) }
+            }
         }
-
-        for(classPath in classPaths) {
+        .onEach { classPath ->
             val className = classPath.joinToString(".").dropLast(6)
             val reader = ClassReader(FabricLauncherBase.getLauncher().getClassByteArray(className, false))
             val cn = ClassNode()
@@ -43,7 +49,7 @@ public fun onPreLaunch() {
 
             val annotation = cn.visibleAnnotations
                 ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
-                ?: continue
+                ?: return@onEach
 
             try {
                 val bus =
@@ -55,9 +61,10 @@ public fun onPreLaunch() {
                 clazz.kotlin.objectInstance?.subscribeTo(bus) ?: clazz.subscribeTo(bus)
 
             } catch (e: ReflectiveOperationException) {
-                continue
-            }
-        }
 
-    }
+            }
+        }.launchIn(scope)
+
+    runBlocking { job.join() }
 }
+

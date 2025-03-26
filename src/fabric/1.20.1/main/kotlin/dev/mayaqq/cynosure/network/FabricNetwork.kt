@@ -11,10 +11,10 @@ import net.minecraft.server.level.ServerPlayer
 
 public class FabricNetwork(modid: String, protocolVersion: Int, channel: String) : Network {
 
-    public val client: Network = if (FabricLoader.getInstance().environmentType.equals(EnvType.CLIENT)) {
+    public val client: Network = if (FabricLoader.getInstance().environmentType == EnvType.CLIENT) {
         FabricClientNetwork(ResourceLocation(modid, "$channel/v$protocolVersion"))
     } else {
-        DummyNetwork.INSTANCE
+        DummyNetwork
     }
 
     public val server: Network = FabricServerNetwork(ResourceLocation(modid, "$channel/v$protocolVersion"))

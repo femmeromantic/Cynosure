@@ -8,7 +8,10 @@ import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
 import dev.mayaqq.cynosure.events.entity.MountEvent
 import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvents
 import net.minecraft.world.entity.player.Player
+import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.OnDatapackSyncEvent
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent
 import net.minecraftforge.event.entity.EntityJoinLevelEvent
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent
 import net.minecraftforge.event.entity.EntityMountEvent

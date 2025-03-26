@@ -11,8 +11,8 @@ import net.minecraft.server.level.ServerPlayer
 
 public class FabricClientNetwork(public val channel: ResourceLocation) : Network {
     override fun <T : Packet<T>> register(type: ClientBoundPacketType<T>) {
-        ClientPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id())) { client, handler, buf, responseSender ->
-            var decode = type.decode(buf)
+        ClientPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id)) { client, handler, buf, responseSender ->
+            val decode = type.decode(buf)
             client.execute { type.handle(decode) }
         }
     }
@@ -22,10 +22,10 @@ public class FabricClientNetwork(public val channel: ResourceLocation) : Network
     }
 
     override fun <T : Packet<T>> sendToServer(packet: T) {
-        var type = packet.type()
-        var buf = FriendlyByteBuf(Unpooled.buffer())
+        val type = packet.type
+        val buf = FriendlyByteBuf(Unpooled.buffer())
         type.encode(packet, buf)
-        ClientPlayNetworking.send(createChannelLocation(channel, type.id()), buf)
+        ClientPlayNetworking.send(createChannelLocation(channel, type.id), buf)
     }
 
     override fun <T : Packet<T>> sendToClient(packet: T, player: ServerPlayer) {
