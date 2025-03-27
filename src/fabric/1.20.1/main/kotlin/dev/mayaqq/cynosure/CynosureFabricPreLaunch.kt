@@ -19,52 +19,50 @@ private const val AUTOSUB_KEY = "cynosure:autosubscriptions"
 
 private val AUTOSUB_ANNOTATION = AutoSubscriber::class.qualifiedName!!
 
-
 private fun String.descriptorToClassName(): String = substringAfter('L')
     .substringBefore(';')
     .replace('/', '.')
 
 @OptIn(ExperimentalCoroutinesApi::class)
 public fun onPreLaunch() {
-
-    val scope = CoroutineScope(Dispatchers.Default)
-    val job= FabricLoader.getInstance().allMods.asFlow()
-        .filter { mod ->
-            mod.metadata.containsCustomValue(AUTOSUB_KEY)
-                    && mod.metadata.getCustomValue(AUTOSUB_KEY).asBoolean
-        }.flatMapMerge {
-            it.rootPaths.asFlow().flatMapMerge { path ->
-                path.walk().asFlow()
-                    .filter { it.extension == "class" }
-                    .map { path.relativize(it) }
+    runBlocking(Dispatchers.Default) {
+        FabricLoader.getInstance().allMods.asFlow()
+            .filter { mod ->
+                mod.metadata.containsCustomValue(AUTOSUB_KEY)
+                        && mod.metadata.getCustomValue(AUTOSUB_KEY).asBoolean
+            }.flatMapMerge(64) {
+                it.rootPaths.asFlow().flatMapMerge(64) { path ->
+                    path.walk().asFlow()
+                        .filter { it.extension == "class" }
+                        .map { path.relativize(it) }
+                }
             }
-        }
-        .onEach { classPath ->
-            val className = classPath.joinToString(".").dropLast(6)
-            val reader = ClassReader(FabricLauncherBase.getLauncher().getClassByteArray(className, false))
-            val cn = ClassNode()
+            .onEach { classPath ->
+                val className = classPath.joinToString(".").dropLast(6)
+                val reader = ClassReader(FabricLauncherBase.getLauncher().getClassByteArray(className, false))
+                val cn = ClassNode()
 
-            // We are only interested in annotations on methods
-            reader.accept(cn, ClassReader.SKIP_CODE or ClassReader.SKIP_FRAMES)
+                // We are only interested in annotations on methods
+                reader.accept(cn, ClassReader.SKIP_CODE or ClassReader.SKIP_FRAMES)
 
-            val annotation = cn.visibleAnnotations
-                ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
-                ?: return@onEach
+                val annotation = cn.visibleAnnotations
+                    ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
+                    ?: return@onEach
 
-            try {
-                val bus =
-                    (annotation.values?.get(1) as? Type)?.let { Class.forName(it.className).kotlin.objectInstance as? EventBus }
-                        ?: MainBus
+                try {
+                    val bus =
+                        (annotation.values?.get(1) as? Type)?.let { Class.forName(it.className).kotlin.objectInstance as? EventBus }
+                            ?: MainBus
 
-                val clazz = Class.forName(className)
-                // If the class is an object, subscribe the object instance instead of the class
-                clazz.kotlin.objectInstance?.subscribeTo(bus) ?: clazz.subscribeTo(bus)
+                    val clazz = Class.forName(className)
+                    // If the class is an object, subscribe the object instance instead of the class
+                    clazz.kotlin.objectInstance?.subscribeTo(bus) ?: clazz.subscribeTo(bus)
 
-            } catch (e: ReflectiveOperationException) {
+                } catch (e: ReflectiveOperationException) {
 
-            }
-        }.launchIn(scope)
+                }
+            }.launchIn(this)
+    }
 
-    runBlocking { job.join() }
 }
 

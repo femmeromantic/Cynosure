@@ -17,7 +17,7 @@ public class FabricServerNetwork(private val channel: ResourceLocation) : Networ
     override fun <T : Packet<T>> register(type: ServerBoundPacketType<T>) {
         ServerPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id)) { server, player, handler, buf, responseSender ->
             val decode = type.decode(buf)
-            server.execute { type.handle(player, decode) }
+            server.execute { type.run {  decode.handle(server, player) } }
         }
     }
 

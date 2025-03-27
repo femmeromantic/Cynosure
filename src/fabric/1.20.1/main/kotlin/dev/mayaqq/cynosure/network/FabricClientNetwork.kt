@@ -4,16 +4,20 @@ import dev.mayaqq.cynosure.network.base.ClientBoundPacketType
 import dev.mayaqq.cynosure.network.base.Network
 import dev.mayaqq.cynosure.network.base.ServerBoundPacketType
 import io.netty.buffer.Unpooled
+import kotlinx.coroutines.*
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.minecraft.Util
+import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.vehicle.Minecart
 
 public class FabricClientNetwork(public val channel: ResourceLocation) : Network {
     override fun <T : Packet<T>> register(type: ClientBoundPacketType<T>) {
         ClientPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id)) { client, handler, buf, responseSender ->
             val decode = type.decode(buf)
-            client.execute { type.handle(decode) }
+            type.run { decode.handle() }
         }
     }
 

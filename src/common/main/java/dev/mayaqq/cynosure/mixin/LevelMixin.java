@@ -18,8 +18,6 @@ import java.util.Set;
 @Mixin(Level.class)
 public abstract class LevelMixin implements ILevel {
 
-    @Shadow public abstract BlockState getBlockState(BlockPos pos);
-
     @Unique
     private Long2ReferenceMap<Set<BlockUpdateListener>> cynosure$updateListeners;
 
@@ -39,6 +37,7 @@ public abstract class LevelMixin implements ILevel {
 
     @Override
     public void cynosure_handleBlockUpdate(BlockPos pos, BlockState state) {
+        if(cynosure$updateListeners == null) return;
         long longPos = pos.asLong();
         Set<BlockUpdateListener> listeners = cynosure$updateListeners.get(longPos);
         if(listeners != null) {

@@ -4,8 +4,10 @@ import dev.mayaqq.cynosure.injection.ILevel
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.msrandom.stub.Stub
 
+/**
+ * Interface providing the ability to listen to block updates of specific positions.
+ */
 public interface BlockUpdateListener {
 
     /**

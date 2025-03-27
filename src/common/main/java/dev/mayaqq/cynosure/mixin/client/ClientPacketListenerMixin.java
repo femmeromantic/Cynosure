@@ -1,7 +1,6 @@
 package dev.mayaqq.cynosure.mixin.client;
 
 import dev.mayaqq.cynosure.injection.ILevel;
-import net.artienia.rubinated_nether.utils.UpdateListenerHolder;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;

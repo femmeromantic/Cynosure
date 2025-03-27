@@ -1,6 +1,7 @@
 package dev.mayaqq.cynosure.effects
 
 import com.google.common.collect.Sets
+import dev.mayaqq.cynosure.utils.mapBacked
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet
@@ -22,8 +23,4 @@ public object Effextras {
     public fun removeUpdateless(effect: MobEffect): Boolean = updateless.remove(effect)
 }
 
-public var MobEffect.updateless: Boolean
-    get() = Effextras.isUpdateless(this)
-    set(value) {
-        if(value) Effextras.setUpdateless(this) else Effextras.removeUpdateless(this)
-    }
+public var MobEffect.updateless: Boolean by mapBacked(false)
