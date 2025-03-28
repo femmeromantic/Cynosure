@@ -23,7 +23,7 @@ private fun String.descriptorToClassName(): String = substringAfter('L')
     .substringBefore(';')
     .replace('/', '.')
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalPathApi::class)
 public fun onPreLaunch() {
     runBlocking(Dispatchers.Default) {
         FabricLoader.getInstance().allMods.asFlow()
