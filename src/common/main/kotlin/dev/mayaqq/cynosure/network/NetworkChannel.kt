@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerChunkCache
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.Level
+import net.msrandom.stub.Stub
 import java.util.function.BooleanSupplier
 
 public class NetworkChannel(
@@ -99,4 +100,5 @@ public class NetworkChannel(
     }
 }
 
+@Stub
 public expect fun getNetwork(channel: ResourceLocation, protocolVersion: Int, optional: () -> Boolean): Network

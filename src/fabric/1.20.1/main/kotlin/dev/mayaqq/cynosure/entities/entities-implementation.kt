@@ -19,7 +19,7 @@ public actual object EntityAttributes {
      * @param supplier the entity attribute supplier
      * @throws IllegalStateException if the entity type already has attributes registered
      */
-    public fun register(
+    public actual fun register(
         entity: EntityType<out LivingEntity>,
         supplier: AttributeSupplier,
     ) {
@@ -32,10 +32,10 @@ public actual object EntityAttributes {
      * @param attribute The attribute to add
      * @param value The value of the attribute, defaults to [Attribute.defaultValue]
      */
-    public fun addToEntity(
+    public actual fun addToEntity(
         entity: EntityType<out LivingEntity>,
         attribute: Attribute,
-        value: Double = attribute.defaultValue
+        value: Double
     ) {
         val builder = entity.getAttributeBuilder()
         builder.add(attribute, value)
@@ -46,7 +46,7 @@ public actual object EntityAttributes {
      * Add all the given attributes to this entity
      * @param builder the builder u can modify
      */
-    public inline fun modify(
+    public actual inline fun modify(
         entity: EntityType<out LivingEntity>,
         builder: AttributeSupplier.Builder.() -> Unit
     ) {

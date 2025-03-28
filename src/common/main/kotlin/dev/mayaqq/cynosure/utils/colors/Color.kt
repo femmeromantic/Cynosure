@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.mayaqq.cynosure.utils.codecs.alternatives
 import dev.mayaqq.cynosure.utils.codecs.toDataResult
 
-
 @JvmInline
 public value class Color internal constructor(internal val value: Int) {
 
@@ -32,13 +31,8 @@ public value class Color internal constructor(internal val value: Int) {
         }
     }
 
-    public constructor(argb: UInt) : this(argb.toInt())
-
     public constructor(red: Int, green: Int, blue: Int, alpha: Int = 255)
             : this((alpha shl 24) or (red shl 16) or (green shl 8) or blue)
-
-    public constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f)
-            : this((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha * 255).toInt())
 
     public val red: Int get() = (value shr 16) and 0xFF
 
@@ -71,6 +65,11 @@ public value class Color internal constructor(internal val value: Int) {
         return "Color[$red, $green, $blue, $alpha]"
     }
 }
+
+public fun Color(red: Float, green: Float, blue: Float, alpha: Float = 1.0f): Color =
+    Color((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha * 255).toInt())
+
+public fun Color(argb: UInt): Color = Color(argb.toInt())
 
 // Some extensions just to keep the class itself cleaner
 public val Color.floatRed: Float get() = red / 255f
