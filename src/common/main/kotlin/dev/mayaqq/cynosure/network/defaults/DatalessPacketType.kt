@@ -6,9 +6,6 @@ import dev.mayaqq.cynosure.network.base.PacketType
 import dev.mayaqq.cynosure.network.base.ServerBoundPacketType
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.repository.Pack
-import net.minecraft.world.entity.player.Player
-import java.util.function.Supplier
 
 public interface DatalessPacketType<T : Packet<T>> : PacketType<T> {
     public val instance: T
@@ -19,24 +16,29 @@ public interface DatalessPacketType<T : Packet<T>> : PacketType<T> {
 
     override fun decode(buffer: FriendlyByteBuf): T = instance
 
-    public abstract class Client<T : Packet<T>> @PublishedApi internal constructor(override val type: Class<T>, override val id: ResourceLocation, override val instance: T) : ClientBoundPacketType<T>, DatalessPacketType<T>
+    public abstract class Client<T : Packet<T>>(override val klass: Class<T>, override val id: ResourceLocation, override val instance: T) : ClientBoundPacketType<T>, DatalessPacketType<T>
 
-    public abstract class Server<T : Packet<T>> @PublishedApi internal constructor(override val type: Class<T>, override val id: ResourceLocation, override val instance: T) : ServerBoundPacketType<T>, DatalessPacketType<T>
+    public abstract class Server<T : Packet<T>>(override val klass: Class<T>, override val id: ResourceLocation, override val instance: T) : ServerBoundPacketType<T>, DatalessPacketType<T>
 
-    public companion object {
+}
 
-        public inline fun <reified T : Packet<T>> createClientBound(id: ResourceLocation, instance: T, crossinline handler: () -> Unit): Client<T> =
-            object : Client<T>(T::class.java, id, instance) {
-                override fun handle(packet: T) {
-                    handler()
-                }
-            }
+public sealed interface DatalessPacket<T : Packet<T>> : Packet<T>, DatalessPacketType<T> {
 
-        public inline fun <reified T : Packet<T>> createServerBound(id: ResourceLocation, instance: T, crossinline handler: (Player) -> Unit): Server<T> =
-            object : Server<T>(T::class.java, id, instance) {
-                override fun handle(player: Player, packet: T) {
-                    handler(player)
-                }
-            }
+    override val type: PacketType<T>
+        get() = this
+
+    public abstract class Client<Self : Packet<Self>>(
+        override val id: ResourceLocation
+    ) : ClientBoundPacketType<Self>, DatalessPacket<Self> {
+        override val klass: Class<Self> = javaClass as Class<Self>
+        override val instance: Self = this as Self
     }
+
+    public abstract class Server<Self : Packet<Self>>(
+        override val id: ResourceLocation
+    ) : ServerBoundPacketType<Self>, DatalessPacket<Self> {
+        override val klass: Class<Self> = javaClass as Class<Self>
+        override val instance: Self = this as Self
+    }
+
 }

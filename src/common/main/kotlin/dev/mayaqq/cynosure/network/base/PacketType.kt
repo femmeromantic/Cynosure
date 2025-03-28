@@ -5,7 +5,7 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
 public interface PacketType<T : Packet<T>> {
-    public val type: Class<T>
+    public val klass: Class<T>
 
     public val id: ResourceLocation
 

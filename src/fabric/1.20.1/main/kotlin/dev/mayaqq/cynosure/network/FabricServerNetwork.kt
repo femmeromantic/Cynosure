@@ -15,9 +15,9 @@ public class FabricServerNetwork(private val channel: ResourceLocation) : Networ
     }
 
     override fun <T : Packet<T>> register(type: ServerBoundPacketType<T>) {
-        ServerPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id())) { server, player, handler, buf, responseSender ->
+        ServerPlayNetworking.registerGlobalReceiver(createChannelLocation(channel, type.id)) { server, player, handler, buf, responseSender ->
             val decode = type.decode(buf)
-            server.execute { type.handle(decode) }
+            server.execute { type.run {  decode.handle(server, player) } }
         }
     }
 
@@ -26,10 +26,10 @@ public class FabricServerNetwork(private val channel: ResourceLocation) : Networ
     }
 
     override fun <T : Packet<T>> sendToClient(packet: T, player: ServerPlayer) {
-        var type = packet.type()
-        var buf = FriendlyByteBuf(Unpooled.buffer())
+        val type = packet.type
+        val buf = FriendlyByteBuf(Unpooled.buffer())
         type.encode(packet, buf)
-        ServerPlayNetworking.send(player, createChannelLocation(channel, type.id()), buf)
+        ServerPlayNetworking.send(player, createChannelLocation(channel, type.id), buf)
     }
 
     override fun canSendToPlayer(player: ServerPlayer): Boolean {

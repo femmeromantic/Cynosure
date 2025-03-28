@@ -25,29 +25,29 @@ public class ForgeNetwork(
     private var packets = 0
 
     override fun <T : Packet<T>> register(type: ClientBoundPacketType<T>) {
-        channel.registerMessage(
-            ++packets,
-            type.type(),
-            type::encode,
-            type::decode,
-        ) { packet, ctx ->
-            val context = ctx.get()
-            context.enqueueWork { type.handle(packet) }
-            context.packetHandled = true
-        }
+//        channel.registerMessage(
+//            ++packets,
+//            type.type(),
+//            type::encode,
+//            type::decode,
+//        ) { packet, ctx ->
+//            val context = ctx.get()
+//            context.enqueueWork { type.handle(packet) }
+//            context.packetHandled = true
+//        }
     }
 
     override fun <T : Packet<T>> register(type: ServerBoundPacketType<T>) {
-        channel.registerMessage(
-            ++packets,
-            type.type(),
-            type::encode,
-            type::decode,
-        ) { packet, ctx ->
-            val context = ctx.get()
-            context.enqueueWork { type.handle(packet) }
-            context.packetHandled = true
-        }
+//        channel.registerMessage(
+//            ++packets,
+//            type.type(),
+//            type::encode,
+//            type::decode,
+//        ) { packet, ctx ->
+//            val context = ctx.get()
+//            type.run { context.enqueueWork { packet.handle() } }
+//            context.packetHandled = true
+//        }
     }
 
     override fun <T : Packet<T>> sendToServer(packet: T) {

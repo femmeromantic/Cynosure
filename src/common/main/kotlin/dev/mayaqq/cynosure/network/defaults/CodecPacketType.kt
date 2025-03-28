@@ -22,27 +22,12 @@ public interface CodecPacketType<T : Packet<T>> : PacketType<T> {
 
     override fun decode(buffer: FriendlyByteBuf): T = codec.decode(buffer)
 
-    public abstract class Client<T : Packet<T>> @PublishedApi internal constructor(override val type: Class<T>, override val id: ResourceLocation, override val codec: ByteCodec<T>) : ClientBoundPacketType<T>, CodecPacketType<T>
-
-    public abstract class Server<T : Packet<T>> @PublishedApi internal constructor(override val type: Class<T>, override val id: ResourceLocation, override val codec: ByteCodec<T>) : ServerBoundPacketType<T>, CodecPacketType<T>
-
-
-    public companion object {
-
-        public inline fun <reified T : Packet<T>> clientBound(
-            id: ResourceLocation,
-            codec: ByteCodec<T>,
-            crossinline handler: T.() -> Unit
-        ) = object : Client<T>(T::class.java, id, codec) {
-            override fun handle(packet: T) = packet.handler()
-        }
-
-        public inline fun <reified T : Packet<T>> serverBound(
-            id: ResourceLocation,
-            codec: ByteCodec<T>,
-            crossinline handler: T.(player: Player) -> Unit
-        ) = object : Server<T>(T::class.java, id, codec) {
-            override fun handle(player: Player, packet: T) = packet.handler(player)
-        }
+    public abstract class Client<T : Packet<T>>(override val klass: Class<T>, override val id: ResourceLocation, override val codec: ByteCodec<T>) : ClientBoundPacketType<T>, CodecPacketType<T> {
+        public constructor(klass: KClass<T>, id: ResourceLocation, codec: ByteCodec<T>) : this(klass.java, id, codec)
     }
+
+    public abstract class Server<T : Packet<T>>(override val klass: Class<T>, override val id: ResourceLocation, override val codec: ByteCodec<T>) : ServerBoundPacketType<T>, CodecPacketType<T> {
+        public constructor(klass: KClass<T>, id: ResourceLocation, codec: ByteCodec<T>) : this(klass.java, id, codec)
+    }
+
 }
