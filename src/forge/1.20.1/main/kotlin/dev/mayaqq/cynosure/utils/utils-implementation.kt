@@ -2,6 +2,8 @@
 package dev.mayaqq.cynosure.utils
 
 import dev.mayaqq.cynosure.utils.mod.Mod
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder
 import net.minecraftforge.fml.ModList
 
 public actual fun isModLoaded(modid: String): Boolean {
@@ -24,3 +26,5 @@ public actual fun getMod(modid: String): Mod? {
 public actual fun getLoader(modid: String): Loader {
     return Loader.FORGE
 }
+
+public actual fun AttributeSupplier.toBuilder(): Builder = Builder(this)

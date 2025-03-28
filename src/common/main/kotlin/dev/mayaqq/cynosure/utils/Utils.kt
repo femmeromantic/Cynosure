@@ -24,6 +24,12 @@ public fun <I : Any, V> mapBacked(default: V): ReadWriteProperty<I, V> = MapBack
 
 public fun <I : Any, V> mapBacked(initializer: (I) -> V): ReadWriteProperty<I, V> = MapBackedProperty.Intialized(initializer)
 
+public infix fun <T, C : MutableCollection<in T>> Iterable<T>.into(destination: C): C {
+    destination.addAll(this)
+    return destination
+}
+
+
 internal sealed class MapBackedProperty<I : Any, V> : ReadWriteProperty<I, V> {
 
     abstract fun getInitial(thisRef: I): V
