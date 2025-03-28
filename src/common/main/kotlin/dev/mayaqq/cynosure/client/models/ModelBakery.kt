@@ -5,7 +5,7 @@ import dev.mayaqq.cynosure.client.models.baked.PACK
 import dev.mayaqq.cynosure.client.models.baked.STRIDE
 import dev.mayaqq.cynosure.client.utils.grow
 import dev.mayaqq.cynosure.client.utils.shrink
-import dev.mayaqq.cynosure.utils.colors.into
+import dev.mayaqq.cynosure.utils.into
 import dev.mayaqq.cynosure.utils.normalized
 import dev.mayaqq.cynosure.utils.radians
 import it.unimi.dsi.fastutil.ints.IntArraySet

@@ -1,14 +1,13 @@
 @file:Suppress("ACTUAL_WITHOUT_EXPECT")
 package dev.mayaqq.cynosure.entities
 
-import dev.mayaqq.cynosure.injection.toBuilder
+import dev.mayaqq.cynosure.utils.toBuilder
 import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttributeRegistry
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes
-import net.msrandom.stub.Stub
 
 /**
  * Utilities for registering and modifying entity attributes
