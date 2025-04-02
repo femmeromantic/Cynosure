@@ -1,5 +1,7 @@
 package dev.mayaqq.cynosure.events
 
+import dev.mayaqq.cynosure.data.DataListeners
+import dev.mayaqq.cynosure.data.toFabric
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.data.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
@@ -7,7 +9,8 @@ import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.minecraft.server.packs.PackType
 
 internal object FapiFeed {
     fun feed() {
@@ -15,6 +18,7 @@ internal object FapiFeed {
         ServerPlayConnectionEvents.DISCONNECT.register { handler, server -> PlayerConnectionEvents.Leave(handler.player).post() }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, source -> LivingEntityEvent.Death(entity, source).post() }
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register { player, isJoin -> DataPackSyncEvent(player, isJoin).post() }
-    }
 
+        DataListeners.register { ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(it.toFabric()) }
+    }
 }

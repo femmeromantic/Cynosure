@@ -2,6 +2,7 @@
 package dev.mayaqq.cynosure.events
 
 import dev.mayaqq.cynosure.MODID
+import dev.mayaqq.cynosure.data.DataListeners
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.data.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
@@ -9,6 +10,7 @@ import dev.mayaqq.cynosure.events.entity.MountEvent
 import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvents
 import net.minecraft.world.entity.player.Player
 import net.minecraftforge.common.ForgeHooks
+import net.minecraftforge.event.AddReloadListenerEvent
 import net.minecraftforge.event.OnDatapackSyncEvent
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent
@@ -49,4 +51,10 @@ public fun onSyncDatapack(event: OnDatapackSyncEvent) {
 @SubscribeEvent
 public fun onEntityMount(event: EntityMountEvent) {
     MountEvent(event.entityMounting, event.entityBeingMounted, event.isMounting).post()
+}
+
+@SubscribeEvent
+public fun onReloadListener(event: AddReloadListenerEvent) {
+    DataListeners.register { event.addListener(it) }
+    DataListeners.lock()
 }
