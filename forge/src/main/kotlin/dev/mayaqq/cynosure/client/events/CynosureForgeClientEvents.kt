@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.RenderGuiEvent
 import net.minecraftforge.client.event.RenderHighlightEvent
 import net.minecraftforge.client.event.RenderLevelStageEvent
+import net.minecraftforge.event.TickEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber
 
@@ -68,7 +69,7 @@ public fun onDrawHiglight(event: RenderHighlightEvent.Block) {
         val ev2 = LevelRenderEvent.BlockOutline(event.levelRenderer.level, event.levelRenderer, event.poseStack, event.partialTick,
             event.camera, capturedFrustum, event.multiBufferSource, entity!!, pos, state)
         ev2.post()
-        event.isCanceled = ev2.renderVanillaOutline
+        event.isCanceled = !ev2.renderVanillaOutline
     } else event.isCanceled = true
 }
 
@@ -80,4 +81,12 @@ public fun onBeginRenderHud(event: RenderGuiEvent.Pre) {
 @SubscribeEvent
 public fun onEndRenderHud(event: RenderGuiEvent.Post) {
     EndHudRenderEvent(Minecraft.getInstance().gui, event.guiGraphics, event.partialTick).post()
+}
+
+@SubscribeEvent
+public fun onClientTick(event: TickEvent.ClientTickEvent) {
+    when (event.phase!!) {
+        TickEvent.Phase.START -> ClientTickEvent.Start.post()
+        TickEvent.Phase.END -> ClientTickEvent.End.post()
+    }
 }

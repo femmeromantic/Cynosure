@@ -28,7 +28,7 @@ public class NetworkChannel(
     private val packetCodecs: MutableMap<KClass<*>, ByteCodec<*>> = mutableMapOf()
     private val packets: Table<KClass<*>, NetworkDirection, ResourceLocation> = HashBasedTable.create()
 
-    public fun <T : Any> clientbound(klass: KClass<T>, codec: ByteCodec<T>, handler: ClientNetworkingContext.(T) -> Unit) {
+    public fun <T : Any> clientbound(klass: KClass<T>, codec: ByteCodec<T>, handler: ClientNetworkContext.(T) -> Unit) {
         val id = klass.packetId ?: return
         packetCodecs[klass] = codec
         packets[klass, NetworkDirection.CLIENTBOUND] = id
@@ -36,23 +36,23 @@ public class NetworkChannel(
     }
 
 
-    public inline fun <reified T : Any> clientbound(codec: ByteCodec<T>? = null, noinline handler: ClientNetworkingContext.(T) -> Unit) {
+    public inline fun <reified T : Any> clientbound(codec: ByteCodec<T>? = null, noinline handler: ClientNetworkContext.(T) -> Unit) {
         clientbound(T::class, codec ?: KByteCodec(serializer<T>()), handler)
     }
 
-    public fun <T : Any> serverbound(klass: KClass<T>, codec: ByteCodec<T>, handler: ServerNetworkingContext.(T) -> Unit) {
+    public fun <T : Any> serverbound(klass: KClass<T>, codec: ByteCodec<T>, handler: ServerNetworkContext.(T) -> Unit) {
         val id = klass.packetId ?: return
         packetCodecs[klass] = codec
         packets[klass, NetworkDirection.SERVERBOUND] = id
         network.registerServerboundReceiver(klass, id, codec, handler)
     }
 
-    public inline fun <reified T : Any> serverbound(codec: ByteCodec<T>? = null, noinline handler: ServerNetworkingContext.(T) -> Unit) {
+    public inline fun <reified T : Any> serverbound(codec: ByteCodec<T>? = null, noinline handler: ServerNetworkContext.(T) -> Unit) {
         serverbound(T::class, codec ?: KByteCodec(serializer<T>()), handler)
     }
 
     public fun <T : Packet.Clientbound> clientbound(klass: KClass<T>, codec: ByteCodec<T>) {
-        clientbound(klass, codec, ClientNetworkingContext::handlePacket)
+        clientbound(klass, codec, ClientNetworkContext::handlePacket)
     }
 
     public inline fun <reified T : Packet.Clientbound> clientbound(codec: ByteCodec<T>? = null) {
@@ -60,7 +60,7 @@ public class NetworkChannel(
     }
 
     public fun <T : Packet.Serverbound> serverbound(klass: KClass<T>, codec: ByteCodec<T>) {
-        serverbound(klass, codec, ServerNetworkingContext::handlePacket)
+        serverbound(klass, codec, ServerNetworkContext::handlePacket)
     }
 
     public inline fun <reified T : Packet.Serverbound> serverbound(codec: ByteCodec<T>? = null) {
@@ -84,6 +84,6 @@ public class NetworkChannel(
     public fun canSendToPlayer(player: ServerPlayer): Boolean = network.canSendToPlayer(player)
 
     private val KClass<*>.packetId: ResourceLocation?
-        get() = (findAnnotation<CustomPacket>()?.id ?: findAnnotation<Packet>()?.id)
+        get() = (findAnnotation<SerializablePacket>()?.id ?: findAnnotation<Packet>()?.id)
             ?.let { ResourceLocation(channelId.namespace, "${channelId.path}/$it") }
 }

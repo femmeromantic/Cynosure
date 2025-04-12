@@ -1,9 +1,11 @@
 package dev.mayaqq.cynosure.client.models.animations
 
+import kotlinx.serialization.Serializable
 import net.minecraft.util.StringRepresentable
 import org.joml.Vector3f
 import org.joml.Vector3fc
 
+@Serializable
 public data class Animation(val duration: Float, val target: Target) {
 
     public enum class Target(private val serialName: String) : StringRepresentable {

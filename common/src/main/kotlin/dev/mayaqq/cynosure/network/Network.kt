@@ -3,7 +3,6 @@ package dev.mayaqq.cynosure.network
 import com.teamresourceful.bytecodecs.base.ByteCodec
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.internal.loadPlatform
-import dev.mayaqq.cynosure.utils.loadService
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
@@ -19,14 +18,14 @@ public interface Network {
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ClientNetworkingContext.(T) -> Unit
+        handler: ClientNetworkContext.(T) -> Unit
     )
 
     public fun <T : Any> registerServerboundReceiver(
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ServerNetworkingContext.(T) -> Unit
+        handler: ServerNetworkContext.(T) -> Unit
     )
 
     public fun canSendToPlayer(player: ServerPlayer): Boolean
@@ -40,7 +39,7 @@ public interface NetworkProvider {
     public fun createNetwork(networkId: ResourceLocation, protocolVersion: Int): Network
 }
 
-public sealed class NetworkingContext(public val direction: NetworkDirection) {
+public sealed class NetworkContext(public val direction: NetworkDirection) {
 
     public abstract fun execute(action: () -> Unit)
 
@@ -51,11 +50,11 @@ public enum class NetworkDirection {
     SERVERBOUND
 }
 
-public abstract class ServerNetworkingContext(
+public abstract class ServerNetworkContext(
     public val server: MinecraftServer,
     public val sender: ServerPlayer
-) : NetworkingContext(NetworkDirection.SERVERBOUND)
+) : NetworkContext(NetworkDirection.SERVERBOUND)
 
 
-public abstract class ClientNetworkingContext : NetworkingContext(NetworkDirection.CLIENTBOUND)
+public abstract class ClientNetworkContext : NetworkContext(NetworkDirection.CLIENTBOUND)
 

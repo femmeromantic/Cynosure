@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
-internal typealias Clientpackethandler<T> = ClientNetworkingContext.(T) -> Unit
+internal typealias Clientpackethandler<T> = ClientNetworkContext.(T) -> Unit
 
 internal object FabricClientNetwork {
 
@@ -24,7 +24,7 @@ internal object FabricClientNetwork {
         }
     }
 
-    private object Context : ClientNetworkingContext() {
+    private object Context : ClientNetworkContext() {
         override fun execute(action: () -> Unit) {
             Minecraft.getInstance().execute(action)
         }

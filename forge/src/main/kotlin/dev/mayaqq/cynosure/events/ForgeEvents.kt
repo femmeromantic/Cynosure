@@ -7,27 +7,34 @@ import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.data.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
 import dev.mayaqq.cynosure.events.entity.MountEvent
-import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvents
+import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvent
 import dev.mayaqq.cynosure.internal.CynosureHooksImpl
-import net.minecraft.world.entity.player.Player
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.Level
 import net.minecraftforge.event.AddReloadListenerEvent
 import net.minecraftforge.event.OnDatapackSyncEvent
+import net.minecraftforge.event.TickEvent.LevelTickEvent
+import net.minecraftforge.event.TickEvent.Phase
 import net.minecraftforge.event.entity.EntityJoinLevelEvent
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent
 import net.minecraftforge.event.entity.EntityMountEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
+import net.minecraftforge.event.level.LevelEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.loading.FMLEnvironment
 
+private val distContext = if(FMLEnvironment.dist.isClient) "client" else "server"
 
 @SubscribeEvent
 public fun onPlayerJoin(event: EntityJoinLevelEvent) {
-    if (event.entity is Player) PlayerConnectionEvents.Join(event.entity as Player).post()
+    if (event.entity is ServerPlayer) PlayerConnectionEvent.Join(event.entity as ServerPlayer).post()
 }
 
 @SubscribeEvent
 public fun onPlayerLeave(event: EntityLeaveLevelEvent) {
-    if (event.entity is Player) PlayerConnectionEvents.Leave(event.entity as Player).post()
+    if (event.entity is ServerPlayer) PlayerConnectionEvent.Leave(event.entity as ServerPlayer).post()
 }
 
 @SubscribeEvent
@@ -49,6 +56,32 @@ public fun onSyncDatapack(event: OnDatapackSyncEvent) {
 @SubscribeEvent
 public fun onEntityMount(event: EntityMountEvent) {
     MountEvent(event.entityMounting, event.entityBeingMounted, event.isMounting).post()
+}
+
+@SubscribeEvent
+public fun onLoadWorld(event: LevelEvent.Load) {
+    dev.mayaqq.cynosure.events.world.LevelEvent.Load(event.level as Level)
+        .post(context = distContext)
+}
+
+@SubscribeEvent
+public fun onUnloadWorld(event: LevelEvent.Unload) {
+    dev.mayaqq.cynosure.events.world.LevelEvent.Unload(event.level as Level)
+        .post(context = distContext)
+}
+
+@SubscribeEvent
+public fun onSaveWorld(event: LevelEvent.Save) {
+    dev.mayaqq.cynosure.events.world.LevelEvent.Save(event.level as ServerLevel).post()
+}
+
+@SubscribeEvent
+public fun onTickWorld(event: LevelTickEvent) {
+    val e = when(event.phase!!) {
+        Phase.START -> dev.mayaqq.cynosure.events.world.LevelEvent.StartTick(event.level)
+        Phase.END -> dev.mayaqq.cynosure.events.world.LevelEvent.EndTick(event.level)
+    }
+    e.post(context = distContext)
 }
 
 @OptIn(CynosureInternal::class)

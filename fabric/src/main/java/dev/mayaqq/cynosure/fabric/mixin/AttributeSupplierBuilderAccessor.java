@@ -12,5 +12,5 @@ import java.util.Map;
 public interface AttributeSupplierBuilderAccessor {
 
     @Accessor
-    public Map<Attribute, AttributeInstance> getBuilder();
+    Map<Attribute, AttributeInstance> getBuilder();
 }

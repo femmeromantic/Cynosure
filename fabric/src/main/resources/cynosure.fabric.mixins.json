@@ -6,11 +6,14 @@
   "mixins": [
     "AttributeSupplierBuilderAccessor",
     "AttributeSupplierMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "ServerLevelMixin"
   ],
   "client": [
+    "client.ClientLevelMixin",
     "client.GuiMixin",
-    "client.LevelRendererMixin"
+    "client.LevelRendererMixin",
+    "client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

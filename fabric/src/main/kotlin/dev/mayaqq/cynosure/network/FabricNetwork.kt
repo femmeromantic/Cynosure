@@ -36,7 +36,7 @@ internal class FabricNetwork(
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ClientNetworkingContext.(T) -> Unit
+        handler: ClientNetworkContext.(T) -> Unit
     ) {
         client?.register(id.withProtocolVersion(), codec, handler)
     }
@@ -45,7 +45,7 @@ internal class FabricNetwork(
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ServerNetworkingContext.(T) -> Unit
+        handler: ServerNetworkContext.(T) -> Unit
     ) {
         FabricServerNetwork.register(id.withProtocolVersion(), codec, handler)
     }

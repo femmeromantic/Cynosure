@@ -29,7 +29,7 @@ internal class ForgeNetwork(
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ClientNetworkingContext.(T) -> Unit
+        handler: ClientNetworkContext.(T) -> Unit
     ) {
         @Suppress("INACCESSIBLE_TYPE")
         channel.registerMessage(
@@ -48,7 +48,7 @@ internal class ForgeNetwork(
         type: KClass<T>,
         id: ResourceLocation,
         codec: ByteCodec<T>,
-        handler: ServerNetworkingContext.(T) -> Unit
+        handler: ServerNetworkContext.(T) -> Unit
     ) {
         @Suppress("INACCESSIBLE_TYPE")
         channel.registerMessage(
@@ -81,13 +81,13 @@ internal class ForgeNetwork(
     }
 
 
-    private class ClientContext(val ctx: Context) : ClientNetworkingContext() {
+    private class ClientContext(val ctx: Context) : ClientNetworkContext() {
         override fun execute(action: () -> Unit) {
             ctx.enqueueWork(action)
         }
     }
 
-    private class ServerContext(val ctx: Context) : ServerNetworkingContext(
+    private class ServerContext(val ctx: Context) : ServerNetworkContext(
         ctx.sender!!.server, ctx.sender!!
     ) {
         override fun execute(action: () -> Unit) {

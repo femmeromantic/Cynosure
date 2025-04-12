@@ -27,13 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("KotlinInternalInJava")
-@Mixin(value = Gui.class, priority = 1500)
+@Mixin(Gui.class)
 public abstract class GuiMixin {
 
     @Shadow protected abstract Player getCameraPlayer();
-
-    @Shadow protected abstract void renderPlayerHealth(GuiGraphics guiGraphics);
 
     @Unique
     private Map<VanillaHud, List<HudOverlay>> hudOverlays = null;
@@ -93,15 +90,36 @@ public abstract class GuiMixin {
     }
 
     @Inject(
-        method = {"renderPlayerHealth", "renderHotbar", "renderEffects", "renderExperienceBar", "renderSavingIndicator"},
+        method = {"renderPlayerHealth", "renderEffects", "renderSavingIndicator"},
         at = @At(
             value = "INVOKE",
-            target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"
+            target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V"
         )
     )
-    private void renderPlayerHealth(float partialTick, GuiGraphics guiGraphics, CallbackInfo ci) {
-
+    private void saveBlendEnabled1(GuiGraphics guiGraphics, CallbackInfo ci) {
+        blendEnabled = true;
     }
+
+    @Inject(
+        method = "renderHotbar",
+        at = @At(
+            value = "INVOKE",
+            target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V")
+    )
+    private void saveBlendDisabled1(float f, GuiGraphics guiGraphics, CallbackInfo ci) {
+        blendEnabled = false;
+    }
+
+    @Inject(
+        method = "renderHotbar",
+        at = @At(
+            value = "INVOKE",
+            target = "Lcom/mojang/blaze3d/systems/RenderSystem;enableBlend()V")
+    )
+    private void saveBlendEnabled2(float f, GuiGraphics guiGraphics, CallbackInfo ci) {
+        blendEnabled = true;
+    }
+
 
     @Inject(
         method = "render",

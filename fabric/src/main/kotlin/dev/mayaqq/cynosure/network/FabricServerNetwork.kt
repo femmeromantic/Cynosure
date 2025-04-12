@@ -9,7 +9,7 @@ import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 
 
-internal typealias Serverpackethandler<T> = ServerNetworkingContext.(T) -> Unit
+internal typealias Serverpackethandler<T> = ServerNetworkContext.(T) -> Unit
 
 internal object FabricServerNetwork {
 
@@ -26,7 +26,7 @@ internal object FabricServerNetwork {
         }
     }
 
-    private class Context(server: MinecraftServer, sender: ServerPlayer) : ServerNetworkingContext(server, sender) {
+    private class Context(server: MinecraftServer, sender: ServerPlayer) : ServerNetworkContext(server, sender) {
         override fun execute(action: () -> Unit) {
             server.execute(action)
         }

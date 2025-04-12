@@ -1,21 +1,22 @@
 package dev.mayaqq.cynosure.events.entity.player
 
 import dev.mayaqq.cynosure.events.api.Event
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.player.Player
 
-public sealed class PlayerTickEvents(public val player: Player) : Event {
+public sealed class PlayerTickEvent(public val player: Player) : Event {
 
-    public class End(player: Player) : PlayerTickEvents(player)
+    public class End(player: Player) : PlayerTickEvent(player)
 
-    public class Begin(player: Player) : PlayerTickEvents(player)
+    public class Begin(player: Player) : PlayerTickEvent(player)
 }
 
-public sealed class PlayerConnectionEvents(public val player: Player) : Event {
+public sealed class PlayerConnectionEvent(public val player: ServerPlayer) : Event {
 
-    public class Join(player: Player) : PlayerConnectionEvents(player)
+    public class Join(player: ServerPlayer) : PlayerConnectionEvent(player)
 
-    public class Leave(player: Player) : PlayerConnectionEvents(player)
+    public class Leave(player: ServerPlayer) : PlayerConnectionEvent(player)
 }
 
 public class PlayerRestoreEvent(public val player: Player, public val alive: Boolean) : Event
