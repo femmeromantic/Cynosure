@@ -1,4 +1,4 @@
-@file:Suppress("Deprecation")
+    @file:Suppress("Deprecation")
 package dev.mayaqq.cynosure.utils.unsafe
 
 import sun.misc.Unsafe

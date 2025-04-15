@@ -2,9 +2,7 @@
 package dev.mayaqq.cynosure.effects
 
 import dev.mayaqq.cynosure.utils.mapBacked
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet
 import net.minecraft.world.effect.MobEffect
-import java.lang.invoke.MethodHandleProxies
 
 ///**
 // * A collection of extra properties for MobEffects.

@@ -1,13 +1,10 @@
 package dev.mayaqq.cynosure.client
 
 import dev.mayaqq.cynosure.CynosureFabric
-import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.client.events.CynosureWorldRenderEventHandler
 import dev.mayaqq.cynosure.client.events.RegisterParticleFactoriesEvent
-import dev.mayaqq.cynosure.events.LateInitEvent
 import dev.mayaqq.cynosure.events.api.post
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry
-import net.fabricmc.loader.api.ModContainer
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.ParticleOptions

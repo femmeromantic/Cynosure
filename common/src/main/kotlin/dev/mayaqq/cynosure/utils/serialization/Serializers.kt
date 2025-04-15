@@ -1,19 +1,16 @@
+@file:OptIn(ExperimentalSerializationApi::class)
 package dev.mayaqq.cynosure.utils.serialization
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.serializer
-import net.minecraft.world.phys.Vec3
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.jvm.reflect
 
 public inline fun <T, reified R> KSerializer<T>.map(crossinline to: (T) -> R, crossinline  from: (R) -> T): KSerializer<R> =
     map(R::class.qualifiedName!!, to, from)
@@ -310,7 +307,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
     f4: StructComponent<S, T4>,
     f5: StructComponent<S, T5>,
     f6: StructComponent<S, T6>,
-    crossinline constructor: (T1, T2, T3, T4, T5) -> S
+    crossinline constructor: (T1, T2, T3, T4, T5, T6) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor(name) {
@@ -346,6 +343,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
                         2 -> v3 = decodeSerializableElement(descriptor, 2, f3.serializer)
                         3 -> v4 = decodeSerializableElement(descriptor, 3, f4.serializer)
                         4 -> v5 = decodeSerializableElement(descriptor, 4, f5.serializer)
+                        5 -> v6 = decodeSerializableElement(descriptor, 5, f6.serializer)
                         CompositeDecoder.DECODE_DONE -> break
                         else -> error("Failed to decode element")
                     }
@@ -353,7 +351,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
             }
         }
 
-        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5, v6 as T6)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -363,6 +361,80 @@ public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
             encodeSerializableElement(descriptor, 2, f3.serializer, f3.getter(value))
             encodeSerializableElement(descriptor, 3, f4.serializer, f4.getter(value))
             encodeSerializableElement(descriptor, 4, f5.serializer, f5.getter(value))
+            encodeSerializableElement(descriptor, 5, f6.serializer, f6.getter(value))
+        }
+    }
+}
+
+public inline fun <S, T1, T2, T3, T4, T5, T6, T7> buildClassSerializer(
+    name: String,
+    f1: StructComponent<S, T1>,
+    f2: StructComponent<S, T2>,
+    f3: StructComponent<S, T3>,
+    f4: StructComponent<S, T4>,
+    f5: StructComponent<S, T5>,
+    f6: StructComponent<S, T6>,
+    f7: StructComponent<S, T7>,
+    crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> S
+) : KSerializer<S> = object : KSerializer<S> {
+
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor(name) {
+        element(f1.key, f1.serializer.descriptor)
+        element(f2.key, f2.serializer.descriptor)
+        element(f3.key, f3.serializer.descriptor)
+        element(f4.key, f4.serializer.descriptor)
+        element(f5.key, f5.serializer.descriptor)
+        element(f6.key, f6.serializer.descriptor)
+        element(f7.key, f7.serializer.descriptor)
+    }
+
+    override fun deserialize(decoder: Decoder): S {
+        var v1: T1? = null
+        var v2: T2? = null
+        var v3: T3? = null
+        var v4: T4? = null
+        var v5: T5? = null
+        var v6: T6? = null
+        var v7: T7? = null
+
+        decoder.decodeStructure(descriptor) {
+            if (decodeSequentially()) {
+                v1 = decodeSerializableElement(descriptor, 0, f1.serializer)
+                v2 = decodeSerializableElement(descriptor, 1, f2.serializer)
+                v3 = decodeSerializableElement(descriptor, 2, f3.serializer)
+                v4 = decodeSerializableElement(descriptor, 3, f4.serializer)
+                v5 = decodeSerializableElement(descriptor, 4, f5.serializer)
+                v6 = decodeSerializableElement(descriptor, 5, f6.serializer)
+                v7 = decodeSerializableElement(descriptor, 6, f7.serializer)
+            } else {
+                while (true) {
+                    when (decodeElementIndex(descriptor)) {
+                        0 -> v1 = decodeSerializableElement(descriptor, 0, f1.serializer)
+                        1 -> v2 = decodeSerializableElement(descriptor, 1, f2.serializer)
+                        2 -> v3 = decodeSerializableElement(descriptor, 2, f3.serializer)
+                        3 -> v4 = decodeSerializableElement(descriptor, 3, f4.serializer)
+                        4 -> v5 = decodeSerializableElement(descriptor, 4, f5.serializer)
+                        5 -> v6 = decodeSerializableElement(descriptor, 5, f6.serializer)
+                        6 -> v7 = decodeSerializableElement(descriptor, 6, f7.serializer)
+                        CompositeDecoder.DECODE_DONE -> break
+                        else -> error("Failed to decode element")
+                    }
+                }
+            }
+        }
+
+        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!, v6!!, v7!!)
+    }
+
+    override fun serialize(encoder: Encoder, value: S) {
+        encoder.encodeStructure(descriptor) {
+            encodeSerializableElement(descriptor, 0, f1.serializer, f1.getter(value))
+            encodeSerializableElement(descriptor, 1, f2.serializer, f2.getter(value))
+            encodeSerializableElement(descriptor, 2, f3.serializer, f3.getter(value))
+            encodeSerializableElement(descriptor, 3, f4.serializer, f4.getter(value))
+            encodeSerializableElement(descriptor, 4, f5.serializer, f5.getter(value))
+            encodeSerializableElement(descriptor, 5, f6.serializer, f6.getter(value))
+            encodeSerializableElement(descriptor, 6, f7.serializer, f7.getter(value))
         }
     }
 }
@@ -623,60 +695,6 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> buildClassSeriali
     }
 }
 
-public object Vec3Serializer : KSerializer<Vec3> by buildClassSerializerReflective("maqaqq",
-    Double.serializer() fieldOf Vec3::x,
-    Double.serializer() fieldOf Vec3::y,
-    Double.serializer() fieldOf Vec3::z,
-    constructor = { x: Double, y: Double, z: Double -> Vec3(x, y, z) }
-)
-
-public inline fun <reified S> buildClassSerializerReflective(
-    name: String,
-    vararg elements: StructComponent<S, *>,
-    constructor: Function<S>
-) : KSerializer<S> {
-
-    val actualFunction = constructor.reflect() ?: constructor::class.declaredMemberFunctions
-        .find { it.parameters.size == elements.size && it.returnType.classifier == S::class } ?: error("")
-
-    return object : KSerializer<S> {
-
-        override val descriptor: SerialDescriptor = buildClassSerialDescriptor(name) {
-            for (e in elements) {
-                element(e.key, e.serializer.descriptor)
-            }
-        }
-
-        override fun deserialize(decoder: Decoder): S {
-            val values: Array<Any?> = arrayOfNulls(elements.size)
-            decoder.decodeStructure(descriptor) {
-                if (decodeSequentially()) {
-                    elements.forEachIndexed { index, element ->
-                        values[index] = decodeSerializableElement(descriptor, index, element.serializer as KSerializer<Any?>)
-                    }
-                } else {
-                    while (true) {
-                        val index = decodeElementIndex(descriptor)
-                        if (index == CompositeDecoder.DECODE_DONE) break
-                        val element = elements[index]
-                        values[index] = decodeSerializableElement(descriptor, index, element.serializer as KSerializer<Any?>)
-                    }
-                }
-            }
-
-            return actualFunction.call(*values) as S
-        }
-
-        override fun serialize(encoder: Encoder, value: S) {
-            encoder.encodeStructure(descriptor) {
-                elements.forEachIndexed { index, element ->
-                    encodeSerializableElement(descriptor, index, element.serializer as KSerializer<Any?>, element.getter(value))
-                }
-            }
-        }
-    }
-
-}
 
 public data class StructComponent<S, T>(
     val key: String,

@@ -35,14 +35,4 @@ public annotation class SerializablePacket(
     val id: String,
 )
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun ClientNetworkContext.handlePacket(packet: Packet.Clientbound) {
-    packet.run { this@handlePacket.handle() }
-}
-
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun ServerNetworkContext.handlePacket(packet: Packet.Serverbound) {
-    packet.run { this@handlePacket.handle() }
-}
-
 

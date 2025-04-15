@@ -1,11 +1,16 @@
 package dev.mayaqq.cynosure
 
-import dev.mayaqq.cynosure.events.api.EventSubscriber
 import dev.mayaqq.cynosure.events.api.EventBus
+import dev.mayaqq.cynosure.events.api.EventSubscriber
 import dev.mayaqq.cynosure.events.api.MainBus
 import dev.mayaqq.cynosure.events.api.subscribeTo
-import kotlinx.coroutines.*
+import dev.mayaqq.cynosure.internal.boolean
+import dev.mayaqq.cynosure.internal.getCynosureValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import org.objectweb.asm.ClassReader
@@ -15,7 +20,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.extension
 import kotlin.io.path.walk
 
-private const val AUTOSUB_KEY = "cynosure:autosubscriptions"
+private const val AUTOSUB_KEY = "autosubscriptions"
 
 private val AUTOSUB_ANNOTATION = EventSubscriber::class.qualifiedName!!
 
@@ -24,12 +29,14 @@ private fun String.descriptorToClassName(): String = substringAfter('L')
     .replace('/', '.')
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPathApi::class)
-public fun onPreLaunch() {
-    val flow = FabricLoader.getInstance().allMods.asFlow()
-        .filter { mod ->
-            mod.metadata.containsCustomValue(AUTOSUB_KEY)
-                    && mod.metadata.getCustomValue(AUTOSUB_KEY).asBoolean
-        }.flatMapMerge(64) {
+internal fun onPreLaunch() {
+    val flow = FabricLoader.getInstance()
+        .allMods
+        .asFlow()
+        .filter {
+            it.metadata.getCynosureValue(AUTOSUB_KEY).boolean
+        }
+        .flatMapMerge(64) {
             it.rootPaths.asFlow().flatMapMerge(64) { path ->
                 path.walk().asFlow()
                     .filter { it.extension == "class" }

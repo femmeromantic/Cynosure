@@ -86,7 +86,7 @@ public fun onEndRenderHud(event: RenderGuiEvent.Post) {
 @SubscribeEvent
 public fun onClientTick(event: TickEvent.ClientTickEvent) {
     when (event.phase!!) {
-        TickEvent.Phase.START -> ClientTickEvent.Start.post()
+        TickEvent.Phase.START -> ClientTickEvent.Begin.post()
         TickEvent.Phase.END -> ClientTickEvent.End.post()
     }
 }

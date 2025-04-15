@@ -1,7 +1,6 @@
 package dev.mayaqq.cynosure.fabric.mixin.client;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.mayaqq.cynosure.client.events.render.BeginHudRenderEvent;
@@ -9,11 +8,8 @@ import dev.mayaqq.cynosure.client.render.gui.HudOverlay;
 import dev.mayaqq.cynosure.client.render.gui.HudOverlayRegistry;
 import dev.mayaqq.cynosure.client.render.gui.VanillaHud;
 import dev.mayaqq.cynosure.events.api.MainBus;
-import net.minecraft.client.CameraType;
-import net.minecraft.client.Options;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.entity.player.Player;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -138,20 +134,19 @@ public abstract class GuiMixin {
         renderPhaseOverlays(VanillaHud.VIGNETTE, guiGraphics, partialTick);
     }
 
-    @WrapOperation(
+    @ModifyExpressionValue(
         method = "render",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/CameraType;isFirstPerson()Z"
         )
     )
-    private boolean renderLayersIfNotFirstPerson(CameraType instance, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
-        boolean bl = original.call(instance);
-        if(!bl) {
+    private boolean renderLayersIfNotFirstPerson(boolean original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
+        if(!original) {
             renderPhaseOverlays(VanillaHud.SPYGLASS, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.HELMET, graphics, partialTick);
         }
-        return bl;
+        return original;
     }
 
     @Inject(
@@ -237,7 +232,7 @@ public abstract class GuiMixin {
         renderPhaseOverlays(VanillaHud.HOTBAR, guiGraphics, partialTick);
     }
 
-    @WrapOperation(
+    @ModifyExpressionValue(
         method = "render",
         at = @At(
             value = "FIELD",
@@ -255,9 +250,8 @@ public abstract class GuiMixin {
             )
         )
     )
-    private boolean renderLayersIfGuiHidden0(Options instance, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
-        boolean bl = original.call(instance);
-        if(!bl) {
+    private boolean renderLayersIfGuiHidden0(boolean original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
+        if(!original) {
             renderPhaseOverlays(VanillaHud.CROSSHAIR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.BOSS_BAR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, graphics, partialTick);
@@ -267,7 +261,7 @@ public abstract class GuiMixin {
             renderPhaseOverlays(VanillaHud.XP_BAR, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.ITEM_NAME, graphics, partialTick);
         }
-        return bl;
+        return original;
     }
 
     @Inject(
@@ -292,21 +286,20 @@ public abstract class GuiMixin {
         renderPhaseOverlays(VanillaHud.BOSS_BAR, guiGraphics, partialTick);
     }
 
-    @WrapOperation(
+    @ModifyExpressionValue(
         method = "render",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;canHurtPlayer()Z"
         )
     )
-    private boolean ifHealthAndFoodHidden(MultiPlayerGameMode instance, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
-        boolean bl = original.call(instance);
-        if (!bl) {
+    private boolean ifHealthAndFoodHidden(boolean original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
+        if (!original) {
             renderPhaseOverlays(VanillaHud.PLAYER_HEALTH, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.FOOD_LEVEL, graphics, partialTick);
         }
         capturedPartialTick = partialTick;
-        return bl;
+        return original;
     }
 
     @Unique
@@ -416,7 +409,7 @@ public abstract class GuiMixin {
         renderPhaseOverlays(VanillaHud.DEBUG, guiGraphics, partialTick);
     }
 
-    @WrapOperation(
+    @ModifyExpressionValue(
         method = "render",
         at = @At(
             value = "FIELD",
@@ -429,9 +422,8 @@ public abstract class GuiMixin {
             )
         )
     )
-    private boolean renderLayersIfGuiHidden1(Options instance, Operation<Boolean> original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
-        boolean bl = original.call(instance);
-        if(!bl) {
+    private boolean renderLayersIfGuiHidden1(boolean original, @Local(argsOnly = true) GuiGraphics graphics, @Local(argsOnly = true) float partialTick) {
+        if(!original) {
             renderPhaseOverlays(VanillaHud.OVERLAY_MESSAGE, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.TITLE_TEXT, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.SUBTITLES, graphics, partialTick);
@@ -439,7 +431,7 @@ public abstract class GuiMixin {
             renderPhaseOverlays(VanillaHud.CHAT, graphics, partialTick);
             renderPhaseOverlays(VanillaHud.PLAYER_LIST, graphics, partialTick);
         }
-        return bl;
+        return original;
     }
 
     @Inject(

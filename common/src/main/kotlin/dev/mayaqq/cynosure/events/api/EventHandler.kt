@@ -21,7 +21,8 @@ internal class EventHandler<T : Event> private constructor(
             try {
                 listener.invoker.accept(event)
             } catch (throwable: Throwable) {
-                onError?.invoke(throwable) ?: throw throwable
+                onError?.invoke(throwable)
+                    ?: throw RuntimeException("Exceptione while handling event $event", throwable)
             }
             if (event.isCancelled && !canReceiveCancelled) break
         }

@@ -5,6 +5,10 @@ package dev.mayaqq.cynosure.events.api
  * [isCancelled] returns true if the event should be considered cancelled and stop execution
  */
 public interface Event {
+    /**
+     * Return true if this event is cancelled, to make an event cancellable override this value and make it
+     * mutable
+     */
     public val isCancelled: Boolean get() = false
 }
 

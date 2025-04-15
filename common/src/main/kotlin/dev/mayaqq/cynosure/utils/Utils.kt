@@ -2,14 +2,17 @@ package dev.mayaqq.cynosure.utils
 
 import com.google.common.collect.MapMaker
 import com.google.common.collect.Table
-import net.minecraft.world.level.levelgen.Column
-import java.util.ServiceLoader
+import net.minecraft.world.level.Level
+import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+
+
+
 
 @OptIn(ExperimentalContracts::class)
 public inline fun <T> make(thing: T, maker: T.() -> Unit): T {
@@ -19,6 +22,9 @@ public inline fun <T> make(thing: T, maker: T.() -> Unit): T {
     maker(thing)
     return thing
 }
+
+public val Level.side: Environment
+    get() = if (isClientSide) Environment.CLIENT else Environment.SERVER
 
 public fun <V> constant(constantValue: V): ReadOnlyProperty<Any?, V> = ConstantProperty(constantValue)
 

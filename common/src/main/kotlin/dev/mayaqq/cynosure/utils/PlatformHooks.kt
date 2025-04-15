@@ -20,6 +20,10 @@ public enum class Loader {
 public interface PlatformHooks {
     public companion object : PlatformHooks by loadPlatform()
 
+    public val environment: Environment
+
+    public val devEnvironment: Boolean
+
     public fun isModLoaded(modid: String): Boolean
 
 

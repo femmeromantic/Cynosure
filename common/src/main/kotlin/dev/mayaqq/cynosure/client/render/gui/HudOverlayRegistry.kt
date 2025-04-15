@@ -28,7 +28,7 @@ public object HudOverlayRegistry {
 
     private var frozen: Boolean = false
 
-    public fun register(id: ResourceLocation, overlay: HudOverlay, anchor: VanillaHud, ordering: Int = 0) {
+    public fun register(anchor: VanillaHud, id: ResourceLocation, overlay: HudOverlay, ordering: Int = 0) {
         require(!frozen) { "Too late to register hud overlay" }
         require(!overlays.containsKey(id)) { "Duplicate id: $id" }
         overlays[id] = Entry(overlay, anchor, ordering)

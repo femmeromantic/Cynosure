@@ -25,7 +25,7 @@ public class EntityMixin {
             cancellable = true
     )
     private void startRiding(Entity vehicle, boolean force, CallbackInfoReturnable<Boolean> cir) {
-        if (!ExtraEventHandling.INSTANCE.canMountEntity((Entity) (Object) this, vehicle, true)) {
+        if (!ExtraEventHandling.canMountEntity((Entity) (Object) this, vehicle, true)) {
             cir.setReturnValue(false);
         }
     }
@@ -39,6 +39,6 @@ public class EntityMixin {
             )
     )
     private void removeVehicle(CallbackInfo ci) {
-        ExtraEventHandling.INSTANCE.canMountEntity((Entity) (Object) this, vehicle, false);
+        ExtraEventHandling.canMountEntity((Entity) (Object) this, vehicle, false);
     }
 }

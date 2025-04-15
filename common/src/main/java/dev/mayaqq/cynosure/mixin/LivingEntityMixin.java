@@ -1,5 +1,6 @@
 package dev.mayaqq.cynosure.mixin;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.mayaqq.cynosure.effects.Effextras;
@@ -18,18 +19,16 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
 
-    @WrapOperation(
+    @WrapWithCondition(
             method = "onEffectUpdated",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/effect/MobEffect;removeAttributeModifiers(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/ai/attributes/AttributeMap;I)V"
             )
     )
-    public void onEffectUpdated(MobEffect effect, LivingEntity livingEntity, AttributeMap attributeMap, int amplifier, Operation<Void> original) {
-        // Mojang calls remove and then add when updating an effect we do not want this for the Girl Power effect.
-        if (Effextras.getUpdateless(effect)) {
-            original.call(effect, livingEntity, attributeMap, amplifier);
-        }
+    public boolean onEffectUpdated(MobEffect effect, LivingEntity livingEntity, AttributeMap attributeMap, int amplifier) {
+        // Mojang calls remove and then add when updating an effect we do not want this for the Girl Power effect.r
+        return !Effextras.getUpdateless(effect);
     }
 
     @ModifyVariable(

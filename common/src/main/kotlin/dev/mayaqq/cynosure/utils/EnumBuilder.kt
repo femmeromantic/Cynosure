@@ -2,8 +2,6 @@ package dev.mayaqq.cynosure.utils
 
 import dev.mayaqq.cynosure.utils.function.and
 import dev.mayaqq.cynosure.utils.unsafe.*
-import dev.mayaqq.cynosure.utils.unsafe.UNSAFE
-import dev.mayaqq.cynosure.utils.unsafe.getField
 import java.lang.invoke.MethodHandles
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field

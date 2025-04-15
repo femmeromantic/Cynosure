@@ -19,7 +19,7 @@ public enum class ColorFormat {
     },
 
     RGBA {
-        override fun encode(c: Color): Int = c.red shl 24 or (c.green shl 16) or (c.blue shl 8) or c.alpha
+        override fun encode(c: Color): Int = (c.red shl 24) or (c.green shl 16) or (c.blue shl 8) or c.alpha
 
         override fun decode(value: Int): Color = Color(value ushr 24, (value shr 16) and 0xFF, (value shr 8) and 0xFF, value and 0xFF)
 

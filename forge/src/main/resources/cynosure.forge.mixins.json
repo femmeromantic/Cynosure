@@ -4,6 +4,7 @@
   "package": "dev.mayaqq.cynosure.forge.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "PiglinAiMixin"
   ],
   "client": [
     "client.LevelRendererAccessor",

@@ -1,8 +1,6 @@
 package dev.mayaqq.cynosure.client.events
 
 import dev.mayaqq.cynosure.events.api.Event
-import dev.mayaqq.cynosure.events.world.LevelEvent
-import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.core.particles.ParticleOptions
@@ -18,7 +16,13 @@ public abstract class RegisterParticleFactoriesEvent : Event {
 
 public sealed class ClientTickEvent : Event {
 
-    public data object Start : ClientTickEvent()
+    /**
+     * Fired at the beginning of each client tick
+     */
+    public data object Begin : ClientTickEvent()
 
+    /**
+     * Fired at the end of each client tick
+     */
     public data object End: ClientTickEvent()
 }

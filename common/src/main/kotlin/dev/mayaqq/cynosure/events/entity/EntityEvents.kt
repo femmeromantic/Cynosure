@@ -1,30 +1,14 @@
 package dev.mayaqq.cynosure.events.entity
 
-import dev.mayaqq.cynosure.events.InteractionResultEvent
 import dev.mayaqq.cynosure.events.api.CancellableEvent
 import dev.mayaqq.cynosure.events.api.Event
 import dev.mayaqq.cynosure.events.api.ReturningEvent
 import dev.mayaqq.cynosure.events.api.RootEventClass
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.InteractionHand
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.player.Player
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
-
-public class EntityInteractionEvent(
-    public val level: Level,
-    public val player: Player,
-    public val entity: Entity,
-    public val hand: InteractionHand
-): InteractionResultEvent() {
-    /**
-     * Shorthand for getting the item stack in the active hand of the player
-     */
-    public fun getUsedStack(): ItemStack = player.getItemInHand(hand)
-}
 
 public sealed class EntityTrackingEvent(
     public val entity: Entity,
@@ -43,6 +27,9 @@ public sealed class EntityTrackingEvent(
 
 @RootEventClass
 public sealed class LivingEntityEvent(public val entity: LivingEntity) : CancellableEvent() {
+
+    public class Tick(entity: LivingEntity) : LivingEntityEvent(entity)
+
     public class Death(entity: LivingEntity, public val source: DamageSource) : LivingEntityEvent(entity)
 }
 
@@ -51,3 +38,5 @@ public class MountEvent(public val entity: Entity, public val mount: Entity?, pu
 public class EntityDamageSourceEvent(public val entity: Entity, public val source: DamageSource) : ReturningEvent<DamageSource>()
 
 public class EntityDamageEvent(public val entity: Entity, public val source: DamageSource, public val amount: Float) : ReturningEvent<Float>()
+
+public class EntityCreatedEvent(public val entity: Entity, public val level: Level) : CancellableEvent()
