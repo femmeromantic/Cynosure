@@ -2,7 +2,6 @@ package dev.mayaqq.cynosure.internal
 
 import dev.mayaqq.cynosure.CynosureInternal
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.MinecraftServer
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier

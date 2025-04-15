@@ -1,7 +1,7 @@
 package dev.mayaqq.cynosure.events
 
 import com.mojang.brigadier.CommandDispatcher
-import dev.mayaqq.cynosure.client.events.command.CommandRegistrationEvent
+import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent

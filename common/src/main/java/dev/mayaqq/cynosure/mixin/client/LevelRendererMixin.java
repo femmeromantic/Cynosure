@@ -2,7 +2,7 @@ package dev.mayaqq.cynosure.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.mayaqq.cynosure.client.render.BatchOutputStage;
+import dev.mayaqq.cynosure.client.render.BufferOutputStage;
 import dev.mayaqq.cynosure.client.render.RenderTypeRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.*;
@@ -38,7 +38,7 @@ public class LevelRendererMixin {
         )
     )
     public void flushEntitiesPhase(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci, @Local MultiBufferSource.BufferSource bufferSource) {
-        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BatchOutputStage.ENTITY)) {
+        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BufferOutputStage.ENTITY)) {
             bufferSource.endBatch(renderType);
         }
     }
@@ -63,7 +63,7 @@ public class LevelRendererMixin {
     )
 
     public void flushSolidPhase(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci, @Local MultiBufferSource.BufferSource bufferSource) {
-        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BatchOutputStage.BLOCK_ENTITY)) {
+        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BufferOutputStage.BLOCK_ENTITY)) {
             bufferSource.endBatch(renderType);
         }
     }
@@ -89,7 +89,7 @@ public class LevelRendererMixin {
         )
     )
     public void flushTranslucentPhase(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci, @Local MultiBufferSource.BufferSource bufferSource) {
-        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BatchOutputStage.TRANSLUCENT)) {
+        for(RenderType renderType : RenderTypeRegistry.PHASES.get(BufferOutputStage.TRANSLUCENT)) {
             bufferSource.endBatch(renderType);
         }
     }

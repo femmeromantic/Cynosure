@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
-import dev.mayaqq.cynosure.client.events.command.CommandExecuteEvent;
+import dev.mayaqq.cynosure.events.command.CommandExecuteEvent;
 import dev.mayaqq.cynosure.events.api.MainBus;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

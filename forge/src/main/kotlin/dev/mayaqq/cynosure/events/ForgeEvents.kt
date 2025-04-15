@@ -3,7 +3,7 @@ package dev.mayaqq.cynosure.events
 
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.MODID
-import dev.mayaqq.cynosure.client.events.command.CommandExecuteEvent
+import dev.mayaqq.cynosure.events.command.CommandExecuteEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.block.BlockEvent
 import dev.mayaqq.cynosure.events.server.DataPackSyncEvent

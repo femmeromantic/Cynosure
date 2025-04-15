@@ -1,6 +1,6 @@
 package dev.mayaqq.cynosure
 
-import dev.mayaqq.cynosure.client.events.command.CommandRegistrationEvent
+import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.PostInitEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.gatherEventSubscribers

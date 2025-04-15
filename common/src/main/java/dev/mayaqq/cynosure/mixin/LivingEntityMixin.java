@@ -1,8 +1,6 @@
 package dev.mayaqq.cynosure.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.mayaqq.cynosure.effects.Effextras;
 import dev.mayaqq.cynosure.events.api.EventBus;
 import dev.mayaqq.cynosure.events.api.MainBus;
