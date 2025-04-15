@@ -20,12 +20,8 @@ public enum class TriState {
     }
 }
 
-@JvmName("toTriStateNullable")
 public fun Boolean?.toTriState(): TriState = when (this) {
     true -> TriState.TRUE
     false -> TriState.FALSE
     null -> TriState.INTERMEDIATE
 }
-
-
-public fun Boolean.toTriState(): TriState = if (this) TriState.TRUE else TriState.FALSE

@@ -70,6 +70,6 @@ public sealed class FallingBlockEvent(
         public var placedState: BlockState? = null
 
         override val isCancelled: Boolean
-            get() = fallingState != placedState
+            get() = placedState != null
     }
 }

@@ -49,6 +49,7 @@ public class FallingBlockEntityMixin {
     private boolean onFallingBlockLand(Level instance, BlockPos $$0, BlockState $$1, int $$2, Operation<Boolean> original, @Local BlockState stateBelow, @Local BlockPos pos) {
         FallingBlockEntity self = (FallingBlockEntity) (Object) this;
         FallingBlockEvent.Land event = new FallingBlockEvent.Land(instance, $$1, self, pos, stateBelow);
+        MainBus.INSTANCE.post(event, null, null);
         BlockState placedState = event.getPlacedState();
         if (placedState != null) {
             return original.call(instance, $$0, placedState, $$2);
