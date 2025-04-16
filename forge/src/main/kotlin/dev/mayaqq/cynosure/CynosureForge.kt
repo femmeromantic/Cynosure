@@ -24,7 +24,7 @@ import net.minecraftforge.forgespi.locating.IModFile
 import java.util.function.Consumer
 
 @Mod(MODID)
-//@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public object CynosureForge {
 
     init {
@@ -39,11 +39,6 @@ public object CynosureForge {
     @SubscribeEvent
     public fun lateInit(event: FMLCommonSetupEvent) {
         event.enqueueWork(PostInitEvent::post)
-    }
-
-    @SubscribeEvent
-    public fun onCommandRegistration(event: RegisterCommandsEvent) {
-        CommandRegistrationEvent(event.dispatcher, event.buildContext, event.commandSelection).post()
     }
 
     @SubscribeEvent

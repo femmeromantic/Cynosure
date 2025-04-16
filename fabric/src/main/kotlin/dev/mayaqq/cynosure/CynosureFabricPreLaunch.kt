@@ -60,13 +60,13 @@ internal fun onPreLaunch() {
             // TODO: Sided event handlers
             //val env = subscriberData["env"]
             //if (env != null && env != PlatformHooks.environment) return@onEach
+            val env = (subscriberData["env"] as? List<Array<String>>)?.map { Environment.valueOf(it[1]) }
+            if (env?.contains(PlatformHooks.environment) == false) return@onEach
 
             try {
                 val bus =
                     (subscriberData["bus"] as? Type)?.let {
-                        Class.forName(it.className).let {
-                            (it.kotlin.objectInstance ?: it.getConstructor(String::class.java).newInstance(mod.metadata.id)) as? EventBus
-                        }
+                        Class.forName(it.className).kotlin.objectInstance as? EventBus
                     } ?: MainBus
 
                 subscribeASMMethods(bus, cn)

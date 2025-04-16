@@ -71,18 +71,4 @@ internal object GameInstanceImpl : GameInstance {
         return if (side == Environment.CLIENT) Minecraft.getInstance()
         else currentServer ?: error("Cannot get server executor before server is loaded")
     }
-
-    override fun defineClass(name: String, bytes: ByteArray): Class<*> {
-        val classLoader = GameInstanceImpl::class.java.classLoader
-        val defineClassMethod = ClassLoader::class.java
-            .getDeclaredMethod("defineClass",
-                String::class.java,
-                ByteArray::class.java,
-                Int::class.javaPrimitiveType,
-                Int::class.javaPrimitiveType
-            )
-
-        defineClassMethod.isAccessible = true
-        return defineClassMethod.invoke(classLoader, name, bytes, 0, bytes.size) as Class<*>
-    }
 }

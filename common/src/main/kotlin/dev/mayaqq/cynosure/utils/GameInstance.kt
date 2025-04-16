@@ -16,8 +16,6 @@ public interface GameInstance {
     public fun execute(side: Environment, action: Runnable) {
         getEventLoop(side).execute(action)
     }
-
-    public fun defineClass(name: String, bytes: ByteArray): Class<*>
 }
 
 public enum class Environment {

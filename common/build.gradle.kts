@@ -25,6 +25,9 @@ dependencies {
     compileOnly(libs.asm)
     compileOnly(libs.asm.analysis)
     compileOnly(libs.koffee)
+    compileOnly(libs.kotlin.metadata)  {
+        isTransitive = false
+    }
     api(libs.javax.annotations)
     api(libs.bytecodecs)
     api(libs.kotlinx.serialization)

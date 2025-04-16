@@ -6,6 +6,7 @@ import dev.mayaqq.cynosure.MODID
 import dev.mayaqq.cynosure.events.command.CommandExecuteEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.block.BlockEvent
+import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.EntityCreatedEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
@@ -27,6 +28,7 @@ import net.minecraftforge.common.util.LogicalSidedProvider
 import net.minecraftforge.event.AddReloadListenerEvent
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.OnDatapackSyncEvent
+import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.event.TickEvent.LevelTickEvent
 import net.minecraftforge.event.TickEvent.Phase
 import net.minecraftforge.event.TickEvent.ServerTickEvent
@@ -226,6 +228,11 @@ public fun onServerTick(event: ServerTickEvent) {
         Phase.START -> ServerEvent.BeginTick(event.server).post(context = event)
         Phase.END -> ServerEvent.EndTick(event.server).post(context = event)
     }
+}
+
+@SubscribeEvent
+public fun onCommandRegistration(event: RegisterCommandsEvent) {
+    CommandRegistrationEvent(event.dispatcher, event.buildContext, event.commandSelection).post()
 }
 
 @SubscribeEvent

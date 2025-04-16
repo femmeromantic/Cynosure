@@ -37,6 +37,10 @@ dependencies {
     include(libs.bytecodecs)
     api(libs.koffee)
     include(libs.koffee)
+    implementation(libs.kotlin.metadata) {
+        isTransitive = false
+    }
+    include(libs.kotlin.metadata)
 //    compileOnly(libs.autoservice)
 //    ksp(libs.autoservice.ksp)
     compileOnly(projects.common)
