@@ -1,5 +1,10 @@
 package dev.mayaqq.cynosure.events.api
 
+import dev.mayaqq.cynosure.Cynosure
+import dev.mayaqq.cynosure.events.internal.generateASMEventListener
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.FieldNode
+import org.objectweb.asm.tree.MethodNode
 import java.lang.invoke.LambdaMetafactory
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -45,6 +50,22 @@ internal class EventListeners {
             options.receiveCancelled,
             EventPredicates(method)
         ))
+    }
+
+    fun addASMListener(classNode: ClassNode, methodNode: MethodNode, instanceField: FieldNode?, priority: Int, receiveCancelled: Boolean) {
+        try {
+            listeners.add(
+                Listener(
+                    "${classNode.name};${methodNode.desc}",
+                    generateASMEventListener(classNode, methodNode, instanceField),
+                    priority,
+                    receiveCancelled,
+                    EventPredicates(listOf { event, _ -> receiveCancelled || !event.isCancelled })
+                )
+            )
+        } catch (ex: Exception) {
+            Cynosure.error("Error registering asm event listener", ex)
+        }
     }
 
     /**

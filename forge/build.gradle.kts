@@ -83,6 +83,11 @@ dependencies {
     jarJar(libs.bytecodecs) {
         jarJar.ranged(this, "[1.0.2,)")
     }
+
+    api(libs.koffee)
+    jarJar(libs.koffee) {
+        jarJar.ranged(this, "[8.0.4,)")
+    }
     //compileOnly(libs.autoservice)
     //ksp(libs.autoservice.ksp)
     compileOnly(projects.common)

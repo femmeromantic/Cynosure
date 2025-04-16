@@ -20,18 +20,17 @@ public enum class BufferOutputStage {
 public object RenderTypeRegistry {
 
     @JvmField
-    @PublishedApi
     internal val TYPES: MutableMap<RenderType, BufferBuilder> = mutableMapOf()
 
     @JvmField
-    @PublishedApi
     internal val PHASES: Map<BufferOutputStage, MutableList<RenderType>> = make(EnumMap(BufferOutputStage::class.java)) {
         BufferOutputStage.entries.forEach { put(it, ArrayList()) };
     }
 
-    @JvmField
-    @PublishedApi
-    internal var frozen: Boolean = false
+    @JvmStatic
+    public var frozen: Boolean = false
+        @JvmName("setFrozen")
+        internal set
 
     public fun registerFixedBuffer(phase: BufferOutputStage, renderType: RenderType, builder: BufferBuilder = BufferBuilder(renderType.bufferSize())) {
         require(!frozen) { "Render type registry already frozon" }

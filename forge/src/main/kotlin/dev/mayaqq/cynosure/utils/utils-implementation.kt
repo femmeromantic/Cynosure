@@ -54,4 +54,8 @@ public object GameInstanceImpl : GameInstance {
         Environment.CLIENT -> LogicalSide.CLIENT
         Environment.SERVER -> LogicalSide.SERVER
     }
+
+    override fun defineClass(name: String, bytes: ByteArray): Class<*> {
+        TODO()
+    }
 }

@@ -1,5 +1,9 @@
 package dev.mayaqq.cynosure.events.api
 
+import dev.mayaqq.cynosure.utils.asm.descriptorToClassName
+import dev.mayaqq.cynosure.utils.asm.mappedValues
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.MethodNode
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -7,7 +11,9 @@ import kotlin.reflect.KClass
 /**
  * Main event bus where all minecraft events are run
  */
-public object MainBus : EventBus()
+public object MainBus : EventBus() {
+    override fun toString(): String = "main"
+}
 
 /**
  * Subscribe to an event bus. If the receiver is an instance or object any instance method marked with [Subscription]
@@ -68,6 +74,25 @@ public open class EventBus {
         context: Any? = null,
         onError: ((Throwable) -> Unit)? = null
     ): Boolean = getHandler(event.javaClass).post(event, context, onError)
+
+    internal fun registerASMMethod(classNode: ClassNode, method: MethodNode) {
+        if (method.parameters != null && method.parameters.size != 1) return
+        val options = method.visibleAnnotations
+            ?.find { it.desc.descriptorToClassName() == Subscription::class.qualifiedName }
+            ?.mappedValues
+            ?: return
+
+        // TODO: Readd class kotlin metadata for companion objects and stuff
+        val instanceField = classNode.fields?.find { it.name == "INSTANCE" }
+        val priority = options["priority"] as? Int ?: 0
+        val receiveCancelled = options["receiveCancelled"] as? Boolean ?: false
+
+        val event = Class.forName(method.desc.substringAfter("(").substringBefore(")").descriptorToClassName())
+        if (!Event::class.java.isAssignableFrom(event)) return
+        unregisterHandler(event)
+        listeners.getOrPut(event as Class<Event>, ::EventListeners)
+            .addASMListener(classNode, method, instanceField, priority, receiveCancelled)
+    }
 
     @Suppress("UNCHECKED_CAST")
     internal fun registerMethod(method: Method, instance: Any? = null) {

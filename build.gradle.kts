@@ -20,6 +20,8 @@ subprojects {
         maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
         maven(url = "https://maven.minecraftforge.net/") { name = "Forge" }
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/") { name = "ResourcefulBees" }
+        maven(url = "https://maven.is-immensely.gay/releases")
+        maven(url = "https://maven.is-immensely.gay/nightly")
         mavenLocal()
         mavenCentral()
     }

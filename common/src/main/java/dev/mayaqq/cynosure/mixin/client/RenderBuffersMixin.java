@@ -24,7 +24,7 @@ public class RenderBuffersMixin {
     public Object addCustomBuffers(Object original) {
         SortedMap<RenderType, BufferBuilder> value = (SortedMap<RenderType, BufferBuilder>) original;
         value.putAll(RenderTypeRegistry.TYPES);
-        RenderTypeRegistry.frozen = true;
+        RenderTypeRegistry.setFrozen(true);
         return original;
     }
 }

@@ -1,12 +1,18 @@
 package dev.mayaqq.cynosure.utils
 
+import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.utils.mod.Mod
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.impl.launch.FabricLauncher
+import net.fabricmc.loader.impl.launch.FabricLauncherBase
+import net.fabricmc.loader.impl.launch.knot.Knot
 import net.minecraft.client.Minecraft
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.TickTask
 import net.minecraft.util.thread.BlockableEventLoop
+import org.spongepowered.asm.mixin.injection.points.MethodHead
+import java.lang.invoke.MethodHandles
 import kotlin.jvm.optionals.getOrNull
 
 
@@ -51,7 +57,7 @@ internal object GameInstanceImpl : GameInstance {
         }
         private set
 
-
+    private val lookup = MethodHandles.lookup()
 
     fun onLoadServer(server: MinecraftServer) {
         this.currentServer = server
@@ -64,5 +70,19 @@ internal object GameInstanceImpl : GameInstance {
     override fun getEventLoop(side: Environment): BlockableEventLoop<in TickTask> {
         return if (side == Environment.CLIENT) Minecraft.getInstance()
         else currentServer ?: error("Cannot get server executor before server is loaded")
+    }
+
+    override fun defineClass(name: String, bytes: ByteArray): Class<*> {
+        val classLoader = GameInstanceImpl::class.java.classLoader
+        val defineClassMethod = ClassLoader::class.java
+            .getDeclaredMethod("defineClass",
+                String::class.java,
+                ByteArray::class.java,
+                Int::class.javaPrimitiveType,
+                Int::class.javaPrimitiveType
+            )
+
+        defineClassMethod.isAccessible = true
+        return defineClassMethod.invoke(classLoader, name, bytes, 0, bytes.size) as Class<*>
     }
 }

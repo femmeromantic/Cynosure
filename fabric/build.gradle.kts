@@ -35,6 +35,8 @@ dependencies {
     api(libs.javax.annotations)
     api(libs.bytecodecs)
     include(libs.bytecodecs)
+    api(libs.koffee)
+    include(libs.koffee)
 //    compileOnly(libs.autoservice)
 //    ksp(libs.autoservice.ksp)
     compileOnly(projects.common)

@@ -23,6 +23,8 @@ dependencies {
     compileOnly(libs.mixin)
     compileOnly(libs.mixinextras)
     compileOnly(libs.asm)
+    compileOnly(libs.asm.analysis)
+    compileOnly(libs.koffee)
     api(libs.javax.annotations)
     api(libs.bytecodecs)
     api(libs.kotlinx.serialization)

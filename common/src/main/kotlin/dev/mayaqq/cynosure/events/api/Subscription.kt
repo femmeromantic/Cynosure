@@ -1,5 +1,6 @@
 package dev.mayaqq.cynosure.events.api
 
+import dev.mayaqq.cynosure.utils.Environment
 import kotlin.reflect.KClass
 
 /**
@@ -44,5 +45,7 @@ public annotation class EventSubscriber(
     /**
      * Event bus object to add the subscriptions to. Defaults to [MainBus]
      */
-    val bus: KClass<out EventBus> = MainBus::class
+    val bus: KClass<out EventBus> = MainBus::class,
+
+    vararg val env: Environment = [Environment.SERVER, Environment.CLIENT]
 )
