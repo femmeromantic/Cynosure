@@ -25,12 +25,14 @@ import java.util.function.Consumer
 public val CynosureEventLogger: Logger = LoggerFactory.getLogger("Cynosure Event Registration")
 
 @OptIn(CynosureInternal::class)
-internal fun generateASMEventListener(cn: ClassNode, method: MethodNode, instanceField: FieldNode?): Consumer<Any> {
-    val event = Type.getType(method.desc.substringAfter('(').substringBefore(')'))
+internal fun generateASMEventListener(className: String, methodName: String, methodDesc: String, instanceFieldName: String?, instanceFieldOwnerName: String?): Consumer<Any> {
+    val event = Type.getType(methodDesc.substringAfter('(').substringBefore(')'))
+
+    val instanceFieldOwnerName = instanceFieldOwnerName ?: className
 
     val handler = assembleClass(
         public + final,
-        "dev/mayaqq/cynosure/events/internal/${cn.name.replace('/', '_')}\$EventListener\$${method.name}\$${method.hashCode()}",
+        "dev/mayaqq/cynosure/events/internal/${className.replace('/', '_')}\$EventListener\$$methodName\$${event.hashCode()}",
         version = V17,
         interfaces = listOf(Consumer::class)
     ) {
@@ -41,22 +43,18 @@ internal fun generateASMEventListener(cn: ClassNode, method: MethodNode, instanc
         }
 
         method(public, "accept", void, Any::class) {
-            if (instanceField == null) {
+            if (instanceFieldName == null) {
                 aload_1
                 checkcast(event)
-                invokestatic(cn, method.name, method.desc)
+                invokestatic(className, methodName, methodDesc)
             } else {
-                getstatic(cn, instanceField)
+                getstatic(className, instanceFieldName, instanceFieldOwnerName)
                 aload_1
                 checkcast(event)
-                invokevirtual(cn, method.name, method.desc)
+                invokevirtual(className, methodName, methodDesc)
             }
             _return
         }
-    }
-
-    if (PlatformHooks.devEnvironment) {
-        CynosureEventLogger.info("Generated ASM event handler for method ${cn.name}.${method.name}${method.desc}: ${handler.name}")
     }
 
     val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)

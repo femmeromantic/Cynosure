@@ -82,6 +82,7 @@ public open class EventBus {
             ?.mappedValues
             ?: return
 
+
         // TODO: Readd class kotlin metadata for companion objects and stuff
         val instanceField = classNode.fields?.find { it.name == "INSTANCE" }
         val priority = options["priority"] as? Int ?: 0

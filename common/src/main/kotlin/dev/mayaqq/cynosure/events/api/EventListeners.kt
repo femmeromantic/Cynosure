@@ -52,12 +52,12 @@ internal class EventListeners {
         ))
     }
 
-    fun addASMListener(classNode: ClassNode, methodNode: MethodNode, instanceField: FieldNode?, priority: Int, receiveCancelled: Boolean) {
+    fun addASMListener(className: String, methodName: String, methodDesc: String, instanceFieldName: String?, instanceFieldOwner: String?, priority: Int, receiveCancelled: Boolean) {
         try {
             listeners.add(
                 Listener(
-                    "${classNode.name};${methodNode.desc}",
-                    generateASMEventListener(classNode, methodNode, instanceField),
+                    "$className;$methodName$methodDesc",
+                    generateASMEventListener(className, methodName, methodDesc, instanceFieldName, instanceFieldOwner),
                     priority,
                     receiveCancelled,
                     EventPredicates(listOf { event, _ -> receiveCancelled || !event.isCancelled })
