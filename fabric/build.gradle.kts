@@ -35,8 +35,6 @@ dependencies {
     api(libs.javax.annotations)
     api(libs.bytecodecs)
     include(libs.bytecodecs)
-    api(libs.koffee)
-    include(libs.koffee)
     implementation(libs.kotlin.metadata) {
         isTransitive = false
     }

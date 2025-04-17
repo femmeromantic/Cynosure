@@ -74,7 +74,7 @@ internal fun onPreLaunch() {
                 if (FabricLoader.getInstance().isDevelopmentEnvironment || System.getProperty("cynosure.logEventSubscribers")?.toBoolean() == true)
                     CynosureEventLogger.info("Registered cynosure event subscriber for mod ${mod.metadata.id}: $className to bus $bus")
 
-            } catch (e: ReflectiveOperationException) {
+            } catch (e: Exception) {
                 CynosureEventLogger.error("Failed to register event bus subscriber for mod ${mod.metadata.id}", e)
             }
         }

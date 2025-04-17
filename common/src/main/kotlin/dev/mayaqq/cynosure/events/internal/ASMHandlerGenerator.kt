@@ -1,17 +1,12 @@
 package dev.mayaqq.cynosure.events.internal
 
-import codes.som.koffee.assembleClass
-import codes.som.koffee.insns.jvm.*
-import codes.som.koffee.modifiers.final
-import codes.som.koffee.modifiers.public
-import codes.som.koffee.sugar.ClassAssemblyExtension.init
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.events.api.EventBus
 import dev.mayaqq.cynosure.events.api.Subscription
 import dev.mayaqq.cynosure.utils.asm.descriptorToClassName
 import dev.mayaqq.cynosure.utils.asm.mappedValues
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.Opcodes.V17
+import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
 import org.slf4j.Logger
@@ -34,39 +29,45 @@ public val CynosureEventLogger: Logger = LoggerFactory.getLogger("Cynosure Event
 @OptIn(CynosureInternal::class)
 @Suppress("UNCHECKED_CAST")
 internal fun generateASMEventListener(className: String, methodName: String, methodDesc: String, instanceFieldName: String?, instanceFieldOwnerName: String?): Consumer<Any> {
+
     val event = Type.getType(methodDesc.substringAfter('(').substringBefore(')'))
-
     val instanceFieldOwnerName = instanceFieldOwnerName ?: className
+    val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)
 
-    val handler = assembleClass(
-        public + final,
-        "dev/mayaqq/cynosure/events/internal/${className.replace('/', '_')}\$EventListener\$$methodName\$${event.hashCode()}",
-        version = V17,
-        interfaces = listOf(Consumer::class)
-    ) {
+    cw.visit(
+        V17, ACC_PUBLIC,
+        "dev/mayaqq/cynosure/events/internal/${className.replace('/', '_')}\$EventListener\$$methodName\$${event.hashCode().toString().replace('-', '$')}",
+        null, "java/lang/Object", arrayOf("java/util/function/Consumer")
+    )
 
-        init(public) {
-            // super call is implicit
-            _return
-        }
+    val init = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null)
+    init.visitCode()
+    init.visitVarInsn(ALOAD, 0)
+    init.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false)
+    init.visitInsn(RETURN)
+    init.visitMaxs(1, 1)
+    init.visitEnd()
 
-        method(public, "accept", void, Any::class) {
-            if (instanceFieldName == null) {
-                aload_1
-                checkcast(event)
-                invokestatic(className, methodName, methodDesc)
-            } else {
-                getstatic(instanceFieldOwnerName, instanceFieldName, className)
-                aload_1
-                checkcast(event)
-                invokevirtual(className, methodName, methodDesc)
-            }
-            _return
-        }
+    val accept = cw.visitMethod(ACC_PUBLIC, "accept", "(Ljava/lang/Object;)V", null, null)
+    accept.visitCode()
+    if (instanceFieldName == null) {
+        accept.visitVarInsn(ALOAD, 1)
+        accept.visitTypeInsn(CHECKCAST, event.internalName)
+        accept.visitMethodInsn(INVOKESTATIC, className,  methodName, methodDesc, false)
+        accept.visitInsn(RETURN)
+        accept.visitMaxs(1, 2)
+    } else {
+        accept.visitFieldInsn(GETSTATIC, instanceFieldOwnerName, instanceFieldName, "L$className;")
+        accept.visitVarInsn(ALOAD, 1)
+        accept.visitTypeInsn(CHECKCAST, event.internalName)
+        accept.visitMethodInsn(INVOKEVIRTUAL, className, methodName, methodDesc, false)
+        accept.visitInsn(RETURN)
+        accept.visitMaxs(2, 2)
     }
 
-    val cw = ClassWriter(ClassWriter.COMPUTE_FRAMES)
-    handler.accept(cw)
+    accept.visitEnd()
+    cw.visitEnd()
+
     val lookup = MethodHandles.lookup().defineHiddenClass(cw.toByteArray(), true)
     val ctor = lookup.findConstructor(lookup.lookupClass(), MethodType.methodType(Nothing::class.javaPrimitiveType))
     return ctor.invoke() as Consumer<Any>

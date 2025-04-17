@@ -84,16 +84,12 @@ dependencies {
         jarJar.ranged(this, "[1.0.2,)")
     }
 
-    api(libs.koffee)
-    jarJar(libs.koffee) {
-        jarJar.ranged(this, "[8.0.4,)")
-    }
     implementation(libs.kotlin.metadata) {
         isTransitive = false
     }
     jarJar(libs.kotlin.metadata) {
         isTransitive = false
-        jarJar.ranged(this, "[2.1.20,)")
+        jarJar.ranged(this, "[2.0.0,)")
     }
     //compileOnly(libs.autoservice)
     //ksp(libs.autoservice.ksp)

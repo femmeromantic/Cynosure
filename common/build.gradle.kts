@@ -24,7 +24,7 @@ dependencies {
     compileOnly(libs.mixinextras)
     compileOnly(libs.asm)
     compileOnly(libs.asm.analysis)
-    compileOnly(libs.koffee)
+    //compileOnly(libs.koffee)
     compileOnly(libs.kotlin.metadata)  {
         isTransitive = false
     }
