@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.mayaqq.cynosure.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "cynosure.refmap.json",
+  "mixins": [
+    "ChunkHolderMixin",
+    "FallingBlockEntityMixin",
+    "ItemEntityMixin",
+    "LevelMixin",
+    "LivingEntityMixin",
+    "PlayerMixin",
+    "ServerPlayerMixin"
+  ],
+  "client": [
+    "client.LevelRendererMixin",
+    "client.RenderBuffersMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

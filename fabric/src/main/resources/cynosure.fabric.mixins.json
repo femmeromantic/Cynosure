@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.mayaqq.cynosure.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AbstractFurnaceBlockEntityMixin",
+    "AttributeSupplierBuilderAccessor",
+    "AttributeSupplierMixin",
+    "CommandsMixin",
+    "EntityMixin",
+    "FuelRegistryMixin",
+    "PersistentEntitySectionManagerMixin",
+    "PiglinAiMixin",
+    "RecipeBookTypeMixin",
+    "ServerLevelMixin"
+  ],
+  "client": [
+    "client.ClientLevelMixin",
+    "client.GuiMixin",
+    "client.LevelRendererMixin",
+    "client.MinecraftMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
