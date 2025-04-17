@@ -2,8 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     idea
-    alias(libs.plugins.forgeGradle)
-    alias(libs.plugins.mixin)
+    alias(libs.plugins.archLoom)
     alias(libs.plugins.ksp)
 }
 
@@ -11,48 +10,27 @@ val modid: String by project
 val mod_name: String by project
 
 base {
-    archivesName = "${modid}-forge"
+    archivesName = "$modid-forge"
 }
 
-mixin {
-    add(sourceSets.main.get(), "$modid.refmap.json")
-    add(project(":common").sourceSets.main.get(), "$modid.refmap.json")
-    config("$modid.mixins.json")
-    config("$modid.forge.mixins.json")
-}
+loom {
+    val aw = project(":common").file("src/main/resources/$modid.accesswidener")
+    if (aw.exists()) accessWidenerPath.set(aw)
 
-minecraft {
-    mappings(provider { "official" }, libs.versions.minecraft)
-    copyIdeResources = true
+    @Suppress("UnstableApiUsage")
+    mixin { defaultRefmapName.set("${modid}.refmap.json") }
 
-    runs {
-        create("client") {
-            workingDirectory(project.file("run"))
-            ideaModule("${rootProject.name}.${project.name}.main")
-            taskName("Client")
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            mods {
-                create("modRun") {
-                    source(sourceSets.main.get())
-                    source(project(":common").sourceSets.main.get())
-                }
-            }
-        }
+    mods.create(modid) {
+        sourceSet(project.sourceSets.main.get())
+        sourceSet(project(":common").sourceSets.main.get())
+    }
 
-        create("server") {
-            workingDirectory(project.file("run"))
-            ideaModule("${rootProject.name}.${project.name}.main")
-            taskName("Server")
-            property("mixin.env.remapRefMap", "true")
-            property("mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg")
-            mods {
-                create("modServerRun") {
-                    source(sourceSets.main.get())
-                    source(project(":common").sourceSets.main.get())
-                }
-            }
-        }
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig("cynosure.forge.mixins.json")
+        mixinConfig("cynosure.mixins.json")
     }
 }
 
@@ -60,12 +38,10 @@ repositories {
     maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "Kotlin for forge" }
 }
 
-jarJar {
-    enable()
-}
-
 dependencies {
-    minecraft(libs.forge)
+    minecraft(libs.minecraft)
+    mappings(loom.officialMojangMappings())
+    forge(libs.forge)
     implementation(kotlin("reflect"))
     implementation(libs.forge.kotlin)
     implementation(libs.mixin)
@@ -73,38 +49,23 @@ dependencies {
     implementation(libs.mixinextras)
     annotationProcessor(libs.mixinextras)
     implementation(libs.forge.mixinextras)
-    jarJar(libs.forge.mixinextras) {
-        jarJar.ranged(this, "[0.4.1,)")
-    }
+    include(libs.forge.mixinextras)
 
     compileOnly(libs.asm)
     api(libs.javax.annotations)
     api(libs.bytecodecs)
-    jarJar(libs.bytecodecs) {
-        jarJar.ranged(this, "[1.0.2,)")
-    }
+    include(libs.bytecodecs)
 
     implementation(libs.kotlin.metadata) {
         isTransitive = false
     }
-    jarJar(libs.kotlin.metadata) {
+    include(libs.kotlin.metadata) {
         isTransitive = false
-        jarJar.ranged(this, "[2.0.0,)")
     }
     //compileOnly(libs.autoservice)
     //ksp(libs.autoservice.ksp)
     compileOnly(projects.common)
 }
-
-publishing.publications {
-    create<MavenPublication>("maven") {
-        artifactId = base.archivesName.get()
-        artifact(tasks.jar)
-        fg.component(this)
-    }
-}
-
-sourceSets.main.get().resources.srcDir("src/generated/resources")
 
 tasks {
     withType<JavaCompile> { source(project(":common").sourceSets.main.get().allSource) }
@@ -114,12 +75,11 @@ tasks {
     named("sourcesJar", Jar::class) { from(project(":common").sourceSets.main.get().allSource) }
 
     processResources { from(project(":common").sourceSets.main.get().resources) }
-
-    jar { finalizedBy("reobfJar") }
 }
 
-sourceSets.forEach {
-    val dir = layout.buildDirectory.dir("sourceSets/${it.name}")
-    it.output.setResourcesDir(dir)
-    it.java.destinationDirectory.set(dir)
+publishing.publications {
+    create<MavenPublication>("maven") {
+        artifactId = base.archivesName.get()
+        from(components["java"])
+    }
 }
