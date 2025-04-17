@@ -47,7 +47,7 @@ forge-mixinextras = { module = "io.github.llamalad7:mixinextras-forge", version.
 ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.24" }
 vanillaGradle = { id = "org.spongepowered.gradle.vanilla", version = "0.2.1-SNAPSHOT" }
 blossom = { id = "net.kyori.blossom", version = "2.1.0" }
-fabricLoom = { id = "fabric-loom", version = "1.9.2" }
-archLoom = { id = "dev.architectury.loom", version = "0.12.0.374" }
+fabricLoom = { id = "fabric-loom", version = "1.10-SNAPSHOT" }
+archLoom = { id = "dev.architectury.loom", version = "1.9-SNAPSHOT" }
 forgeGradle = { id = "net.minecraftforge.gradle", version = "[6.0,6.2)" }
 mixin = { id = "org.spongepowered.mixin", version = "0.7-SNAPSHOT" }

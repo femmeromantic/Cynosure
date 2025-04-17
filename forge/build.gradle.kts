@@ -27,7 +27,7 @@ loom {
 
     forge {
         convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
         mixinConfig("cynosure.forge.mixins.json")
         mixinConfig("cynosure.mixins.json")
@@ -39,29 +39,34 @@ repositories {
 }
 
 dependencies {
+    // Minecraft
     minecraft(libs.minecraft)
+    // Mappings
     mappings(loom.officialMojangMappings())
+    // Forge
     forge(libs.forge)
+    // Kotlin
     implementation(kotlin("reflect"))
     implementation(libs.forge.kotlin)
     implementation(libs.mixin)
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
+    // Mixin Extras
     implementation(libs.mixinextras)
     annotationProcessor(libs.mixinextras)
     implementation(libs.forge.mixinextras)
     include(libs.forge.mixinextras)
 
+    // ASM
     compileOnly(libs.asm)
+    // Javax Annotations
     api(libs.javax.annotations)
+    // Bytecodecs
     api(libs.bytecodecs)
     include(libs.bytecodecs)
 
-    implementation(libs.kotlin.metadata) {
-        isTransitive = false
-    }
-    include(libs.kotlin.metadata) {
-        isTransitive = false
-    }
+    // Kotlin
+    implementation(libs.kotlin.metadata) { isTransitive = false }
+    include(libs.kotlin.metadata) { isTransitive = false }
     //compileOnly(libs.autoservice)
     //ksp(libs.autoservice.ksp)
     compileOnly(projects.common)
