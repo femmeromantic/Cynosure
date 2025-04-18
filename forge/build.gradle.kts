@@ -2,36 +2,28 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     idea
-    alias(libs.plugins.archLoom)
+    alias(libs.plugins.moddevgradle)
     alias(libs.plugins.ksp)
 }
 
 val modid: String by project
 val mod_name: String by project
 
+legacyForge {
+    version = "1.20.1-47.3.0"
+
+    validateAccessTransformers = true
+}
+
 base {
     archivesName = "$modid-forge"
 }
 
-loom {
-    val aw = project(":common").file("src/main/resources/$modid.accesswidener")
-    if (aw.exists()) accessWidenerPath.set(aw)
-
-    @Suppress("UnstableApiUsage")
-    mixin { defaultRefmapName.set("${modid}.refmap.json") }
-
-    mods.create(modid) {
-        sourceSet(project.sourceSets.main.get())
-        sourceSet(project(":common").sourceSets.main.get())
-    }
-
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig("cynosure.forge.mixins.json")
-        mixinConfig("cynosure.mixins.json")
-    }
+mixin {
+    add(sourceSets.main.get(), "$modid.refmap.json")
+    add(project(":common").sourceSets.main.get(), "$modid.refmap.json")
+    config("$modid.mixins.json")
+    config("$modid.forge.mixins.json")
 }
 
 repositories {
@@ -39,21 +31,22 @@ repositories {
 }
 
 dependencies {
-    // Minecraft
-    minecraft(libs.minecraft)
-    // Mappings
-    mappings(loom.officialMojangMappings())
-    // Forge
-    forge(libs.forge)
     // Kotlin
     implementation(kotlin("reflect"))
     implementation(libs.forge.kotlin)
+    // Mixin
+    implementation(libs.mixin)
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     // Mixin Extras
     implementation(libs.mixinextras)
     annotationProcessor(libs.mixinextras)
     implementation(libs.forge.mixinextras)
-    include(libs.forge.mixinextras)
+    jarJar(libs.forge.mixinextras) {
+        version {
+            strictly("[0.4.1,)")
+            prefer("0.4.1")
+        }
+    }
 
     // ASM
     compileOnly(libs.asm)
@@ -61,11 +54,22 @@ dependencies {
     api(libs.javax.annotations)
     // Bytecodecs
     api(libs.bytecodecs)
-    include(libs.bytecodecs)
+    jarJar(libs.bytecodecs) {
+        version {
+            strictly("[1.0.2,)")
+            prefer("1.0.2")
+        }
+    }
 
     // Kotlin
     implementation(libs.kotlin.metadata) { isTransitive = false }
-    include(libs.kotlin.metadata) { isTransitive = false }
+    jarJar(libs.kotlin.metadata) {
+        isTransitive = false
+        version {
+            strictly("[2.0.0,)")
+            prefer("2.0.0")
+        }
+    }
     //compileOnly(libs.autoservice)
     //ksp(libs.autoservice.ksp)
     compileOnly(projects.common)
