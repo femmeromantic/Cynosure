@@ -48,7 +48,6 @@ dependencies {
     // Kotlin
     implementation(kotlin("reflect"))
     implementation(libs.forge.kotlin)
-    implementation(libs.mixin)
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
     // Mixin Extras
     implementation(libs.mixinextras)
