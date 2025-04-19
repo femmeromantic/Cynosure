@@ -75,6 +75,17 @@ dependencies {
     compileOnly(projects.common)
 }
 
+tasks.jar {
+    manifest {
+        attributes(
+            mapOf(
+                "MixinConfigs" to "mixins.$modid.json,$modid.forge.mixins.json"
+            )
+        )
+    }
+}
+
+
 tasks {
     withType<JavaCompile> { source(project(":common").sourceSets.main.get().allSource) }
 
