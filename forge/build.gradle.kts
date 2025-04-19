@@ -79,7 +79,7 @@ tasks.jar {
     manifest {
         attributes(
             mapOf(
-                "MixinConfigs" to "mixins.$modid.json,$modid.forge.mixins.json"
+                "MixinConfigs" to "$modid.mixins.json,$modid.forge.mixins.json"
             )
         )
     }
