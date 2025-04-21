@@ -83,7 +83,7 @@ private fun subscribeClasses(mod: ModContainer, classPath: Path) {
 
         subscribeASMMethods(bus, cn)
 
-        if (FabricLoader.getInstance().isDevelopmentEnvironment || System.getProperty("cynosure.logEventSubscribers")?.toBoolean() == true)
+        if (FabricLoader.getInstance().isDevelopmentEnvironment || System.getProperty("cynosure.logEventSubscribers").toBoolean())
             CynosureEventLogger.info("Registered cynosure event subscriber for mod ${mod.metadata.id}: $className to bus $bus")
 
     } catch (e: Exception) {
