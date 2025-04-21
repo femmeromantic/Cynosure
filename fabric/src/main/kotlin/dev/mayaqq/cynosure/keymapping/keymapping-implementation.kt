@@ -8,7 +8,7 @@ internal object KeyMappingRegistryImpl : KeyMappingRegistry {
      * Register a key mapping
      * @param mapping the key mapping to register
      */
-    override fun register(mapping: KeyMapping) {
-        KeyBindingHelper.registerKeyBinding(mapping)
+    override fun register(mapping: KeyMapping): KeyMapping {
+        return KeyBindingHelper.registerKeyBinding(mapping)
     }
 }

@@ -12,9 +12,9 @@ public interface KeyMappingRegistry {
      * Register a key mapping
      * @param mapping the key mapping to register
      */
-    public fun register(mapping: KeyMapping)
+    public fun register(mapping: KeyMapping) : KeyMapping
 }
 
-public fun KeyMapping.register() {
-    KeyMappingRegistry.register(this)
+public fun KeyMapping.register(): KeyMapping {
+    return KeyMappingRegistry.register(this)
 }

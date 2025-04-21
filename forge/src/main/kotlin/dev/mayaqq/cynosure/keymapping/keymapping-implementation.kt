@@ -20,7 +20,7 @@ internal object KeyMappingRegistryImpl : KeyMappingRegistry {
      * Register a key mapping
      * @param mapping the key mapping to register
      */
-    override fun register(mapping: KeyMapping) {
+    override fun register(mapping: KeyMapping): KeyMapping {
         if (registered) {
             val options = Minecraft.getInstance().options
             options.keyMappings = ArrayUtils.add(options.keyMappings, mapping)
@@ -28,6 +28,7 @@ internal object KeyMappingRegistryImpl : KeyMappingRegistry {
         } else {
             mappings.add(mapping)
         }
+        return mapping
     }
 
     @SubscribeEvent
