@@ -1,8 +1,8 @@
 
 modLoader="kotlinforforge" #mandatory
 loaderVersion="[4.11,)" #mandatory (24 is current forge version)
-issueTrackerURL="http://codeberg.org/sery/kritter/issues" #optional
-displayURL="http://codeberg.org/sery/kritter" #optional
+issueTrackerURL="https://github.com/MayaqqDev/Cynosure/issues" #optional
+displayURL="https://github.com/MayaqqDev/Cynosure/issues" #optional
 authors="$mod_author" #optional
 logoFile="assets/cynosure/icon.png"
 license = "$license"
