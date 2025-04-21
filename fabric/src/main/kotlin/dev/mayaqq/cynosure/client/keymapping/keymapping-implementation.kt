@@ -1,4 +1,4 @@
-package dev.mayaqq.cynosure.keymapping
+package dev.mayaqq.cynosure.client.keymapping
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.KeyMapping

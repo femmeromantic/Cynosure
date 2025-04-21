@@ -1,6 +1,5 @@
 package dev.mayaqq.cynosure
 
-import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.PostInitEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.gatherEventSubscribers
@@ -9,19 +8,13 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PathPackResources
 import net.minecraft.server.packs.repository.Pack
 import net.minecraft.server.packs.repository.PackSource
-import net.minecraftforge.common.ForgeHooks
 import net.minecraftforge.event.AddPackFindersEvent
-import net.minecraftforge.event.RegisterCommandsEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.ModList
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent
-import net.minecraftforge.fml.event.lifecycle.ModLifecycleEvent
-import net.minecraftforge.fml.loading.FMLLoader
 import net.minecraftforge.forgespi.locating.IModFile
-import java.util.function.Consumer
 
 @Mod(MODID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

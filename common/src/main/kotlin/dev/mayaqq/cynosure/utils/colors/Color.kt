@@ -31,9 +31,6 @@ public value class Color internal constructor(internal val value: Int) {
         }
     }
 
-    public constructor(red: Int, green: Int, blue: Int, alpha: Int = 255)
-            : this((alpha shl 24) or (red shl 16) or (green shl 8) or blue)
-
     public val red: Int get() = (value shr 16) and 0xFF
 
     public val green: Int get() = (value shr 8) and 0xFF
@@ -65,6 +62,9 @@ public value class Color internal constructor(internal val value: Int) {
         return "Color[$red, $green, $blue, $alpha]"
     }
 }
+
+public fun Color(red: Int, green: Int, blue: Int, alpha: Int = 255): Color =
+    Color((alpha shl 24) or (red shl 16) or (green shl 8) or blue)
 
 public fun Color(red: Float, green: Float, blue: Float, alpha: Float = 1.0f): Color =
     Color((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha * 255).toInt())
