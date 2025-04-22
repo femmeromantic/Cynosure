@@ -77,7 +77,7 @@ internal class ConstantProperty<V>(private val value: V) : ReadOnlyProperty<Any?
     override fun getValue(thisRef: Any?, property: KProperty<*>): V = value
 }
 
-internal inline fun <reified S> loadService(): ServiceLoader<S> = ServiceLoader.load(S::class.java, S::class.java.classLoader)
+internal inline fun <reified S> loadService(loader: ClassLoader = S::class.java.classLoader): ServiceLoader<S> = ServiceLoader.load(S::class.java, S::class.java.classLoader)
 
 public operator fun <R, C, V> Table<R, C, V>.get(row: R, column: C): V? = get(row, column)
 

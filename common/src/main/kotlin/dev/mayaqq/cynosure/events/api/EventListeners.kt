@@ -2,9 +2,6 @@ package dev.mayaqq.cynosure.events.api
 
 import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.events.internal.generateASMEventListener
-import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.FieldNode
-import org.objectweb.asm.tree.MethodNode
 import java.lang.invoke.LambdaMetafactory
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -19,7 +16,7 @@ internal class EventListeners {
         listeners.removeIf { it.listener == listener }
     }
 
-    fun <T> addListener(callback: (T) -> Unit, priority: Int, receiveCancelled: Boolean) {
+    fun <T : Event> addListener(callback: (T) -> Unit, eventType: Class<T>, priority: Int, receiveCancelled: Boolean) {
         @Suppress("UNCHECKED_CAST")
         listeners.add(
             Listener(
@@ -27,7 +24,12 @@ internal class EventListeners {
             { callback(it as T) },
             priority,
             receiveCancelled,
-            EventPredicates(listOf { event, _ -> receiveCancelled || !event.isCancelled })
+            createEventPredicates(EventListenerData(
+                type = EventListenerData.Type.CALLBACK,
+                className = callback.javaClass.name,
+                methodName = null,
+                event = eventType
+            ))
         )
         )
     }
@@ -48,11 +50,11 @@ internal class EventListeners {
             instance?.createEventConsumer(name, method) ?: createStaticEventConsumer(name, method),
             options.priority,
             options.receiveCancelled,
-            EventPredicates(method)
+            createEventPredicates(EventListenerData(method))
         ))
     }
 
-    fun addASMListener(className: String, methodName: String, methodDesc: String, instanceFieldName: String?, instanceFieldOwner: String?, priority: Int, receiveCancelled: Boolean) {
+    fun addASMListener(className: String, methodName: String, methodDesc: String, instanceFieldName: String?, instanceFieldOwner: String?, eventType: Class<out Event>, priority: Int, receiveCancelled: Boolean) {
         try {
             listeners.add(
                 Listener(
@@ -60,11 +62,16 @@ internal class EventListeners {
                     generateASMEventListener(className, methodName, methodDesc, instanceFieldName, instanceFieldOwner),
                     priority,
                     receiveCancelled,
-                    EventPredicates(listOf { event, _ -> receiveCancelled || !event.isCancelled })
+                    createEventPredicates(EventListenerData(
+                        type = EventListenerData.Type.AUTO_METHOD,
+                        className = className.replace('/', '.'),
+                        methodName = methodName,
+                        event = eventType
+                    ))
                 )
             )
         } catch (ex: Exception) {
-            Cynosure.error("Error registering asm event listener", ex)
+            Cynosure.error("Error registering asm event listener '$className;$methodName$methodDesc'", ex)
         }
     }
 
@@ -113,6 +120,6 @@ internal class EventListeners {
         val invoker: Consumer<Any>,
         val priority: Int,
         val receiveCancelled: Boolean,
-        val predicate: EventPredicates,
+        val predicate: List<EventPredicate>,
     )
 }
