@@ -12,7 +12,7 @@ import net.minecraft.world.level.ItemLike
 @CynosureInternal
 public interface CynosureHooks {
 
-    public companion object : CynosureHooks by loadPlatform()
+    public companion object Impl : CynosureHooks by loadPlatform()
 
     public fun attributeSupplierToBuilder(supplier: AttributeSupplier): AttributeSupplier.Builder
 

@@ -1,18 +1,12 @@
 package dev.mayaqq.cynosure.utils
 
-import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.utils.mod.Mod
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.impl.launch.FabricLauncher
-import net.fabricmc.loader.impl.launch.FabricLauncherBase
-import net.fabricmc.loader.impl.launch.knot.Knot
 import net.minecraft.client.Minecraft
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.TickTask
 import net.minecraft.util.thread.BlockableEventLoop
-import org.spongepowered.asm.mixin.injection.points.MethodHead
-import java.lang.invoke.MethodHandles
 import kotlin.jvm.optionals.getOrNull
 
 
@@ -56,8 +50,6 @@ internal object GameInstanceImpl : GameInstance {
             return field
         }
         private set
-
-    private val lookup = MethodHandles.lookup()
 
     fun onLoadServer(server: MinecraftServer) {
         this.currentServer = server

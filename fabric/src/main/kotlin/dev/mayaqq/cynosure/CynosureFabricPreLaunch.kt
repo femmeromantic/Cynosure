@@ -1,6 +1,8 @@
 package dev.mayaqq.cynosure
 
-import dev.mayaqq.cynosure.events.api.*
+import dev.mayaqq.cynosure.events.api.EventBus
+import dev.mayaqq.cynosure.events.api.EventSubscriber
+import dev.mayaqq.cynosure.events.api.MainBus
 import dev.mayaqq.cynosure.events.internal.CynosureEventLogger
 import dev.mayaqq.cynosure.events.internal.subscribeASMMethods
 import dev.mayaqq.cynosure.internal.boolean
@@ -20,6 +22,7 @@ import net.fabricmc.loader.impl.launch.FabricLauncherBase
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.ClassNode
+import java.nio.file.Path
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.extension
 import kotlin.io.path.walk
@@ -44,43 +47,46 @@ internal fun onPreLaunch() {
                     .map { mod to path.relativize(it) }
             }
         }
-        .onEach { (mod, classPath) ->
-            val className = classPath.joinToString(".").dropLast(6)
-            val reader = ClassReader(FabricLauncherBase.getLauncher().getClassByteArray(className, false))
-            val cn = ClassNode()
-
-            reader.accept(cn, ClassReader.SKIP_FRAMES)
-
-            val annotation = cn.visibleAnnotations
-                ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
-                ?: return@onEach
-
-            val subscriberData = annotation.mappedValues
-
-            // TODO: Sided event handlers
-            //val env = subscriberData["env"]
-            //if (env != null && env != PlatformHooks.environment) return@onEach
-            val env = (subscriberData["env"] as? List<Array<String>>)?.map { Environment.valueOf(it[1]) }
-            if (env?.contains(PlatformHooks.environment) == false) return@onEach
-
-            try {
-                val bus =
-                    (subscriberData["bus"] as? Type)?.let {
-                        Class.forName(it.className).kotlin.objectInstance as? EventBus
-                    } ?: MainBus
-
-                subscribeASMMethods(bus, cn)
-
-                if (FabricLoader.getInstance().isDevelopmentEnvironment || System.getProperty("cynosure.logEventSubscribers")?.toBoolean() == true)
-                    CynosureEventLogger.info("Registered cynosure event subscriber for mod ${mod.metadata.id}: $className to bus $bus")
-
-            } catch (e: Exception) {
-                CynosureEventLogger.error("Failed to register event bus subscriber for mod ${mod.metadata.id}", e)
-            }
-        }
+        .onEach { (mod, classPath) -> subscribeClasses(mod, classPath) }
 
     runBlocking(Dispatchers.Default) {
         launch { flow.collect() }
     }
 
+}
+
+@CynosureInternal
+private fun subscribeClasses(mod: ModContainer, classPath: Path) {
+    val className = classPath.joinToString(".").dropLast(6)
+    val reader = ClassReader(FabricLauncherBase.getLauncher().getClassByteArray(className, false))
+    val cn = ClassNode()
+
+    reader.accept(cn, ClassReader.SKIP_FRAMES)
+
+    val annotation = cn.visibleAnnotations
+        ?.find { it.desc.descriptorToClassName() == AUTOSUB_ANNOTATION }
+        ?: return
+
+    val subscriberData = annotation.mappedValues
+
+    // TODO: Sided event handlers
+    //val env = subscriberData["env"]
+    //if (env != null && env != PlatformHooks.environment) return@onEach
+    val env = (subscriberData["env"] as? List<Array<String>>)?.map { Environment.valueOf(it[1]) }
+    if (env?.contains(PlatformHooks.environment) == false) return
+
+    try {
+        val bus =
+            (subscriberData["bus"] as? Type)?.let {
+                Class.forName(it.className).kotlin.objectInstance as? EventBus
+            } ?: MainBus
+
+        subscribeASMMethods(bus, cn)
+
+        if (FabricLoader.getInstance().isDevelopmentEnvironment || System.getProperty("cynosure.logEventSubscribers").toBoolean())
+            CynosureEventLogger.info("Registered cynosure event subscriber for mod ${mod.metadata.id}: $className to bus $bus")
+
+    } catch (e: Exception) {
+        CynosureEventLogger.error("Failed to register event bus subscriber for mod ${mod.metadata.id}", e)
+    }
 }

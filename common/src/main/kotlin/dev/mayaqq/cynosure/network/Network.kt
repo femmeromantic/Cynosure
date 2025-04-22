@@ -34,7 +34,7 @@ public interface Network {
 @CynosureInternal
 public interface NetworkProvider {
 
-    public companion object : NetworkProvider by loadPlatform()
+    public companion object Impl : NetworkProvider by loadPlatform()
 
     public fun createNetwork(networkId: ResourceLocation, protocolVersion: Int): Network
 }

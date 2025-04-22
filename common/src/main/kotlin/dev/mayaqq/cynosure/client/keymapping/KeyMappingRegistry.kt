@@ -1,4 +1,4 @@
-package dev.mayaqq.cynosure.keymapping
+package dev.mayaqq.cynosure.client.keymapping
 
 import dev.mayaqq.cynosure.internal.loadPlatform
 import net.minecraft.client.KeyMapping
@@ -15,6 +15,4 @@ public interface KeyMappingRegistry {
     public fun register(mapping: KeyMapping) : KeyMapping
 }
 
-public fun KeyMapping.register(): KeyMapping {
-    return KeyMappingRegistry.register(this)
-}
+public fun KeyMapping.register(): KeyMapping = KeyMappingRegistry.register(this)

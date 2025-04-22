@@ -1,6 +1,5 @@
-package dev.mayaqq.cynosure.keymapping
+package dev.mayaqq.cynosure.client.keymapping
 
-import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.MODID
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
@@ -24,7 +23,6 @@ internal object KeyMappingRegistryImpl : KeyMappingRegistry {
         if (registered) {
             val options = Minecraft.getInstance().options
             options.keyMappings = ArrayUtils.add(options.keyMappings, mapping)
-            Cynosure.warn("KeyMapping Added after Forge Event Fired, possible but not recommended")
         } else {
             mappings.add(mapping)
         }
@@ -34,6 +32,7 @@ internal object KeyMappingRegistryImpl : KeyMappingRegistry {
     @SubscribeEvent
     fun onKeyMappingRegister(event: RegisterKeyMappingsEvent) {
         mappings.forEach(event::register)
+        mappings.clear()
         registered = true
     }
 }

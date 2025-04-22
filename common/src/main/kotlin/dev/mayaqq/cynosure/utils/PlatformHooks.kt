@@ -18,7 +18,7 @@ public enum class Loader {
 }
 
 public interface PlatformHooks {
-    public companion object : PlatformHooks by loadPlatform()
+    public companion object Impl : PlatformHooks by loadPlatform()
 
     public val environment: Environment
 

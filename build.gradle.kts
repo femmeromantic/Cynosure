@@ -16,7 +16,7 @@ subprojects {
         maven(url = "https://repo.spongepowered.org/repository/maven-public/") { name = "Sponge / Mixin" }
         maven(url = "https://maven.parchmentmc.org") { name = "Parchment" }
         maven(url = "https://maven.fabricmc.net") { name = "FabricMC" }
-        maven(url = "https://maven.msrandom.net/repository/root") { name = "Ashley"}
+//        maven(url = "https://maven.msrandom.net/repository/root") { name = "Ashley"}
         maven(url = "https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
         maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
         maven(url = "https://maven.minecraftforge.net/") { name = "Forge" }
