@@ -22,5 +22,10 @@ public class UwUOrderedText(private val wrapped: FormattedCharSequence, private 
             }
             return builder.toString()
         }
+
+        @JvmStatic
+        public fun orderedToUwUText(sequence: FormattedCharSequence): UwUOrderedText {
+            return UwUOrderedText(sequence)
+        }
     }
 }
