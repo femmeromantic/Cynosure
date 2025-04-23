@@ -9,7 +9,6 @@ import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
-import net.minecraft.nbt.NbtUtils
 import net.minecraft.network.FriendlyByteBuf
 
 public class CynosureParticleType<T : CynosureParticleOptions<T>>(
