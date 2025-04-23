@@ -123,7 +123,7 @@ public fun onSyncDatapack(event: OnDatapackSyncEvent) {
         DataPackSyncEvent(event.player!!, true).post(context = event)
     } else {
         for (player in event.playerList.players) {
-            DataPackSyncEvent(player, false).post()
+            DataPackSyncEvent(player, false).post(context = event)
         }
     }
 }
