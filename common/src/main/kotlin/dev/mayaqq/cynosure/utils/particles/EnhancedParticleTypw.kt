@@ -34,6 +34,8 @@ public class CynosureParticleType<T : CynosureParticleOptions<T>>(
 
 public interface CynosureParticleOptions<S : CynosureParticleOptions<S>> : ParticleOptions {
 
+    override fun getType(): CynosureParticleType<out S>
+
     @Suppress("UNCHECKED_CAST")
     override fun writeToNetwork(p0: FriendlyByteBuf) {
         (type as CynosureParticleType<S>).networkCodec.encode(this as S, p0)
