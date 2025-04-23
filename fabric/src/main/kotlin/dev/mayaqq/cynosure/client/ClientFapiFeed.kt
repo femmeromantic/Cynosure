@@ -23,7 +23,7 @@ internal object ClientFapiFeed {
 
         // Registration
         CoreShaderRegistrationCallback.EVENT.register {
-            CoreShaderRegistrationEvent(it::register)
+            CoreShaderRegistrationEvent(fun(id, format, callback) = it.register(id, format, callback))
                 .post { Cynosure.error("Error registering shaders", it) }
         }
 
