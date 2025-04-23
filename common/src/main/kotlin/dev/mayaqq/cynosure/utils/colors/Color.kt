@@ -2,6 +2,7 @@ package dev.mayaqq.cynosure.utils.colors
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.teamresourceful.bytecodecs.base.ByteCodec
 import dev.mayaqq.cynosure.utils.codecs.alternatives
 import dev.mayaqq.cynosure.utils.codecs.toDataResult
 
@@ -9,16 +10,25 @@ import dev.mayaqq.cynosure.utils.codecs.toDataResult
 public value class Color internal constructor(internal val value: Int) {
 
     public companion object {
+
+        public val RGB_CODEC: Codec<Color> = RecordCodecBuilder.create { it.group(
+            Codec.INT.fieldOf("red").forGetter(Color::red),
+            Codec.INT.fieldOf("green").forGetter(Color::green),
+            Codec.INT.fieldOf("blue").forGetter(Color::blue),
+            Codec.INT.optionalFieldOf("alpha", 255).forGetter(Color::alpha)
+        ).apply(it, ::Color) }
+
+        public val VALUE_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::value)
+
+        public val HEX_CODEC: Codec<Color> = Codec.STRING.comapFlatMap({ tryParse(it).toDataResult() }, Color::toHex)
+
         public val CODEC: Codec<Color> = alternatives(
-            Codec.INT.xmap(::Color, Color::value),
-            Codec.STRING.comapFlatMap({ tryParse(it).toDataResult() }, Color::toHex),
-            RecordCodecBuilder.create { it.group(
-                Codec.INT.fieldOf("red").forGetter(Color::red),
-                Codec.INT.fieldOf("green").forGetter(Color::green),
-                Codec.INT.fieldOf("blue").forGetter(Color::blue),
-                Codec.INT.optionalFieldOf("alpha", 255).forGetter(Color::alpha)
-            ).apply(it, ::Color) }
+            RGB_CODEC,
+            VALUE_CODEC,
+            HEX_CODEC
         )
+
+        public val NETWORK_CODEC: ByteCodec<Color> = ByteCodec.INT.map(::Color, Color::value)
 
         public fun parse(data: String, format: ColorFormat = ColorFormat.ARGB): Color = tryParse(data, format).getOrThrow()
 
