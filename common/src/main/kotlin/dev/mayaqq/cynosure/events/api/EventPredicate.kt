@@ -1,9 +1,7 @@
 package dev.mayaqq.cynosure.events.api
 
 import dev.mayaqq.cynosure.utils.loadService
-import kotlinx.serialization.Serializable
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
 
 public typealias EventPredicate = (event: Event, context: Any?) -> Boolean
 

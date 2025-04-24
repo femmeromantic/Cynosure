@@ -1,12 +1,11 @@
 package dev.mayaqq.cynosure.events
 
-import com.mojang.brigadier.CommandDispatcher
-import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.api.post
-import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
+import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
 import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvent
 import dev.mayaqq.cynosure.events.entity.player.interaction.InteractionEvent
+import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.server.ServerEvent
 import dev.mayaqq.cynosure.events.world.LevelEvent
 import dev.mayaqq.cynosure.utils.GameInstanceImpl
@@ -17,9 +16,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.fabric.api.event.player.*
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
-import net.minecraft.commands.CommandBuildContext
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.Commands
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.item.ItemStack

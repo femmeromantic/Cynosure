@@ -3,16 +3,16 @@ package dev.mayaqq.cynosure.events
 
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.MODID
-import dev.mayaqq.cynosure.events.command.CommandExecuteEvent
 import dev.mayaqq.cynosure.events.api.post
 import dev.mayaqq.cynosure.events.block.BlockEvent
+import dev.mayaqq.cynosure.events.command.CommandExecuteEvent
 import dev.mayaqq.cynosure.events.command.CommandRegistrationEvent
-import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.entity.EntityCreatedEvent
 import dev.mayaqq.cynosure.events.entity.LivingEntityEvent
 import dev.mayaqq.cynosure.events.entity.MountEvent
 import dev.mayaqq.cynosure.events.entity.player.PlayerConnectionEvent
 import dev.mayaqq.cynosure.events.entity.player.interaction.InteractionEvent
+import dev.mayaqq.cynosure.events.server.DataPackSyncEvent
 import dev.mayaqq.cynosure.events.server.ServerEvent
 import dev.mayaqq.cynosure.internal.CynosureHooksImpl
 import dev.mayaqq.cynosure.items.CustomEntityItem
@@ -29,9 +29,7 @@ import net.minecraftforge.event.AddReloadListenerEvent
 import net.minecraftforge.event.CommandEvent
 import net.minecraftforge.event.OnDatapackSyncEvent
 import net.minecraftforge.event.RegisterCommandsEvent
-import net.minecraftforge.event.TickEvent.LevelTickEvent
-import net.minecraftforge.event.TickEvent.Phase
-import net.minecraftforge.event.TickEvent.ServerTickEvent
+import net.minecraftforge.event.TickEvent.*
 import net.minecraftforge.event.entity.EntityJoinLevelEvent
 import net.minecraftforge.event.entity.EntityMountEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
@@ -40,7 +38,6 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent
 import net.minecraftforge.event.entity.player.PlayerEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent
-import net.minecraftforge.event.level.BlockEvent as ForgeBlockEvent
 import net.minecraftforge.event.level.LevelEvent
 import net.minecraftforge.event.server.ServerAboutToStartEvent
 import net.minecraftforge.event.server.ServerStartedEvent
@@ -51,6 +48,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.LogicalSide
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.loading.FMLEnvironment
+import net.minecraftforge.event.level.BlockEvent as ForgeBlockEvent
 
 private val distContext = if(FMLEnvironment.dist.isClient) "client" else "server"
 

@@ -2,15 +2,12 @@ package dev.mayaqq.cynosure.fabric.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.mayaqq.cynosure.items.ItemExtension;
 import dev.mayaqq.cynosure.items.BarterCurrency;
+import dev.mayaqq.cynosure.items.ItemExtension;
 import dev.mayaqq.cynosure.items.PiglinNeutralizing;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ItemStack;

@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation
 
 internal typealias Clientpackethandler<T> = ClientNetworkContext.(T) -> Unit
 
-internal object FabricClientNetwork {
+internal class FabricClientNetwork {
 
     fun <T : Any> send(type: ResourceLocation, codec: ByteCodec<T>, packet: T) {
         val buf = FriendlyByteBuf(Unpooled.buffer())

@@ -1,6 +1,5 @@
 package dev.mayaqq.cynosure.client
 
-import com.mojang.blaze3d.vertex.VertexFormat
 import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.client.events.ClientTickEvent
@@ -12,10 +11,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
-import net.fabricmc.fabric.mixin.client.rendering.WorldRendererMixin
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.ShaderInstance
-import net.minecraft.resources.ResourceLocation
 
 internal object ClientFapiFeed {
     @CynosureInternal

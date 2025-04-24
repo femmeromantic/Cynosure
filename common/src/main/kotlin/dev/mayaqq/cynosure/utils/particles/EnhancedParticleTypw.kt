@@ -12,10 +12,10 @@ import net.minecraft.nbt.NbtOps
 import net.minecraft.network.FriendlyByteBuf
 
 public class CynosureParticleType<T : CynosureParticleOptions<T>>(
-    overrideLimiter: Boolean,
     public val codec: Codec<T>,
     public val networkCodec: ByteCodec<T>,
-) : ParticleType<T>(overrideLimiter, null) {
+    overrideLimiter: Boolean = false,
+    ) : ParticleType<T>(overrideLimiter, null) {
 
     private val deserializer = EnhancedDeserializer()
 

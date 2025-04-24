@@ -2,7 +2,9 @@ package dev.mayaqq.cynosure.events
 
 import dev.mayaqq.cynosure.CynosureForge
 import dev.mayaqq.cynosure.CynosureInternal
-import dev.mayaqq.cynosure.events.api.*
+import dev.mayaqq.cynosure.events.api.EventBus
+import dev.mayaqq.cynosure.events.api.EventSubscriber
+import dev.mayaqq.cynosure.events.api.MainBus
 import dev.mayaqq.cynosure.events.internal.CynosureEventLogger
 import dev.mayaqq.cynosure.events.internal.subscribeASMMethods
 import dev.mayaqq.cynosure.utils.Environment

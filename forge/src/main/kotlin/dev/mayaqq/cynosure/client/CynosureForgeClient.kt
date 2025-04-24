@@ -6,18 +6,24 @@ import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.MODID
 import dev.mayaqq.cynosure.client.events.CoreShaderRegistrationEvent
 import dev.mayaqq.cynosure.client.events.ParticleFactoryRegistrationEvent
+import dev.mayaqq.cynosure.client.events.entity.RenderLayerRegistrationEvent
 import dev.mayaqq.cynosure.client.render.gui.HudOverlayRegistry
 import dev.mayaqq.cynosure.client.render.gui.VanillaHud
 import dev.mayaqq.cynosure.events.api.post
-import dev.mayaqq.cynosure.internal.CynosureHooksImpl
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.renderer.ShaderInstance
+import net.minecraft.client.renderer.entity.EntityRenderer
+import net.minecraft.client.renderer.entity.LivingEntityRenderer
 import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleType
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraftforge.api.distmarker.Dist
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent
+import net.minecraftforge.client.event.EntityRenderersEvent
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent
 import net.minecraftforge.client.event.RegisterShadersEvent
@@ -60,17 +66,21 @@ public object CynosureForgeClient {
         }
     }
 
-    @SubscribeEvent
-    public fun onRegisterReloadListeners(event: RegisterClientReloadListenersEvent) {
-        val toRegister = CynosureHooksImpl.DEFERRED_CLIENT_RELOAD_LISTENERS
-        toRegister.forEach { event.registerReloadListener(it) }
-        toRegister.clear()
-        CynosureHooksImpl.hasResourceLoaderEventFired = true
-    }
+
 
     @SubscribeEvent
     public fun onRegisterShaders(event: RegisterShadersEvent) {
         CoreShaderRegistrationEvent(fun(id, format, onLoad) = event.registerShader(ShaderInstance(event.resourceProvider, id, format), onLoad))
             .post(context = event) { Cynosure.error("Error registering shaders", it) }
+    }
+
+    @SubscribeEvent
+    @CynosureInternal
+    public fun onRegisterRenderLayers(event: EntityRenderersEvent.AddLayers) {
+        RenderLayerRegistrationEvent(Minecraft.getInstance().entityRenderDispatcher, event.entityModels, object : RenderLayerRegistrationEvent.Context {
+            override fun getSkin(name: String): EntityRenderer<out Player>? = event.getSkin(name)
+
+            override fun <T : LivingEntity> getEntity(entity: EntityType<T>): LivingEntityRenderer<in T, *>? = event.getRenderer(entity)
+        }).post(context = event) { Cynosure.error("Error registering entity layers", it) }
     }
 }
