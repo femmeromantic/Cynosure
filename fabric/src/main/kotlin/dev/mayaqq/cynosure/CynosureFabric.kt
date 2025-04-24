@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation
 internal object CynosureFabric {
     fun init() {
         Cynosure.init()
-        EntityModelLayerRegistry
         // Didnt put these in fapi feed cs they're more for internal stuff
         ServerLifecycleEvents.SERVER_STARTING.register(GameInstanceImpl::onLoadServer)
         ServerLifecycleEvents.SERVER_STOPPED.register { _ -> GameInstanceImpl.onUnloadServer() }
