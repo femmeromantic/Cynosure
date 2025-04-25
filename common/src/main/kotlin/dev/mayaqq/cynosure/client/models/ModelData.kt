@@ -126,14 +126,12 @@ private val ModelElementGroup.indicesAndSubgroubs: List<Either<Int, ModelElement
     get() = indices.map { Either.left<Int, ModelElementGroup>(it) } + subgroups.map { Either.right(it) }
 
 public data class ModelData(
-    val texture: ResourceLocation,
     val renderType: ModelRenderType = ModelRenderType.CUTOUT,
     val elements: List<ModelElement>,
     val groups: List<ModelElementGroup>,
 ) {
     public companion object {
         public val CODEC: Codec<ModelData> = RecordCodecBuilder.create { it.group(
-            ResourceLocation.CODEC fieldOf ModelData::texture,
             ModelRenderType.CODEC fieldOf ModelData::renderType,
             ModelElement.CODEC.listOf() fieldOf ModelData::elements,
             ModelElementGroup.CODEC.listOf() fieldOf ModelData::groups

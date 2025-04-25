@@ -32,6 +32,8 @@ public fun <I : Any, V> mapBacked(default: V): ReadWriteProperty<I, V> = MapBack
 
 public fun <I : Any, V> mapBacked(initializer: (I) -> V): ReadWriteProperty<I, V> = MapBackedProperty.Intialized(initializer)
 
+public operator fun <T> ThreadLocal<T>.getValue(thisRef: Any?, property: KProperty<*>): T = get()
+
 public infix fun <T, C : MutableCollection<in T>> Iterable<T>.into(destination: C): C {
     destination.addAll(this)
     return destination

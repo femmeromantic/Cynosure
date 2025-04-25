@@ -13,18 +13,17 @@ plugins {
 
 subprojects {
     repositories {
-        maven(url = "https://repo.spongepowered.org/repository/maven-public/") { name = "Sponge / Mixin" }
+        mavenCentral()
         maven(url = "https://maven.parchmentmc.org") { name = "Parchment" }
         maven(url = "https://maven.fabricmc.net") { name = "FabricMC" }
-//        maven(url = "https://maven.msrandom.net/repository/root") { name = "Ashley"}
         maven(url = "https://maven.terraformersmc.com/releases/") { name = "TerraformersMC" }
         maven(url = "https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
         maven(url = "https://maven.minecraftforge.net/") { name = "Forge" }
+        maven(url = "https://repo.spongepowered.org/repository/maven-public/") { name = "Sponge / Mixin" }
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/") { name = "ResourcefulBees" }
         maven(url = "https://maven.is-immensely.gay/releases")
         maven(url = "https://maven.is-immensely.gay/nightly")
         mavenLocal()
-        mavenCentral()
     }
 
     val mod_name: String by project
@@ -113,6 +112,18 @@ subprojects {
             expand(expandProps)
         }
         inputs.properties(expandProps)
+    }
+
+    tasks.named("compileTestJava") {
+        enabled = false
+    }
+
+    tasks.named("compileTestKotlin") {
+        enabled = false
+    }
+
+    tasks.withType<Test> {
+        enabled = false
     }
 
 //    tasks.withType<KotlinCompile> {

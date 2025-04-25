@@ -1,8 +1,11 @@
 package dev.mayaqq.cynosure.client.models.baked
 
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
+import dev.mayaqq.cynosure.utils.colors.*
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.resources.ResourceLocation
 import org.joml.Vector3f
@@ -11,15 +14,14 @@ import org.joml.Vector4f
 
 public open class CustomBakedModel(
     public val mesh: Mesh,
-    public val texture: ResourceLocation,
     public val renderType: ModelRenderType,
     public val minBound: Vector3fc,
     public val maxBound: Vector3fc
 ) {
 
     public open fun render(
-        bufferSource: MultiBufferSource, matrices: PoseStack,
-        color: Int = 0xFFFFFFF,
+        buffer: VertexConsumer, matrices: PoseStack,
+        color: Color = Colors.WHITE,
         light: Int = LightTexture.FULL_BRIGHT,
         overlay: Int = OverlayTexture.NO_OVERLAY
     ) {
@@ -27,9 +29,8 @@ public open class CustomBakedModel(
 
         val posVec = Vector4f()
         val normalVec = Vector3f()
-        val buffer = bufferSource.getBuffer(renderType.apply(texture))
 
-        for(i in 0 ..< mesh.vertexCount) {
+        for(i in 0..<mesh.vertexCount) {
             posVec.set(mesh.x(i), mesh.y(i), mesh.z(i))
                 .mul(matrices.last().pose())
             normalVec.set(mesh.normalX(i), mesh.normalY(i), mesh.normalZ(i))
@@ -37,10 +38,7 @@ public open class CustomBakedModel(
 
             buffer.vertex(
                 posVec.x, posVec.y, posVec.z,
-                (color shr 16 and 0xFF) / 255f,
-                (color shr 8 and 0xFF) / 255f,
-                (color and 0xFF) / 255f,
-                (color ushr 24 and 0xFF) / 255f,
+                color.floatRed, color.floatGreen, color.floatBlue, color.floatAlpha,
                 mesh.u(i), mesh.v(i),
                 overlay, light,
                 normalVec.x, normalVec.y, normalVec.z

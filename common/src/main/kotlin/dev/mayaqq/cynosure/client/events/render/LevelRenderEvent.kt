@@ -12,11 +12,6 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.HitResult
 
-/**
- * Invoked when the level renderer reloads
- */
-public object ReloadLevelRendererEvent : Event
-
 public sealed class LevelRenderEvent(
     public val level: ClientLevel,
     public val renderer: LevelRenderer,

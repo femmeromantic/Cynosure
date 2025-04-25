@@ -16,6 +16,7 @@
     "accessor.TrackedEntityAccessor"
   ],
   "client": [
+    "client.GameRendererMixin",
     "client.LevelRendererMixin",
     "client.RenderBuffersMixin",
     "client.accessor.LivingEntityRendererAccessor"
