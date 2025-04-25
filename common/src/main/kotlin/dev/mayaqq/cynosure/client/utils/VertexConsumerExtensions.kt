@@ -10,7 +10,7 @@ import net.minecraft.core.Direction.Axis
 import net.minecraft.core.Direction.AxisDirection
 
 public fun VertexConsumer.color(color: Color): VertexConsumer {
-    this.color(color.argb.toInt())
+    this.color(color.value)
     return this
 }
 

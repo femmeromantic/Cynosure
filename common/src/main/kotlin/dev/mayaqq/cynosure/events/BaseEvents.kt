@@ -14,11 +14,11 @@ public object PostInitEvent : Event
 @RootEventClass
 public abstract class InteractionResultEvent : ReturningEvent<InteractionResult>() {
     override val isCancelled: Boolean
-        get() = super.isCancelled && result?.consumesAction() == true
+        get() = result?.consumesAction() == true
 }
 
 @RootEventClass
 public abstract class InteractionResultHolderEvent<T> : ReturningEvent<InteractionResultHolder<T>>() {
     override val isCancelled: Boolean
-        get() = super.isCancelled && result?.result?.consumesAction() == true
+        get() = result?.result?.consumesAction() == true
 }

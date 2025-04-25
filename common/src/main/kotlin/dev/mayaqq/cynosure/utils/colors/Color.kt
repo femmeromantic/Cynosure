@@ -2,23 +2,33 @@ package dev.mayaqq.cynosure.utils.colors
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.teamresourceful.bytecodecs.base.ByteCodec
 import dev.mayaqq.cynosure.utils.codecs.alternatives
 import dev.mayaqq.cynosure.utils.codecs.toDataResult
 
 @JvmInline
-public value class Color internal constructor(internal val value: Int) {
+public value class Color internal constructor(@PublishedApi internal val value: Int) {
 
     public companion object {
+
+        public val RGB_CODEC: Codec<Color> = RecordCodecBuilder.create { it.group(
+            Codec.INT.fieldOf("red").forGetter(Color::red),
+            Codec.INT.fieldOf("green").forGetter(Color::green),
+            Codec.INT.fieldOf("blue").forGetter(Color::blue),
+            Codec.INT.optionalFieldOf("alpha", 255).forGetter(Color::alpha)
+        ).apply(it, ::Color) }
+
+        public val VALUE_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::value)
+
+        public val HEX_CODEC: Codec<Color> = Codec.STRING.comapFlatMap({ tryParse(it).toDataResult() }, Color::toHex)
+
         public val CODEC: Codec<Color> = alternatives(
-            Codec.INT.xmap(::Color, Color::value),
-            Codec.STRING.comapFlatMap({ tryParse(it).toDataResult() }, Color::toHex),
-            RecordCodecBuilder.create { it.group(
-                Codec.INT.fieldOf("red").forGetter(Color::red),
-                Codec.INT.fieldOf("green").forGetter(Color::green),
-                Codec.INT.fieldOf("blue").forGetter(Color::blue),
-                Codec.INT.optionalFieldOf("alpha", 255).forGetter(Color::alpha)
-            ).apply(it, ::Color) }
+            RGB_CODEC,
+            VALUE_CODEC,
+            HEX_CODEC
         )
+
+        public val NETWORK_CODEC: ByteCodec<Color> = ByteCodec.INT.map(::Color, Color::value)
 
         public fun parse(data: String, format: ColorFormat = ColorFormat.ARGB): Color = tryParse(data, format).getOrThrow()
 
@@ -31,15 +41,15 @@ public value class Color internal constructor(internal val value: Int) {
         }
     }
 
-    public val red: Int get() = (value shr 16) and 0xFF
+    public inline val red: Int get() = (value shr 16) and 0xFF
 
-    public val green: Int get() = (value shr 8) and 0xFF
+    public inline val green: Int get() = (value shr 8) and 0xFF
 
-    public val blue: Int get() = value and 0xFF
+    public inline val blue: Int get() = value and 0xFF
 
-    public val alpha: Int get() = value ushr 24
+    public inline val alpha: Int get() = value ushr 24
 
-    public val argb: UInt get() = value.toUInt()
+    public inline val argb: UInt get() = value.toUInt()
 
     public infix fun mix(other: Color): Color = this.mix(other, 0.5f)
 
@@ -72,13 +82,13 @@ public fun Color(red: Float, green: Float, blue: Float, alpha: Float = 1.0f): Co
 public fun Color(argb: UInt): Color = Color(argb.toInt())
 
 // Some extensions just to keep the class itself cleaner
-public val Color.floatRed: Float get() = red / 255f
+public inline val Color.floatRed: Float get() = red / 255f
 
-public val Color.floatGreen: Float get() = green / 255f
+public inline val Color.floatGreen: Float get() = green / 255f
 
-public val Color.floatBlue: Float get() = blue / 255f
+public inline val Color.floatBlue: Float get() = blue / 255f
 
-public val Color.floatAlpha: Float get() = alpha / 255f
+public inline val Color.floatAlpha: Float get() = alpha / 255f
 
 public fun Color.lighter(): Color = mix(Colors.WHITE, 0.25f)
 

@@ -16,9 +16,7 @@ public interface CynosureHooks {
 
     public fun attributeSupplierToBuilder(supplier: AttributeSupplier): AttributeSupplier.Builder
 
-    public fun registerResourcepackReloadListener(id: ResourceLocation, listener: PreparableReloadListener)
-
-    public fun registerDatapackReloadListener(id: ResourceLocation, listener: PreparableReloadListener)
+    public fun registerReloadListener(id: ResourceLocation, listener: PreparableReloadListener)
 
     public fun registerBurnTime(tag: TagKey<Item>, time: Int)
 

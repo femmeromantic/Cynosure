@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalSerializationApi::class)
+@file:Suppress("UNCHECKED_CAST")
 package dev.mayaqq.cynosure.utils.serialization
 
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -26,21 +27,21 @@ public inline fun <T, R> KSerializer<T>.map(name: String, crossinline to: (T) ->
 }
 
 
-public infix fun <S, T> KSerializer<T>.fieldOf(property: KProperty1<S, T>): StructComponent<S, T> {
-    return StructComponent(property.findAnnotation<SerialName>()?.value ?: property.name, this, property)
+public infix fun <S, T> KSerializer<T>.fieldOf(property: KProperty1<S, T>): KStructureComponent<S, T> {
+    return KStructureComponent(property.findAnnotation<SerialName>()?.value ?: property.name, this, property)
 }
 
 
-public fun <S, T> KSerializer<T>.fieldOf(name: String, getter: (S) -> T): StructComponent<S, T> {
-    return StructComponent(name, this, getter)
+public fun <S, T> KSerializer<T>.fieldOf(name: String, getter: (S) -> T): KStructureComponent<S, T> {
+    return KStructureComponent(name, this, getter)
 }
 
-public inline operator fun <S, reified T> KProperty1<S, T>.unaryPlus(): StructComponent<S, T> = serializer<T>() fieldOf this
+public inline operator fun <S, reified T> KProperty1<S, T>.unaryPlus(): KStructureComponent<S, T> = serializer<T>() fieldOf this
 
 public fun <S> classSerializer(
     name: String,
     constructor: Function<S>,
-    vararg components: StructComponent<S, *>
+    vararg components: KStructureComponent<S, *>
 ) {
 
     val ctor = constructor::class.memberFunctions.find { it.name == "invoke" }
@@ -51,7 +52,7 @@ public fun <S> classSerializer(
 // Function for arity 1
 public inline fun <S, T1> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
+    f1: KStructureComponent<S, T1>,
     crossinline constructor: (T1) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
@@ -76,7 +77,7 @@ public inline fun <S, T1> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!)
+        return constructor(v1 as T1)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -89,8 +90,8 @@ public inline fun <S, T1> buildClassSerializer(
 // Function for arity 2
 public inline fun <S, T1, T2> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
     crossinline constructor: (T1, T2) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
@@ -119,7 +120,7 @@ public inline fun <S, T1, T2> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!)
+        return constructor(v1 as T1, v2 as T2)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -133,9 +134,9 @@ public inline fun <S, T1, T2> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
     crossinline constructor: (T1, T2, T3) -> S
 ) : KSerializer<S> = object : KSerializer<S> {
 
@@ -168,7 +169,7 @@ public inline fun <S, T1, T2, T3> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -182,10 +183,10 @@ public inline fun <S, T1, T2, T3> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
     crossinline constructor: (T1, T2, T3, T4) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
@@ -222,7 +223,7 @@ public inline fun <S, T1, T2, T3, T4> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -240,11 +241,11 @@ public inline fun <S, T1, T2, T3, T4> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4, T5> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
     crossinline constructor: (T1, T2, T3, T4, T5) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
@@ -285,7 +286,7 @@ public inline fun <S, T1, T2, T3, T4, T5> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -301,12 +302,12 @@ public inline fun <S, T1, T2, T3, T4, T5> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
-    f6: StructComponent<S, T6>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
+    f6: KStructureComponent<S, T6>,
     crossinline constructor: (T1, T2, T3, T4, T5, T6) -> S
 ): KSerializer<S> = object : KSerializer<S> {
 
@@ -368,13 +369,13 @@ public inline fun <S, T1, T2, T3, T4, T5, T6> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4, T5, T6, T7> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
-    f6: StructComponent<S, T6>,
-    f7: StructComponent<S, T7>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
+    f6: KStructureComponent<S, T6>,
+    f7: KStructureComponent<S, T7>,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7) -> S
 ) : KSerializer<S> = object : KSerializer<S> {
 
@@ -423,7 +424,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!, v6!!, v7!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5, v6 as T6, v7 as T7)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -441,14 +442,14 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
-    f6: StructComponent<S, T6>,
-    f7: StructComponent<S, T7>,
-    f8: StructComponent<S, T8>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
+    f6: KStructureComponent<S, T6>,
+    f7: KStructureComponent<S, T7>,
+    f8: KStructureComponent<S, T8>,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8) -> S
 ) : KSerializer<S> = object : KSerializer<S> {
 
@@ -501,7 +502,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!, v6!!, v7!!, v8!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5, v6 as T6, v7 as T7, v8 as T8)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -521,15 +522,15 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8> buildClassSerializer(
 // Arity 9
 public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
-    f6: StructComponent<S, T6>,
-    f7: StructComponent<S, T7>,
-    f8: StructComponent<S, T8>,
-    f9: StructComponent<S, T9>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
+    f6: KStructureComponent<S, T6>,
+    f7: KStructureComponent<S, T7>,
+    f8: KStructureComponent<S, T8>,
+    f9: KStructureComponent<S, T9>,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> S
 ) : KSerializer<S> = object : KSerializer<S> {
 
@@ -586,7 +587,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9> buildClassSerializer(
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!, v6!!, v7!!, v8!!, v9!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5, v6 as T6, v7 as T7, v8 as T8, v9 as T9)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -606,16 +607,16 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9> buildClassSerializer(
 
 public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> buildClassSerializer(
     name: String,
-    f1: StructComponent<S, T1>,
-    f2: StructComponent<S, T2>,
-    f3: StructComponent<S, T3>,
-    f4: StructComponent<S, T4>,
-    f5: StructComponent<S, T5>,
-    f6: StructComponent<S, T6>,
-    f7: StructComponent<S, T7>,
-    f8: StructComponent<S, T8>,
-    f9: StructComponent<S, T9>,
-    f10: StructComponent<S, T10>,
+    f1: KStructureComponent<S, T1>,
+    f2: KStructureComponent<S, T2>,
+    f3: KStructureComponent<S, T3>,
+    f4: KStructureComponent<S, T4>,
+    f5: KStructureComponent<S, T5>,
+    f6: KStructureComponent<S, T6>,
+    f7: KStructureComponent<S, T7>,
+    f8: KStructureComponent<S, T8>,
+    f9: KStructureComponent<S, T9>,
+    f10: KStructureComponent<S, T10>,
     crossinline constructor: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> S
 ) : KSerializer<S> = object : KSerializer<S> {
 
@@ -676,7 +677,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> buildClassSeriali
             }
         }
 
-        return constructor(v1!!, v2!!, v3!!, v4!!, v5!!, v6!!, v7!!, v8!!, v9!!, v10!!)
+        return constructor(v1 as T1, v2 as T2, v3 as T3, v4 as T4, v5 as T5, v6 as T6, v7 as T7, v8 as T8, v9 as T9, v10 as T10)
     }
 
     override fun serialize(encoder: Encoder, value: S) {
@@ -696,7 +697,7 @@ public inline fun <S, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> buildClassSeriali
 }
 
 
-public data class StructComponent<S, T>(
+public data class KStructureComponent<S, T>(
     val key: String,
     val serializer: KSerializer<T>,
     val getter: (S) -> T

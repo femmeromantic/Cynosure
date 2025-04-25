@@ -1,13 +1,11 @@
 package dev.mayaqq.cynosure.network
 
-import com.teamresourceful.bytecodecs.base.ByteCodec
 import dev.mayaqq.cynosure.CynosureInternal
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
-import kotlin.reflect.KClass
 
 internal class FabricNetwork(
     private val channel: ResourceLocation,
@@ -15,39 +13,30 @@ internal class FabricNetwork(
 ) : Network {
 
     val client: FabricClientNetwork? =
-        if(FabricLoader.getInstance().environmentType == EnvType.CLIENT) FabricClientNetwork else null
+        if(FabricLoader.getInstance().environmentType == EnvType.CLIENT) FabricClientNetwork() else null
 
     private fun ResourceLocation.withProtocolVersion() = ResourceLocation(namespace, "$path/v$protocolVersion")
 
-    override fun <T : Any> sendToClient(
-        client: ServerPlayer,
-        id: ResourceLocation,
-        serializer: ByteCodec<T>,
-        packet: T
-    ) {
-        FabricServerNetwork.send(client, id.withProtocolVersion(), serializer, packet)
+    override fun <T : Any> sendToClient(client: ServerPlayer, info: Network.PacketInfo<T>, packet: T) {
+        FabricServerNetwork.send(client, info.id.withProtocolVersion(), info.codec, packet)
     }
 
-    override fun <T : Any> sendToServer(id: ResourceLocation, serializer: ByteCodec<T>, packet: T) {
-        client?.send(id.withProtocolVersion(), serializer, packet)
+    override fun <T : Any> sendToServer(info: Network.PacketInfo<T>, packet: T) {
+        client?.send(info.id.withProtocolVersion(), info.codec, packet)
     }
 
     override fun <T : Any> registerClientboundReceiver(
-        type: KClass<T>,
-        id: ResourceLocation,
-        codec: ByteCodec<T>,
+        info: Network.PacketInfo<T>,
         handler: ClientNetworkContext.(T) -> Unit
     ) {
-        client?.register(id.withProtocolVersion(), codec, handler)
+        client?.register(info.id.withProtocolVersion(), info.codec, handler)
     }
 
     override fun <T : Any> registerServerboundReceiver(
-        type: KClass<T>,
-        id: ResourceLocation,
-        codec: ByteCodec<T>,
+        info: Network.PacketInfo<T>,
         handler: ServerNetworkContext.(T) -> Unit
     ) {
-        FabricServerNetwork.register(id.withProtocolVersion(), codec, handler)
+        FabricServerNetwork.register(info.id.withProtocolVersion(), info.codec, handler)
     }
 
     override fun canSendToPlayer(player: ServerPlayer): Boolean {

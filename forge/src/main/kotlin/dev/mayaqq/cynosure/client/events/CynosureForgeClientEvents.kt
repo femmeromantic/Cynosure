@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LevelRenderer
 import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.world.level.block.Blocks
-import net.minecraft.world.phys.BlockHitResult
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.RenderGuiEvent
 import net.minecraftforge.client.event.RenderHighlightEvent

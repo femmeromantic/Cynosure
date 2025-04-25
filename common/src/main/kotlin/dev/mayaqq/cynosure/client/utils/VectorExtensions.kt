@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE")
 package dev.mayaqq.cynosure.client.utils
 
 import org.joml.Vector2fc

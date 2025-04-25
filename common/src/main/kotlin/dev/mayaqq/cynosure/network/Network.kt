@@ -6,29 +6,30 @@ import dev.mayaqq.cynosure.internal.loadPlatform
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
-import kotlin.reflect.KClass
 
 public interface Network {
 
-    public fun <T : Any> sendToClient(client: ServerPlayer, id: ResourceLocation, serializer: ByteCodec<T>, packet: T)
+    public fun <T : Any> sendToClient(client: ServerPlayer, info: PacketInfo<T>, packet: T)
 
-    public fun <T : Any> sendToServer(id: ResourceLocation, serializer: ByteCodec<T>, packet: T)
+    public fun <T : Any> sendToServer(info: PacketInfo<T>, packet: T)
 
     public fun <T : Any> registerClientboundReceiver(
-        type: KClass<T>,
-        id: ResourceLocation,
-        codec: ByteCodec<T>,
+        info: PacketInfo<T>,
         handler: ClientNetworkContext.(T) -> Unit
     )
 
     public fun <T : Any> registerServerboundReceiver(
-        type: KClass<T>,
-        id: ResourceLocation,
-        codec: ByteCodec<T>,
+        info: PacketInfo<T>,
         handler: ServerNetworkContext.(T) -> Unit
     )
 
     public fun canSendToPlayer(player: ServerPlayer): Boolean
+
+    public data class PacketInfo<T : Any>(
+        public val clazz: Class<T>,
+        public val id: ResourceLocation,
+        public val codec: ByteCodec<T>
+    )
 }
 
 @CynosureInternal

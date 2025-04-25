@@ -1,7 +1,9 @@
 package dev.mayaqq.cynosure.client.models.baked
 
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
 import dev.mayaqq.cynosure.client.models.animations.Animatable
+import dev.mayaqq.cynosure.utils.colors.Color
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.resources.ResourceLocation
 import org.joml.Quaternionf
@@ -9,13 +11,12 @@ import org.joml.Vector3fc
 
 public class BakedModelTree(
     mesh: Mesh,
-    texture: ResourceLocation,
     renderType: ModelRenderType,
     minBound: Vector3fc,
     maxBound: Vector3fc,
     private val origin: Vector3fc,
     private val children: Map<String, BakedModelTree>
-) : CustomBakedModel(mesh, texture, renderType, minBound, maxBound), Animatable, Animatable.Provider {
+) : CustomBakedModel(mesh, renderType, minBound, maxBound), Animatable, Animatable.Provider {
 
     private var x: Float = 0f
     private var y: Float = 0f
@@ -28,7 +29,7 @@ public class BakedModelTree(
     private var zScale: Float = 1f
 
     override fun offsetPosition(offset: Vector3fc) {
-        x = offset.x
+        x = offset.x()
         y = offset.y()
         z = offset.z()
     }
@@ -74,13 +75,13 @@ public class BakedModelTree(
         poseStack.translate(-origin.x, -origin.y, -origin.z)
     }
 
-    override fun render(bufferSource: MultiBufferSource, matrices: PoseStack, color: Int, light: Int, overlay: Int) {
+    override fun render(buffer: VertexConsumer, matrices: PoseStack, color: Color, light: Int, overlay: Int) {
         applyTransform(matrices)
-        super.render(bufferSource, matrices, color, light, overlay)
+        super.render(buffer, matrices, color, light, overlay)
 
         children.forEach { (_, child) ->
             matrices.pushPose()
-            child.render(bufferSource, matrices, color, light, overlay)
+            child.render(buffer, matrices, color, light, overlay)
             matrices.popPose()
         }
     }

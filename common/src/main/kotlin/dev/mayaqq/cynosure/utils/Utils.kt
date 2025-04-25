@@ -32,6 +32,8 @@ public fun <I : Any, V> mapBacked(default: V): ReadWriteProperty<I, V> = MapBack
 
 public fun <I : Any, V> mapBacked(initializer: (I) -> V): ReadWriteProperty<I, V> = MapBackedProperty.Intialized(initializer)
 
+public operator fun <T> ThreadLocal<T>.getValue(thisRef: Any?, property: KProperty<*>): T = get()
+
 public infix fun <T, C : MutableCollection<in T>> Iterable<T>.into(destination: C): C {
     destination.addAll(this)
     return destination
@@ -77,7 +79,7 @@ internal class ConstantProperty<V>(private val value: V) : ReadOnlyProperty<Any?
     override fun getValue(thisRef: Any?, property: KProperty<*>): V = value
 }
 
-internal inline fun <reified S> loadService(): ServiceLoader<S> = ServiceLoader.load(S::class.java, S::class.java.classLoader)
+internal inline fun <reified S> loadService(loader: ClassLoader = S::class.java.classLoader): ServiceLoader<S> = ServiceLoader.load(S::class.java, S::class.java.classLoader)
 
 public operator fun <R, C, V> Table<R, C, V>.get(row: R, column: C): V? = get(row, column)
 

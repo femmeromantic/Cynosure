@@ -3,6 +3,7 @@ package dev.mayaqq.cynosure.client.models
 import dev.mayaqq.cynosure.client.models.baked.*
 import dev.mayaqq.cynosure.client.utils.grow
 import dev.mayaqq.cynosure.client.utils.shrink
+import dev.mayaqq.cynosure.utils.getValue
 import dev.mayaqq.cynosure.utils.into
 import dev.mayaqq.cynosure.utils.normalized
 import dev.mayaqq.cynosure.utils.radians
@@ -15,10 +16,10 @@ import net.minecraft.core.Direction.Axis
 import net.minecraft.util.Mth
 import org.joml.*
 
-private val BAKERY: ThreadLocal<ModelBakery> = ThreadLocal.withInitial(::ModelBakery)
+private val BAKERY: ModelBakery by ThreadLocal.withInitial(::ModelBakery)
 
 public fun ModelData.bake(): Result<CustomBakedModel> = runCatching {
-    if (groups.isEmpty()) BAKERY.get().bakeSimple(this) else BAKERY.get().bakeAnimatable(this)
+    if (groups.isEmpty()) BAKERY.bakeSimple(this) else BAKERY.bakeAnimatable(this)
 }
 
 private const val RESCALE_22_5 = 0.08239221f
@@ -38,7 +39,7 @@ private class ModelBakery {
 
     fun bakeSimple(data: ModelData): CustomBakedModel {
         resetBounds()
-        return CustomBakedModel(bakeMesh(data.elements), data.texture, data.renderType, minBound, maxBound)
+        return CustomBakedModel(bakeMesh(data.elements), data.renderType, minBound, maxBound)
     }
 
     fun bakeAnimatable(data: ModelData): BakedModelTree {
@@ -54,12 +55,11 @@ private class ModelBakery {
         }
 
         return BakedModelTree(if(ungrouped.isEmpty()) Mesh.EMPTY else bakeMesh(ungrouped.map(data.elements::get)),
-            data.texture, data.renderType, Vector3f(minBound), Vector3f(maxBound), ZERO_VEC, rootGroups)
+            data.renderType, Vector3f(minBound), Vector3f(maxBound), ZERO_VEC, rootGroups)
     }
 
     private fun ModelElementGroup.compile(parent: ModelData, resolver: (Int) -> ModelElement): BakedModelTree = BakedModelTree(
         bakeMesh(indices.map(resolver)),
-        parent.texture,
         renderType ?: parent.renderType,
         Vector3f(minBound), Vector3f(maxBound), origin,
         subgroups.associate { it.name to it.compile(parent, resolver) }

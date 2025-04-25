@@ -54,7 +54,7 @@ public open class EventBus {
 
     public fun <E : Event> register(clazz: Class<E>, priority: Int = 0, receiveCancelled: Boolean = false, handler: (E) -> Unit) {
         unregisterHandler(clazz)
-        listeners.getOrPut(clazz, ::EventListeners).addListener(handler, priority, receiveCancelled)
+        listeners.getOrPut(clazz, ::EventListeners).addListener(handler, clazz, priority, receiveCancelled)
     }
 
     public inline fun <reified E : Event> unregister(noinline callback: (E) -> Unit) {
@@ -82,7 +82,7 @@ public open class EventBus {
         if (!Event::class.java.isAssignableFrom(event)) return
         unregisterHandler(event)
         listeners.getOrPut(event as Class<Event>, ::EventListeners)
-            .addASMListener(className, methodName, methodDesc, instanceFieldName, instanceFieldOwner, priority, receiveCancelled)
+            .addASMListener(className, methodName, methodDesc, instanceFieldName, instanceFieldOwner, event as Class<out Event>, priority, receiveCancelled)
     }
 
     @Suppress("UNCHECKED_CAST")

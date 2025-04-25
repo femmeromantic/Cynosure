@@ -6,12 +6,12 @@ import dev.mayaqq.cynosure.events.fapiFeed
 import dev.mayaqq.cynosure.internal.arrayOrNull
 import dev.mayaqq.cynosure.internal.getCynosureValue
 import dev.mayaqq.cynosure.utils.GameInstanceImpl
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
-import net.fabricmc.loader.api.metadata.CustomValue
 import net.fabricmc.loader.api.metadata.CustomValue.CvArray
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation

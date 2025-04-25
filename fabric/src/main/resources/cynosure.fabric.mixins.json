@@ -17,6 +17,7 @@
   ],
   "client": [
     "client.ClientLevelMixin",
+    "client.EntityRenderersMixin",
     "client.GuiMixin",
     "client.LevelRendererMixin",
     "client.MinecraftMixin"
