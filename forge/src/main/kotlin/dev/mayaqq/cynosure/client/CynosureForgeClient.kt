@@ -12,6 +12,7 @@ import dev.mayaqq.cynosure.client.render.gui.VanillaHud
 import dev.mayaqq.cynosure.events.api.post
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.model.EntityModel
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.renderer.ShaderInstance
@@ -80,7 +81,7 @@ public object CynosureForgeClient {
         RenderLayerRegistrationEvent(Minecraft.getInstance().entityRenderDispatcher, event.entityModels, object : RenderLayerRegistrationEvent.Context {
             override fun getSkin(name: String): EntityRenderer<out Player>? = event.getSkin(name)
 
-            override fun <T : LivingEntity> getEntity(entity: EntityType<T>): LivingEntityRenderer<in T, *>? = event.getRenderer(entity)
+            override fun <T : LivingEntity> getEntity(entity: EntityType<T>): LivingEntityRenderer<T, EntityModel<T>>? = event.getRenderer(entity)
         }).post(context = event) { Cynosure.error("Error registering entity layers", it) }
     }
 }
