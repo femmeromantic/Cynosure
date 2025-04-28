@@ -35,7 +35,6 @@ public class ParticleFactoryRegistrationEvent(private val context: Context) : Ev
 }
 
 public class ParticleRenderTypeRegistrationEvent(
-    public val particleEngine: ParticleEngine,
     private val renderOrder: MutableList<ParticleRenderType>
 ) : Event {
 
