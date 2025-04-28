@@ -10,7 +10,6 @@
     "ItemEntityMixin",
     "LevelMixin",
     "LivingEntityMixin",
-    "PlayerMixin",
     "ServerPlayerMixin",
     "accessor.ChunkMapAccessor",
     "accessor.TrackedEntityAccessor"
@@ -18,6 +17,7 @@
   "client": [
     "client.GameRendererMixin",
     "client.LevelRendererMixin",
+    "client.ParticleEngineMixin",
     "client.RenderBuffersMixin",
     "client.accessor.LivingEntityRendererAccessor"
   ],
