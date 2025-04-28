@@ -18,8 +18,7 @@ public class RenderBuffersMixin {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/Util;make(Ljava/lang/Object;Ljava/util/function/Consumer;)Ljava/lang/Object;"
-        ),
-        remap = false
+        )
     )
     public Object addCustomBuffers(Object original) {
         SortedMap<RenderType, BufferBuilder> value = (SortedMap<RenderType, BufferBuilder>) original;

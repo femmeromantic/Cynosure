@@ -17,6 +17,7 @@
   ],
   "client": [
     "client.ClientLevelMixin",
+    "client.EffectInstanceMixin",
     "client.EntityRenderersMixin",
     "client.GuiMixin",
     "client.LevelRendererMixin",
