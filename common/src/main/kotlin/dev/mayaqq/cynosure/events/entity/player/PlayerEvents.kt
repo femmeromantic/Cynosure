@@ -20,5 +20,3 @@ public sealed class PlayerConnectionEvent(public val player: ServerPlayer) : Eve
 }
 
 public class PlayerRestoreEvent(public val player: Player, public val alive: Boolean) : Event
-
-public class PlayerAttributeEvent(public val attributeBuilder: AttributeSupplier.Builder) : Event

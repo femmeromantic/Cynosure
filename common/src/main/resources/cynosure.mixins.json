@@ -10,7 +10,6 @@
     "ItemEntityMixin",
     "LevelMixin",
     "LivingEntityMixin",
-    "PlayerMixin",
     "ServerPlayerMixin",
     "accessor.ChunkMapAccessor",
     "accessor.TrackedEntityAccessor"
