@@ -6,6 +6,7 @@
   "refmap": "cynosure.refmap.json",
   "mixins": [
     "ChunkHolderMixin",
+    "DataFixersMixin",
     "FallingBlockEntityMixin",
     "ItemEntityMixin",
     "LevelMixin",
