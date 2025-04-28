@@ -24,7 +24,7 @@ public class RenderLayerRegistrationEvent(
 ) : Event {
 
     public inline fun <T : LivingEntity> addLayer(entity: EntityType<T>, layer: (RenderLayerParent<T, EntityModel<T>>) -> RenderLayer<T, out EntityModel<T>>) {
-        context.getEntity(entity)?.let { (it as LivingEntityRendererAccessor).addLayer(layer(it)) }
+        context.getEntity(entity)?.let { (it as LivingEntityRendererAccessor).invokeAddLayer(layer(it)) }
     }
 
     public inline fun addLayer(skin: DefaultSkin, layer: (RenderLayerParent<Player, EntityModel<Player>>) -> RenderLayer<out Player, out EntityModel<out Player>>) {
@@ -32,7 +32,7 @@ public class RenderLayerRegistrationEvent(
     }
 
     public inline fun addLayer(skin: String, layer: (RenderLayerParent<Player, EntityModel<Player>>) -> RenderLayer<out Player, out EntityModel<out Player>>) {
-        context.getSkin(skin)?.let { (it as LivingEntityRendererAccessor).addLayer(layer(it as LivingEntityRenderer<Player, EntityModel<Player>>)) }
+        context.getSkin(skin)?.let { (it as LivingEntityRendererAccessor).invokeAddLayer(layer(it as LivingEntityRenderer<Player, EntityModel<Player>>)) }
     }
 
     @CynosureInternal

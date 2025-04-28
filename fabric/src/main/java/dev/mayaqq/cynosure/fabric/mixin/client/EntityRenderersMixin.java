@@ -4,6 +4,7 @@ import dev.mayaqq.cynosure.Cynosure;
 import dev.mayaqq.cynosure.client.events.entity.RenderLayerRegistrationEvent;
 import dev.mayaqq.cynosure.events.api.MainBus;
 import kotlin.Unit;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -45,9 +46,9 @@ public class EntityRenderersMixin {
 
             @SuppressWarnings("unchecked")
             @Override
-            public @Nullable <T extends LivingEntity> LivingEntityRenderer<? super T, ?> getEntity(@NotNull EntityType<T> entity) {
+            public <T extends LivingEntity> LivingEntityRenderer<T, EntityModel<T>> getEntity(@NotNull EntityType<T> entity) {
                 if (renderers.get(entity) instanceof LivingEntityRenderer<?, ?> renderer)
-                    return (LivingEntityRenderer<? super T, ?>) renderer;
+                    return (LivingEntityRenderer<T, EntityModel<T>>) renderer;
                 return null;
             }
         });
