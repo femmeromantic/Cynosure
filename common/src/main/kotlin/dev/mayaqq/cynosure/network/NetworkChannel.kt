@@ -72,14 +72,14 @@ public class NetworkChannel(
     }
 
     public fun <T : Any> sendToServer(packet: T) {
-        val klass = packet::class
+        val klass = packet.javaClass
         val info = (packets[klass, NetworkDirection.SERVERBOUND] ?: error("Packet not registered $packet")) as Network.PacketInfo<T>
         network.sendToServer(info, packet)
     }
 
     public fun <T : Any> sendToPlayer(packet: T, player: Player) {
         if (player !is ServerPlayer) return
-        val klass = packet::class
+        val klass = packet.javaClass
         val info = (packets[klass, NetworkDirection.CLIENTBOUND] ?: error("Packet not registered $packet")) as Network.PacketInfo<T>
         network.sendToClient(player, info, packet)
     }
