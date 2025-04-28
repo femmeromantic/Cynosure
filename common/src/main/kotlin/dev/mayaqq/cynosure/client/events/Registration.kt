@@ -3,7 +3,9 @@ package dev.mayaqq.cynosure.client.events
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.events.api.Event
+import net.minecraft.client.particle.ParticleEngine
 import net.minecraft.client.particle.ParticleProvider
+import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.particles.ParticleOptions
@@ -29,6 +31,26 @@ public class ParticleFactoryRegistrationEvent(private val context: Context) : Ev
         public fun <T : ParticleOptions> register(type: ParticleType<T>, provider: ParticleProvider<T>)
 
         public fun <T : ParticleOptions> register(type: ParticleType<T>, factoryProvider: (SpriteSet) -> ParticleProvider<T>)
+    }
+}
+
+public class ParticleRenderTypeRegistrationEvent(
+    public val particleEngine: ParticleEngine,
+    private val renderOrder: MutableList<ParticleRenderType>
+) : Event {
+
+    public fun register(type: ParticleRenderType) {
+        // TODO: Ordering
+        renderOrder.add(type)
+    }
+
+    public fun register(ordering: Ordering, anchor: ParticleRenderType, type: ParticleRenderType) {
+        val index = renderOrder.indexOf(anchor).let { if (ordering == Ordering.AFTER) it + 1 else it }
+        renderOrder.add(index, type)
+    }
+
+    public enum class Ordering {
+        BEFORE, AFTER
     }
 }
 
