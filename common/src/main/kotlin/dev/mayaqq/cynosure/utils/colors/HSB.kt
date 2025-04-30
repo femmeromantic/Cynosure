@@ -1,8 +1,10 @@
 package dev.mayaqq.cynosure.utils.colors
 
-public fun Color.Companion.fromHSB(hue: Float, saturation: Float, brightness: Float): Color = TODO()
+import net.minecraft.util.Mth
 
-public fun Color.hue(): Float {
+public fun Color.Companion.fromHSB(hue: Float, saturation: Float, brightness: Float): Color = Color(Mth.hsvToRgb(hue, saturation, brightness))
+
+public val Color.hue: Float get() {
     val min = red.coerceAtMost(green).coerceAtMost(blue) / 255f
     val max = red.coerceAtLeast(green).coerceAtLeast(blue) / 255f
 
@@ -16,11 +18,12 @@ public fun Color.hue(): Float {
     } * 60f).let { if(it < 0) it + 360f else it }
 }
 
-public fun Color.saturation(): Float {
+public val Color.saturation: Float get() {
     val min = red.coerceAtMost(green).coerceAtMost(blue) / 255f
     val max = red.coerceAtLeast(green).coerceAtLeast(blue) / 255f
+
 
     TODO()
 }
 
-public fun Color.brightness(): Float = TODO()
+public val Color.brightness: Float get() = TODO()

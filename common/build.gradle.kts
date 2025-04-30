@@ -32,6 +32,7 @@ dependencies {
     api(libs.bytecodecs)
     api(libs.kotlinx.serialization)
     api(libs.kotlinx.coroutines)
+    api(libs.kritter)
     implementation(kotlin("reflect"))
 }
 

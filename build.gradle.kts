@@ -1,6 +1,7 @@
 @file:Suppress("PropertyName")
 
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -126,9 +127,9 @@ subprojects {
         enabled = false
     }
 
-//    tasks.withType<KotlinCompile> {
-//        compilerOptions {
-//            this.freeCompilerArgs.addAll("-Xjvm-default=all-compatibility", "-Xlambdas=indy")
-//        }
-//    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            this.freeCompilerArgs.addAll("-Xjvm-default=all-compatibility")
+        }
+    }
 }

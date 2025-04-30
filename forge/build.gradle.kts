@@ -47,6 +47,14 @@ dependencies {
             prefer("0.4.1")
         }
     }
+    // Kritter
+    modImplementation(libs.forge.kritter)
+    jarJar(libs.forge.kritter) {
+        version {
+            strictly("[0.0.7,)")
+            prefer("0.0.7")
+        }
+    }
 
     // ASM
     compileOnly(libs.asm)

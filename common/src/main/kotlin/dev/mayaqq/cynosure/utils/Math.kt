@@ -16,6 +16,22 @@ public inline val Double.radians: Double get() = this * DEG_TO_RAD
 
 public inline val Double.degrees: Double get() = this * RAD_TO_DEG
 
+public infix fun Int.atMost(max: Int): Int = coerceAtMost(max)
+
+public infix fun Long.atMost(max: Long): Long = coerceAtMost(max)
+
+public infix fun Float.atMost(max: Float): Float = coerceAtMost(max)
+
+public infix fun Double.atMost(max: Double): Double = coerceAtMost(max)
+
+public infix fun Int.atLeast(min: Int): Int = coerceAtLeast(min)
+
+public infix fun Long.atLeast(min: Long): Long = coerceAtLeast(min)
+
+public infix fun Float.atLeast(min: Float): Float = coerceAtLeast(min)
+
+public infix fun Double.atLeast(min: Double): Double = coerceAtLeast(min)
+
 public fun uwu() {
     val c = Color.parse("white")
 }
