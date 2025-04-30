@@ -39,8 +39,8 @@ public value class Color(@PublishedApi internal val value: Int) {
 
         @JvmField
         public val NAMED_CODEC: Codec<Color> = Codec.STRING.flatXmap(
-            { namedColors[it].failureIfNull().toDataResult() },
-            { namedColors.inverse()[it].failureIfNull().toDataResult() }
+            { colorByName[it].failureIfNull().toDataResult() },
+            { nameByColor[it].failureIfNull().toDataResult() }
         )
 
         @JvmField
@@ -60,7 +60,7 @@ public value class Color(@PublishedApi internal val value: Int) {
         @OptIn(ExperimentalStdlibApi::class)
         public fun parse(data: String, defaultFormat: ColorFormat = ColorFormat.ARGB): Color = data.lowercase().let {
             when {
-                namedColors.contains(it) -> namedColors[it]!!
+                colorByName.contains(it) -> colorByName[it]!!
                 it.startsWith('#') -> Color(it.substring(1).hexToInt(), defaultFormat)
                 it.startsWith("0x") -> Color(it.substring(2).hexToInt(), defaultFormat)
                 else -> {
@@ -74,7 +74,7 @@ public value class Color(@PublishedApi internal val value: Int) {
         @OptIn(ExperimentalStdlibApi::class)
         public fun tryParse(from: String, defaultFormat: ColorFormat = ColorFormat.ARGB): Result<Color> = from.lowercase().let {
             when {
-                namedColors.contains(it) -> namedColors[it].failureIfNull()
+                colorByName.contains(it) -> colorByName[it].failureIfNull()
                 it.startsWith('#') -> it.substring(1)
                     .runCatchingSpecific<_, _, NumberFormatException>(String::hexToInt)
                     .map { Color(it, defaultFormat) }

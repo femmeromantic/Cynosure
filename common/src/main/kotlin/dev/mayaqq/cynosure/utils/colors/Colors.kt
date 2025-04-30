@@ -8,10 +8,15 @@ import com.google.common.collect.HashBiMap
 
 @JvmSynthetic
 @JvmField
-internal val namedColors: HashBiMap<String, Color> = HashBiMap.create(148)
+internal val colorByName: MutableMap<String, Color> = LinkedHashMap(148)
+
+internal val nameByColor: MutableMap<Color, String> = HashMap(148)
 
 @JvmSynthetic
-private fun namedColor(name: String, color: UInt): Color = Color(color).also { namedColors[name] = it }
+private fun namedColor(name: String, color: UInt): Color = Color(color).also {
+    colorByName[name] = it
+    if (!nameByColor.contains(it)) nameByColor[it] = name
+}
 
 // CSS Colors
 public val AliceBlue: Color = namedColor("aliceblue", 0xf0f8ffu)
