@@ -51,8 +51,8 @@ dependencies {
     modImplementation(libs.forge.kritter)
     jarJar(libs.forge.kritter) {
         version {
-            strictly("[0.0.7,)")
-            prefer("0.0.7")
+            strictly("[0.0.7+1.20.1,)")
+            prefer("0.0.7+1.20.1")
         }
     }
 

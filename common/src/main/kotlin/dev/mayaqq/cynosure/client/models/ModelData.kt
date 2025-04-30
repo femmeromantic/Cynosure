@@ -5,10 +5,9 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.Keyable
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.mayaqq.cynosure.client.models.baked.ModelRenderType
+import dev.mayaqq.cynosure.utils.codecs.Codecs
 import dev.mayaqq.cynosure.utils.codecs.fieldOf
-import dev.mayaqq.cynosure.utils.codecs.recursive
 import net.minecraft.core.Direction
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ExtraCodecs
 import org.joml.Vector3f
 
@@ -106,7 +105,7 @@ public data class ModelElementGroup(
     val subgroups: List<ModelElementGroup>
 ) {
     public companion object {
-        public val CODEC: Codec<ModelElementGroup> = recursive { RecordCodecBuilder.create { it.group(
+        public val CODEC: Codec<ModelElementGroup> = Codecs.recursive { RecordCodecBuilder.create { it.group(
             Codec.STRING fieldOf ModelElementGroup::name,
             ModelRenderType.CODEC.optionalFieldOf("renderType", null).forGetter(ModelElementGroup::renderType),
             ExtraCodecs.VECTOR3F fieldOf ModelElementGroup::origin,

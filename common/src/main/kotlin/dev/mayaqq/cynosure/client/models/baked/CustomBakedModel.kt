@@ -21,7 +21,7 @@ public open class CustomBakedModel(
 
     public open fun render(
         buffer: VertexConsumer, matrices: PoseStack,
-        color: Color = Colors.WHITE,
+        color: Color = White,
         light: Int = LightTexture.FULL_BRIGHT,
         overlay: Int = OverlayTexture.NO_OVERLAY
     ) {

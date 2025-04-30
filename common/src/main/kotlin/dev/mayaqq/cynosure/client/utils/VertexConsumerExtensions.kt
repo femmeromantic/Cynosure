@@ -2,7 +2,7 @@ package dev.mayaqq.cynosure.client.utils
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import dev.mayaqq.cynosure.utils.colors.Color
-import dev.mayaqq.cynosure.utils.colors.Colors
+import dev.mayaqq.cynosure.utils.colors.White
 import net.minecraft.client.renderer.LightTexture
 import net.minecraft.client.renderer.texture.OverlayTexture
 import net.minecraft.core.Direction
@@ -27,7 +27,7 @@ public fun VertexConsumer.square(
     maxU: Float = 1f,
     minV: Float = 0f,
     maxV: Float = 1f,
-    color: Color = Colors.WHITE,
+    color: Color = White,
     overlay: Int = OverlayTexture.NO_OVERLAY,
     light: Int = LightTexture.FULL_BRIGHT
 ) {

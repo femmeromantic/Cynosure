@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import dev.mayaqq.cynosure.modId
 import dev.mayaqq.cynosure.utils.NamedRegistry
-import dev.mayaqq.cynosure.utils.codecs.alternatives
+import dev.mayaqq.cynosure.utils.codecs.Codecs
 import dev.mayaqq.cynosure.utils.codecs.fieldOf
 import dev.mayaqq.cynosure.utils.radians
 import net.minecraft.util.ExtraCodecs
@@ -20,7 +20,7 @@ public fun interface VectorType {
         public fun apply(): Vector3f = type.transform(value)
 
         public companion object {
-            public val CODEC: Codec<ConfiguredVec> = alternatives(
+            public val CODEC: Codec<ConfiguredVec> = Codecs.alternatives(
                 RecordCodecBuilder.create { it.group(
                     VectorTypes.REGISTRY.codec() fieldOf ConfiguredVec::type,
                     ExtraCodecs.VECTOR3F fieldOf ConfiguredVec::value
