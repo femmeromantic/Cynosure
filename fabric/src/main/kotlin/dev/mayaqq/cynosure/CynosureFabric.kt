@@ -21,8 +21,6 @@ internal object CynosureFabric {
     fun init() {
         Cynosure.init()
         // Didnt put these in fapi feed cs they're more for internal stuff
-        ServerLifecycleEvents.SERVER_STARTING.register(GameInstanceImpl::onLoadServer)
-        ServerLifecycleEvents.SERVER_STOPPED.register { _ -> GameInstanceImpl.onUnloadServer() }
         fapiFeed()
 
         for (mod in FabricLoader.getInstance().allMods) {
