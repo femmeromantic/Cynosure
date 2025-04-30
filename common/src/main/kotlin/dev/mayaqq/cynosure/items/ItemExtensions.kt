@@ -5,6 +5,7 @@ import dev.mayaqq.cynosure.extensions.Extension
 import dev.mayaqq.cynosure.extensions.ExtensionRegistry
 import dev.mayaqq.cynosure.internal.CynosureHooks
 import dev.mayaqq.cynosure.items.ItemExtension.Registry.register
+import net.minecraft.client.player.AbstractClientPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.item.ItemEntity
@@ -31,6 +32,13 @@ public fun <E : ItemExtension> Item.registerExtension(extension: E, allowOverrid
 
 public inline fun <reified E : ItemExtension> Item.getExtension(): E? =
     ItemExtension.getExtension(E::class.java, this)
+
+/**
+ * Java Helper for [getExtension]
+ */
+public fun <E : ItemExtension> getExtension(item: Item, extensionClass: Class<E>): E? =
+    ItemExtension.getExtension(extensionClass, item)
+
 
 /**
  * Give this item the ability to be traded with piglins
@@ -65,6 +73,13 @@ public fun interface CustomFurnaceFuel : ItemExtension {
  */
 public fun interface CustomEntityItem : ItemExtension {
     public fun createItemEntity(original: ItemEntity, level: Level, stack: ItemStack): Entity
+}
+
+/**
+ * Disables the cape rendering when equipped on the chest
+ */
+public fun interface DisablesCape : ItemExtension {
+    public fun disablesCape(itemStack: ItemStack, player: AbstractClientPlayer): Boolean
 }
 
 @OptIn(CynosureInternal::class)

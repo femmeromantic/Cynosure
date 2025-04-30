@@ -16,6 +16,7 @@
     "accessor.TrackedEntityAccessor"
   ],
   "client": [
+    "client.CapeLayerMixin",
     "client.GameRendererMixin",
     "client.LevelRendererMixin",
     "client.ParticleEngineMixin",
