@@ -24,6 +24,7 @@ subprojects {
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/") { name = "ResourcefulBees" }
         maven(url = "https://maven.is-immensely.gay/releases")
         maven(url = "https://maven.is-immensely.gay/nightly")
+        maven(url = "https://api.modrinth.com/maven")
         mavenLocal()
     }
 
