@@ -137,8 +137,8 @@ transitive-accessible class net/minecraft/world/item/CreativeModeTab$Output
 transitive-accessible class net/minecraft/world/item/CreativeModeTab$TabVisibility
 transitive-accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers register (Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
 transitive-accessible method net/minecraft/client/renderer/entity/EntityRenderers register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V
-
-
+transitive-accessible field net/minecraft/util/datafix/DataFixers SAME Ljava/util/function/BiFunction;
+transitive-accessible field net/minecraft/util/datafix/DataFixers SAME_NAMESPACED Ljava/util/function/BiFunction;
 ##############################
 # This section is generated automatically with Gradle task generateAccessWidener!!!
 ##############################

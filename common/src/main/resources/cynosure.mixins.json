@@ -6,10 +6,13 @@
   "refmap": "cynosure.refmap.json",
   "mixins": [
     "ChunkHolderMixin",
+    "DataFixersMixin",
     "FallingBlockEntityMixin",
     "ItemEntityMixin",
+    "LevelChunkMixin",
     "LevelMixin",
     "LivingEntityMixin",
+    "ServerLevelMixin",
     "ServerPlayerMixin",
     "accessor.ChunkMapAccessor",
     "accessor.TrackedEntityAccessor"

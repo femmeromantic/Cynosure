@@ -47,6 +47,18 @@ dependencies {
             prefer("0.4.1")
         }
     }
+    // Kritter
+    modImplementation(libs.forge.kritter)
+    jarJar(libs.forge.kritter) {
+        version {
+            strictly("[0.0.7+1.20.1,)")
+            prefer("0.0.7+1.20.1")
+        }
+    }
+
+    modCompileOnly("maven.modrinth:oculus:1.20.1-1.8.0") {
+        isTransitive = false
+    }
 
     // ASM
     compileOnly(libs.asm)

@@ -27,7 +27,8 @@ public inline fun <T> make(thing: T, maker: T.() -> Unit): T {
 public val Level.side: Environment
     get() = if (isClientSide) Environment.CLIENT else Environment.SERVER
 
-public fun <V> constant(constantValue: V): ReadOnlyProperty<Any?, V> = ConstantProperty(constantValue)
+@JvmName("constant")
+public fun <V> constant(constantValue: V): ConstantProperty<V> = ConstantProperty(constantValue)
 
 public fun <I : Any, V> mapBacked(default: V): ReadWriteProperty<I, V> = MapBackedProperty.Defaulted(default)
 
@@ -58,7 +59,7 @@ internal sealed class MapBackedProperty<I : Any, V> : ReadWriteProperty<I, V> {
 
     abstract fun getInitial(thisRef: I): V
 
-    private val map: MutableMap<I, V> = MapMaker().weakKeys().makeMap()
+    protected val map: MutableMap<I, V> = MapMaker().weakKeys().makeMap()
 
     override fun getValue(thisRef: I, property: KProperty<*>): V = map[thisRef] ?: getInitial(thisRef)
 
@@ -67,7 +68,7 @@ internal sealed class MapBackedProperty<I : Any, V> : ReadWriteProperty<I, V> {
     }
 
     internal class Intialized<I : Any, V>(val initializer: (I) -> V) : MapBackedProperty<I, V>() {
-        override fun getInitial(thisRef: I): V = initializer(thisRef)
+        override fun getInitial(thisRef: I): V = initializer(thisRef).also { map[thisRef] = it }
     }
 
     internal class Defaulted<I : Any, V>(val default: V) : MapBackedProperty<I, V>() {
@@ -76,7 +77,8 @@ internal sealed class MapBackedProperty<I : Any, V> : ReadWriteProperty<I, V> {
 }
 
 
-internal class ConstantProperty<V>(private val value: V) : ReadOnlyProperty<Any?, V> {
+@JvmInline
+public value class ConstantProperty<V> internal constructor(private val value: V) : ReadOnlyProperty<Any?, V> {
     override fun getValue(thisRef: Any?, property: KProperty<*>): V = value
 }
 

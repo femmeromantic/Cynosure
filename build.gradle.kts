@@ -1,6 +1,7 @@
 @file:Suppress("PropertyName")
 
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -23,6 +24,7 @@ subprojects {
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/") { name = "ResourcefulBees" }
         maven(url = "https://maven.is-immensely.gay/releases")
         maven(url = "https://maven.is-immensely.gay/nightly")
+        maven(url = "https://api.modrinth.com/maven")
         mavenLocal()
     }
 
@@ -126,9 +128,9 @@ subprojects {
         enabled = false
     }
 
-//    tasks.withType<KotlinCompile> {
-//        compilerOptions {
-//            this.freeCompilerArgs.addAll("-Xjvm-default=all-compatibility", "-Xlambdas=indy")
-//        }
-//    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            this.freeCompilerArgs.addAll("-Xjvm-default=all-compatibility")
+        }
+    }
 }

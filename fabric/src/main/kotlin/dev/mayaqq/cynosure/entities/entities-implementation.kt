@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.DefaultAttributes
 /**
  * Utilities for registering and modifying entity attributes
  */
-internal object EntityAttributesImpl : EntityAttributes {
+internal class EntityAttributesImpl : EntityAttributes {
 
     /**
      * Register attributes for this entity type. This will crash if the entitty already has attributes

@@ -24,6 +24,9 @@ dependencies {
     compileOnly(libs.mixinextras)
     compileOnly(libs.asm)
     compileOnly(libs.asm.analysis)
+    compileOnly("maven.modrinth:iris:1.7.6+1.20.1") {
+        isTransitive = false
+    }
     //compileOnly(libs.koffee)
     compileOnly(libs.kotlin.metadata)  {
         isTransitive = false
@@ -32,6 +35,7 @@ dependencies {
     api(libs.bytecodecs)
     api(libs.kotlinx.serialization)
     api(libs.kotlinx.coroutines)
+    api(libs.kritter)
     implementation(kotlin("reflect"))
 }
 
