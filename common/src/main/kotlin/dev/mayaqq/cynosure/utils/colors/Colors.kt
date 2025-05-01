@@ -10,6 +10,8 @@ import com.google.common.collect.HashBiMap
 @JvmField
 internal val colorByName: MutableMap<String, Color> = LinkedHashMap(148)
 
+@JvmSynthetic
+@JvmField
 internal val nameByColor: MutableMap<Color, String> = HashMap(148)
 
 @JvmSynthetic

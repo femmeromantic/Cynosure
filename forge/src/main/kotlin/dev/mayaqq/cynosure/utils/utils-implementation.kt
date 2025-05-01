@@ -13,7 +13,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment
 import net.minecraftforge.server.ServerLifecycleHooks
 import kotlin.jvm.optionals.getOrNull
 
-public object PlatformHooksImpl : PlatformHooks {
+internal class PlatformHooksImpl : PlatformHooks {
 
     override val environment: Environment = when (FMLEnvironment.dist!!) {
         Dist.CLIENT -> Environment.CLIENT
@@ -42,7 +42,7 @@ public object PlatformHooksImpl : PlatformHooks {
     override fun currentLoader(): Loader = Loader.FORGE
 }
 
-public object GameInstanceImpl : GameInstance {
+internal class GameInstanceImpl : GameInstance {
     override val currentServer: MinecraftServer?
         get() = ServerLifecycleHooks.getCurrentServer()
 

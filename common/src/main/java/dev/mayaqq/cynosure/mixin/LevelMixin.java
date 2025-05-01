@@ -17,39 +17,13 @@ import java.util.Set;
 @Mixin(Level.class)
 public abstract class LevelMixin implements ILevel {
 
-    @Unique
-    private Long2ReferenceMap<Set<BlockUpdateListener>> cynosure$updateListeners;
-
     @Override
     public void cynosure_addUpdateListener(BlockUpdateListener listener) {
-        if(cynosure$updateListeners == null) cynosure$updateListeners = new Long2ReferenceOpenHashMap<>();
-        for(BlockPos pos : listener.getListenedPositions()) {
-            long longPos = pos.asLong();
-            var set = cynosure$updateListeners.get(longPos);
-            if (set == null) {
-                set = new ObjectArraySet<>();
-                cynosure$updateListeners.put(longPos, set);
-            }
-            set.add(listener);
-        }
+        // Only does something on server
     }
 
     @Override
     public void cynosure_handleBlockUpdate(BlockPos pos, BlockState state) {
-        if(cynosure$updateListeners == null) return;
-        long longPos = pos.asLong();
-        Set<BlockUpdateListener> listeners = cynosure$updateListeners.get(longPos);
-        if(listeners != null) {
-            Iterator<BlockUpdateListener> iterator = listeners.iterator();
-            while (iterator.hasNext()) {
-                BlockUpdateListener listener = iterator.next();
-                if(listener.shouldRemove()) {
-                    iterator.remove();
-                } else {
-                    listener.onBlockUpdate((Level) (Object) this, pos, state);
-                }
-            }
-            if(listeners.isEmpty()) cynosure$updateListeners.remove(longPos);
-        }
+        // Only does something on server [see ServerLevelMixin]
     }
 }

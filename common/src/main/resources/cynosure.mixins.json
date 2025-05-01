@@ -9,8 +9,10 @@
     "DataFixersMixin",
     "FallingBlockEntityMixin",
     "ItemEntityMixin",
+    "LevelChunkMixin",
     "LevelMixin",
     "LivingEntityMixin",
+    "ServerLevelMixin",
     "ServerPlayerMixin",
     "accessor.ChunkMapAccessor",
     "accessor.TrackedEntityAccessor"

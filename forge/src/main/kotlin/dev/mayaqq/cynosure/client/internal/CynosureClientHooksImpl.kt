@@ -14,7 +14,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment
 
 @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
 @CynosureInternal
-internal object CynosureClientHooksImpl : CynosureClientHooks {
+internal class CynosureClientHooksImpl : CynosureClientHooks {
 
     private val CLIENT_RELOAD_LISTENERS: MutableMap<ResourceLocation, PreparableReloadListener> = mutableMapOf()
     private val DEFERRED_CLIENT_RELOAD_LISTENERS: MutableList<PreparableReloadListener> = mutableListOf()

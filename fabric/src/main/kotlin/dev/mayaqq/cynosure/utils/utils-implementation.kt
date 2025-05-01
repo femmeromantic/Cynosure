@@ -10,7 +10,7 @@ import net.minecraft.util.thread.BlockableEventLoop
 import kotlin.jvm.optionals.getOrNull
 
 
-internal object PlatformHooksImpl : PlatformHooks {
+internal class PlatformHooksImpl : PlatformHooks {
 
     override val environment: Environment = when (FabricLoader.getInstance().environmentType!!) {
         EnvType.CLIENT -> Environment.CLIENT

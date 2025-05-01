@@ -123,13 +123,13 @@ public value class Color(@PublishedApi internal val value: Int) {
         (this.alpha + other.alpha) atMost 255
     )
 
-    public operator fun component1(): Int = red
+    public inline operator fun component1(): Int = red
 
-    public operator fun component2(): Int = green
+    public inline operator fun component2(): Int = green
 
-    public operator fun component3(): Int = blue
+    public inline operator fun component3(): Int = blue
 
-    public operator fun component4(): Int = alpha
+    public inline operator fun component4(): Int = alpha
 
     public fun toInt(format: ColorFormat): Int = format.toInt(this)
 
