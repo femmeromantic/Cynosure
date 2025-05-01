@@ -56,6 +56,10 @@ dependencies {
         }
     }
 
+    modCompileOnly("maven.modrinth:oculus:1.20.1-1.8.0") {
+        isTransitive = false
+    }
+
     // ASM
     compileOnly(libs.asm)
     // Javax Annotations

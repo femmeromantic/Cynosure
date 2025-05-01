@@ -29,6 +29,9 @@ loom {
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
+    modCompileOnly("maven.modrinth:iris:1.7.6+1.20.1") {
+        isTransitive = false
+    }
     modImplementation(libs.fabric)
     modImplementation(libs.fabric.api)
     modImplementation(libs.fabric.kotlin)
