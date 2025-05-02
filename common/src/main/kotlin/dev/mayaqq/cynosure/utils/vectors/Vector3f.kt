@@ -1,7 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 package dev.mayaqq.cynosure.utils.vectors
 
-import org.joml.Matrix3f
 import org.joml.Matrix3fc
 import org.joml.Vector3f
 import org.joml.Vector3fc

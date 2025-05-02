@@ -1,3 +1,4 @@
+@file:JvmName("UwUfy")
 package dev.mayaqq.cynosure.utils.`fun`
 
 

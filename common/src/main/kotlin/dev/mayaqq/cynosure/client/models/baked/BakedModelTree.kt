@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import dev.mayaqq.cynosure.client.models.animations.Animatable
 import dev.mayaqq.cynosure.utils.colors.Color
-import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.resources.ResourceLocation
 import org.joml.Quaternionf
 import org.joml.Vector3fc
 

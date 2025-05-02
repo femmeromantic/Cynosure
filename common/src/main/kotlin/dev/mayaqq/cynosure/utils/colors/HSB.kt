@@ -3,7 +3,6 @@ package dev.mayaqq.cynosure.utils.colors
 import dev.mayaqq.cynosure.utils.atLeast
 import dev.mayaqq.cynosure.utils.atMost
 import net.minecraft.util.Mth
-import net.minecraft.world.level.block.Block
 
 public fun Color.Companion.fromHSB(hue: Float, saturation: Float, brightness: Float): Color = Color(Mth.hsvToRgb(hue, saturation, brightness))
 

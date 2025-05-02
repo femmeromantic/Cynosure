@@ -4,8 +4,6 @@
  */
 package dev.mayaqq.cynosure.utils.colors
 
-import com.google.common.collect.HashBiMap
-
 @JvmSynthetic
 @JvmField
 internal val colorByName: MutableMap<String, Color> = LinkedHashMap(148)

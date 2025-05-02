@@ -5,17 +5,7 @@ import net.minecraft.core.Position
 import net.minecraft.core.Vec3i
 import net.minecraft.world.phys.Vec2
 import net.minecraft.world.phys.Vec3
-import org.joml.Vector2dc
-import org.joml.Vector2f
-import org.joml.Vector2fc
-import org.joml.Vector3d
-import org.joml.Vector3dc
-import org.joml.Vector3f
-import org.joml.Vector3fc
-import org.joml.Vector4d
-import org.joml.Vector4dc
-import org.joml.Vector4f
-import org.joml.Vector4fc
+import org.joml.*
 
 // TODO: Once bigger put this in cynosure
 public fun Vector3fc.toBlockPos(): BlockPos = BlockPos(this.x().toInt(), this.y().toInt(), this.z().toInt())

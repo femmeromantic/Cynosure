@@ -1,13 +1,9 @@
 package dev.mayaqq.cynosure.client.models.animations
 
-import com.mojang.serialization.Codec
 import net.minecraft.util.Mth
 import net.minecraft.util.StringRepresentable
-import net.minecraft.util.StringRepresentable.EnumCodec
-import net.minecraft.util.StringRepresentable.fromEnum
 import org.joml.Vector3f
 import org.joml.Vector3fc
-import java.util.function.IntPredicate
 import kotlin.math.max
 import kotlin.math.min
 

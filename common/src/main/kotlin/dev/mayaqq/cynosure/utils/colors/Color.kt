@@ -8,7 +8,6 @@ import dev.mayaqq.cynosure.utils.atMost
 import dev.mayaqq.cynosure.utils.codecs.Codecs
 import dev.mayaqq.cynosure.utils.codecs.fieldOf
 import dev.mayaqq.cynosure.utils.codecs.forGetter
-import dev.mayaqq.cynosure.utils.fold
 import dev.mayaqq.cynosure.utils.foldLeft
 import dev.mayaqq.cynosure.utils.result.*
 import dev.mayaqq.cynosure.utils.toCynosure
