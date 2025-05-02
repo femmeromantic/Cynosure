@@ -1,5 +1,6 @@
 package dev.mayaqq.cynosure.particles
 
+import com.mojang.brigadier.StringReader
 import com.mojang.serialization.Codec
 import com.teamresourceful.bytecodecs.base.ByteCodec
 import dev.mayaqq.cynosure.CynosureInternal
@@ -46,11 +47,20 @@ public class CynosureParticleTypeBuilder<T : CynosureParticleOptions<T>>(
 
     public var overrideLimiter: Boolean = false
 
+    public lateinit var fromCommand: (StringReader) -> CynosureParticleOptions<T>
+
     @NotUsableInBuilder
     @CynosureInternal
     override fun getResult(): ParticleType<T> = result!!.value
 
-    override fun createEntry(): CynosureParticleType<T> = CynosureParticleType(codec, networkCodec, overrideLimiter)
+    override fun createEntry(): CynosureParticleType<T> {
+        if (::fromCommand.isInitialized) {
+            val fromCommand = fromCommand
+            return object : CynosureParticleType<T>(codec, networkCodec, overrideLimiter) {
+                override fun fromCommand(reader: StringReader): CynosureParticleOptions<T> = fromCommand(reader)
+            }
+        } else return CynosureParticleType(codec, networkCodec, overrideLimiter)
+    }
 }
 
 public class SimpleParticleTypeBuilder(

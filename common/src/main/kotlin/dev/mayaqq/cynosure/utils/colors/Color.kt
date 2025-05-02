@@ -1,5 +1,6 @@
 package dev.mayaqq.cynosure.utils.colors
 
+import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.teamresourceful.bytecodecs.base.ByteCodec
@@ -7,7 +8,10 @@ import dev.mayaqq.cynosure.utils.atMost
 import dev.mayaqq.cynosure.utils.codecs.Codecs
 import dev.mayaqq.cynosure.utils.codecs.fieldOf
 import dev.mayaqq.cynosure.utils.codecs.forGetter
+import dev.mayaqq.cynosure.utils.fold
+import dev.mayaqq.cynosure.utils.foldLeft
 import dev.mayaqq.cynosure.utils.result.*
+import dev.mayaqq.cynosure.utils.toCynosure
 import kotlinx.serialization.Serializable
 
 public fun Color(red: Int, green: Int, blue: Int, alpha: Int = 255): Color =
@@ -26,13 +30,24 @@ public value class Color(@PublishedApi internal val value: Int) {
 
     public companion object {
 
+        private val INT_OR_NFLOAT: Codec<Int> = Codec.either(Codec.INT, Codec.FLOAT)
+            .xmap(
+                { it.toCynosure().foldLeft { ((it atMost 1.0f) * 255).toInt() } },
+                { Either.left(it) }
+            )
+
         @JvmField
         public val RGB_CODEC: Codec<Color> = RecordCodecBuilder.create { it.group(
-            Codec.INT fieldOf Color::red,
-            Codec.INT fieldOf Color::green,
-            Codec.INT fieldOf Color::blue,
-            Codec.INT.optionalFieldOf("alpha", 255) forGetter Color::alpha
+            INT_OR_NFLOAT fieldOf Color::red,
+            INT_OR_NFLOAT fieldOf Color::green,
+            INT_OR_NFLOAT fieldOf Color::blue,
+            INT_OR_NFLOAT.optionalFieldOf("alpha", 255) forGetter Color::alpha
         ).apply(it, ::Color) }
+
+        public val RGB_LIST_CODEC: Codec<Color> = INT_OR_NFLOAT.listOf().xmap(
+            { list -> Color(list[0], list[1], list[2], list[3]) },
+            { color -> listOf(color.red, color.green, color.blue, color.alpha) }
+        )
 
         @JvmField
         public val VALUE_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::value)
@@ -48,6 +63,7 @@ public value class Color(@PublishedApi internal val value: Int) {
 
         @JvmField
         public val CODEC: Codec<Color> = Codecs.alternatives(
+            RGB_LIST_CODEC,
             RGB_CODEC,
             VALUE_CODEC,
             NAMED_CODEC,
@@ -139,23 +155,3 @@ public value class Color(@PublishedApi internal val value: Int) {
         return "Color[$red, $green, $blue, $alpha]"
     }
 }
-
-// Some extensions just to keep the class itself cleaner
-public inline val Color.floatRed: Float get() = red / 255f
-
-public inline val Color.floatGreen: Float get() = green / 255f
-
-public inline val Color.floatBlue: Float get() = blue / 255f
-
-public inline val Color.floatAlpha: Float get() = alpha / 255f
-
-public fun Color.lighter(): Color = mix(White, 0.25f)
-
-public fun Color.darker(): Color = mix(Black, 0.25f)
-
-public fun Color.toUInt(): UInt = toInt().toUInt()
-
-public fun Color.toUInt(format: ColorFormat): UInt = toInt(format).toUInt()
-
-@OptIn(ExperimentalStdlibApi::class)
-public fun Color.toHex(): String = toUInt().toHexString(HexFormat.UpperCase)

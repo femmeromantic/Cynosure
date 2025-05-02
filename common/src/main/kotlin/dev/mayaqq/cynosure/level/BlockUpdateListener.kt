@@ -2,6 +2,7 @@ package dev.mayaqq.cynosure.level
 
 import dev.mayaqq.cynosure.injection.ILevel
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
@@ -27,7 +28,7 @@ public interface BlockUpdateListener {
      * @param pos [BlockPos] of the block update
      * @param state [BlockState] at the updated position
      */
-    public fun onBlockUpdate(level: Level, pos: BlockPos, state: BlockState)
+    public fun onBlockUpdate(level: ServerLevel, pos: BlockPos, state: BlockState)
 
 }
 

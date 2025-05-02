@@ -18,6 +18,10 @@ public enum class TriState {
         FALSE -> TRUE
         else -> this
     }
+
+    public infix fun and(other: TriState): Boolean = this == TRUE && other == TRUE
+
+    public infix fun or(other: TriState): Boolean = this == TRUE || other == TRUE
 }
 
 public fun Boolean?.toTriState(): TriState = when (this) {
