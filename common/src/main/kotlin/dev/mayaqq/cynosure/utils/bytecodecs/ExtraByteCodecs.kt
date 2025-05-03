@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.Level
+import net.minecraft.world.phys.Vec3
 import org.joml.Vector3f
 import java.io.IOException
 import java.util.*
@@ -29,23 +30,30 @@ import java.util.*
  */
 public object ExtraByteCodecs {
 
+    @JvmField
     public val RESOURCE_LOCATION: ByteCodec<ResourceLocation> =
         ByteCodec.STRING.map(::ResourceLocation, ResourceLocation::toString)
 
+    @JvmField
     public val DIMENSION: ByteCodec<ResourceKey<Level>> = resourceKey(Registries.DIMENSION)
 
+    @JvmField
     public val BLOCK_POS: ByteCodec<BlockPos> = ByteCodec.LONG.map(BlockPos::of, BlockPos::asLong)
 
+    @JvmField
     public val CHUNK_POS: ByteCodec<ChunkPos> = ByteCodec.LONG.map(::ChunkPos, ChunkPos::toLong)
 
+    @JvmField
     public val SECTION_POS: ByteCodec<SectionPos> = ByteCodec.LONG.map(SectionPos::of, SectionPos::asLong)
 
+    @JvmField
     public val GLOBAL_POS: ByteCodec<GlobalPos> = ObjectByteCodec.create(
         DIMENSION fieldOf GlobalPos::dimension,
         BLOCK_POS fieldOf GlobalPos::pos,
         GlobalPos::of
     )
 
+    @JvmField
     public val VECTOR_3F: ByteCodec<Vector3f> = ObjectByteCodec.create(
         ByteCodec.FLOAT fieldOf { it.x },
         ByteCodec.FLOAT fieldOf { it.y },
@@ -53,33 +61,52 @@ public object ExtraByteCodecs {
         ::Vector3f
     )
 
+    @JvmField
+    public val VEC3: ByteCodec<Vec3> = ObjectByteCodec.create(
+        ByteCodec.DOUBLE fieldOf { it.x },
+        ByteCodec.DOUBLE fieldOf { it.y },
+        ByteCodec.DOUBLE fieldOf { it.z },
+        ::Vec3
+    )
+
+    @JvmField
     public val NULLABLE_COMPOUND_TAG: ByteCodec<CompoundTag?> = CompoundTagByteCodec
         .map(fun(value) = value.orElse(null), fun(tag) = Optional.ofNullable(tag))
 
+    @JvmField
     public val NONNULL_COMPOUND_TAG: ByteCodec<CompoundTag> = CompoundTagByteCodec
         .map(Optional<CompoundTag>::orElseThrow, fun(tag) = Optional.of(tag))
 
+    @JvmField
     public val COMPOUND_TAG: ByteCodec<Optional<CompoundTag>> = CompoundTagByteCodec
 
+    @JvmField
     public val COMPONENT: ByteCodec<Component> = ByteCodec.STRING_COMPONENT
         .map(Component.Serializer::fromJson, Component.Serializer::toJson)
 
-
+    @JvmField
     public val ITEM: ByteCodec<Item> = registry(BuiltInRegistries.ITEM)
 
+    @JvmStatic
     public fun <T, R : Registry<T>> resourceKey(registry: ResourceKey<R>): ByteCodec<ResourceKey<T>> {
         return RESOURCE_LOCATION.map(fun(id) = ResourceKey.create(registry, id), ResourceKey<T>::location)
     }
 
+    @JvmStatic
     public fun <T> registry(map: IdMap<T>): ByteCodec<T> {
         return IdMapByteCodec(map)
+    }
+
+    @JvmStatic
+    public fun <T, R : Registry<T>> registry(key: ResourceKey<R>): ByteCodec<T> {
+        return LazyByteCodec { registry((BuiltInRegistries.REGISTRY as Registry<R>).get(key)!!) }
     }
 
 }
 
 public object CompoundTagByteCodec : ByteCodec<Optional<CompoundTag>> {
     override fun encode(value: Optional<CompoundTag>, buffer: ByteBuf) {
-        if (value.isEmpty()) {
+        if (value.isEmpty) {
             buffer.writeByte(0)
         } else {
             try {
