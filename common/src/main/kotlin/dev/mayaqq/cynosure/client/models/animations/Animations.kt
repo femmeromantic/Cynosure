@@ -1,7 +1,8 @@
 package dev.mayaqq.cynosure.client.models.animations
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import net.minecraft.util.Mth
-import net.minecraft.util.StringRepresentable
 import org.joml.Vector3f
 import org.joml.Vector3fc
 import kotlin.math.max
@@ -9,29 +10,31 @@ import kotlin.math.min
 
 private val LOCAL_VEC_CACHE: ThreadLocal<Vector3f> = ThreadLocal.withInitial(::Vector3f)
 
-public data class AnimationDefinition(val repeats: Boolean, val animations: Map<String, List<Animation>>)
+@Serializable
+public data class AnimationDefinition(val duration: Float, val looping: Boolean, val bones: Map<String, List<Animation>>)
 
-public data class Animation(val duration: Float, val target: Target, val keyframes: List<Keyframe>) {
+@Serializable
+public data class Animation(val target: Target, val keyframes: List<Keyframe>) {
 
-    public enum class Target(private val serialName: String) : StringRepresentable {
-        POSITION("position") {
+    @Serializable
+    public enum class Target {
+        @SerialName("position") POSITION {
             override fun apply(animatable: Animatable, value: Vector3fc) = animatable.offsetPosition(value)
         },
-        ROTATION("rotation") {
+        @SerialName("rotation") ROTATION {
             override fun apply(animatable: Animatable, value: Vector3fc) = animatable.offsetRotation(value)
         },
-        SCALE("scale") {
+        @SerialName("scale") SCALE {
             override fun apply(animatable: Animatable, value: Vector3fc) = animatable.offsetScale(value)
         };
 
         public abstract fun apply(animatable: Animatable, value: Vector3fc)
-
-        override fun getSerializedName(): String = serialName
     }
 
 }
 
-public data class Keyframe(val timestamp: Float, val target: Vector3f, val interpolation: Interpolation) {
+@Serializable
+public data class Keyframe(val timestamp: Float, val target: @Serializable(ConfiguredVecSerializer::class) Vector3f, val interpolation: Interpolation) {
     public fun interface Interpolation {
         public fun apply(vector: Vector3f, delta: Float, keyframes: List<Keyframe>, currentFrame: Int, targetFrame: Int, strength: Float): Vector3f
     }
@@ -39,14 +42,11 @@ public data class Keyframe(val timestamp: Float, val target: Vector3f, val inter
 
 @JvmOverloads
 public fun Animatable.Provider.animate(definition: AnimationDefinition, accumulatedTime: Long, vecCache: Vector3f = LOCAL_VEC_CACHE.get()) {
-    definition.animations.forEach { (key, animations) ->
+    definition.bones.forEach { (key, animations) ->
         getAny(key)?.let { animatable ->
             animations.forEach { animation ->
                 val keyframes: List<Keyframe> = animation.keyframes
-                val elapsed: Float = getElapsedSeconds(
-                    animation,
-                    accumulatedTime
-                )
+                val elapsed: Float = definition.getElapsedSeconds(accumulatedTime)
                 val last = max(0.0, (Mth.binarySearch(0, keyframes.size) { index: Int -> elapsed <= keyframes[index].timestamp } - 1).toDouble()).toInt()
                 val next = min((keyframes.size - 1).toDouble(), (last + 1).toDouble()).toInt()
 
@@ -57,13 +57,12 @@ public fun Animatable.Provider.animate(definition: AnimationDefinition, accumula
 
                 nextFrame.interpolation.apply(vecCache, delta, keyframes, last, next, 1f)
                 animation.target.apply(animatable, vecCache)
-
             }
         }
     }
 }
 
-private fun getElapsedSeconds(animation: Animation, accumulatedTime: Long): Float {
-    val f = (accumulatedTime / 1000.0f).toDouble()
-    return f.toFloat() % animation.duration
+private fun AnimationDefinition.getElapsedSeconds(accumulatedTime: Long): Float {
+    val f = accumulatedTime / 1000.0
+    return if (looping) f.toFloat() % duration else f.toFloat()
 }

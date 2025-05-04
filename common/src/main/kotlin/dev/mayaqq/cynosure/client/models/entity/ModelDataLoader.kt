@@ -12,7 +12,9 @@ import dev.mayaqq.cynosure.client.models.bake
 import dev.mayaqq.cynosure.client.models.baked.CustomBakedModel
 import dev.mayaqq.cynosure.client.models.baked.Mesh
 import dev.mayaqq.cynosure.client.models.baked.ModelRenderType
+import dev.mayaqq.cynosure.utils.json.toKotlinx
 import dev.mayaqq.cynosure.utils.result.failure
+import kotlinx.serialization.json.Json
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener
@@ -54,10 +56,7 @@ public object AnimationDataLoader : SimpleJsonResourceReloadListener(GSON, "cyno
 
     override fun apply(p0: MutableMap<ResourceLocation, JsonElement>, p1: ResourceManager, p2: ProfilerFiller) {
         animations = p0.entries.mapNotNull { (id, json) ->
-            AnimationCodecs.ANIMATION_DEFINITION.parse(JsonOps.INSTANCE, json)
-                .resultOrPartial(fun(err) = Cynosure.error("Error loading custom animation: {}", err))
-                .getOrNull()
-                ?.let { id to it }
+            id to Json.decodeFromJsonElement(AnimationDefinition.serializer(), json.toKotlinx())
         }.toMap()
     }
 }
