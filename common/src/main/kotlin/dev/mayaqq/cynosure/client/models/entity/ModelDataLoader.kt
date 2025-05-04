@@ -6,7 +6,6 @@ import com.google.gson.JsonElement
 import com.mojang.serialization.JsonOps
 import dev.mayaqq.cynosure.Cynosure
 import dev.mayaqq.cynosure.client.models.ModelData
-import dev.mayaqq.cynosure.client.models.animations.AnimationCodecs
 import dev.mayaqq.cynosure.client.models.animations.AnimationDefinition
 import dev.mayaqq.cynosure.client.models.bake
 import dev.mayaqq.cynosure.client.models.baked.CustomBakedModel
