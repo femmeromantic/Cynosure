@@ -1,7 +1,6 @@
 package dev.mayaqq.cynosure.events.datafix
 
 import com.mojang.datafixers.DataFix
-import com.mojang.datafixers.DataFixer
 import com.mojang.datafixers.DataFixerBuilder
 import com.mojang.datafixers.schemas.Schema
 import dev.mayaqq.cynosure.events.api.Event

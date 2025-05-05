@@ -3,7 +3,6 @@ package dev.mayaqq.cynosure.client.events
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.mayaqq.cynosure.CynosureInternal
 import dev.mayaqq.cynosure.events.api.Event
-import net.minecraft.client.particle.ParticleEngine
 import net.minecraft.client.particle.ParticleProvider
 import net.minecraft.client.particle.ParticleRenderType
 import net.minecraft.client.particle.SpriteSet
@@ -43,7 +42,7 @@ public class ParticleRenderTypeRegistrationEvent(
         renderOrder.add(type)
     }
 
-    public fun register(ordering: Ordering, anchor: ParticleRenderType, type: ParticleRenderType) {
+    public fun registerOrdered(ordering: Ordering, anchor: ParticleRenderType, type: ParticleRenderType) {
         val index = renderOrder.indexOf(anchor).let { if (ordering == Ordering.AFTER) it + 1 else it }
         renderOrder.add(index, type)
     }

@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import dev.mayaqq.cynosure.client.models.animations.Animatable
 import dev.mayaqq.cynosure.utils.colors.Color
-import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.resources.ResourceLocation
 import org.joml.Quaternionf
 import org.joml.Vector3fc
 
@@ -29,21 +27,21 @@ public class BakedModelTree(
     private var zScale: Float = 1f
 
     override fun offsetPosition(offset: Vector3fc) {
-        x = offset.x()
-        y = offset.y()
-        z = offset.z()
+        x += offset.x()
+        y += offset.y()
+        z += offset.z()
     }
 
     override fun offsetRotation(offset: Vector3fc) {
-        xRot = offset.x()
-        yRot = offset.y()
-        zRot = offset.z()
+        xRot += offset.x()
+        yRot += offset.y()
+        zRot += offset.z()
     }
 
     override fun offsetScale(offset: Vector3fc) {
-        xScale = offset.x()
-        yScale = offset.y()
-        zScale = offset.z()
+        xScale += offset.x()
+        yScale += offset.y()
+        zScale += offset.z()
     }
 
     override fun reset() {

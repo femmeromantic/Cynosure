@@ -2,7 +2,6 @@ package dev.mayaqq.cynosure.mixin;
 
 import dev.mayaqq.cynosure.injection.ILevel;
 import dev.mayaqq.cynosure.level.BlockUpdateListener;
-import dev.mayaqq.cynosure.level.BlockUpdateListenerKt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;

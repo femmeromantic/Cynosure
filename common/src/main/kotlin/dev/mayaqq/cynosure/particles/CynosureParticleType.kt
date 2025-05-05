@@ -10,30 +10,32 @@ import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.TagParser
 import net.minecraft.network.FriendlyByteBuf
 
-public class CynosureParticleType<T : CynosureParticleOptions<T>>(
-    public val codec: Codec<T>,
-    public val networkCodec: ByteCodec<T>,
-    overrideLimiter: Boolean = false,
-    ) : ParticleType<T>(overrideLimiter, null) {
+@Suppress("UNCHECKED_CAST")
+public open class CynosureParticleType<T : CynosureParticleOptions<T>>(
+    public open val codec: Codec<T>,
+    public open val networkCodec: ByteCodec<T>,
+    overrideLimiter: Boolean = false
+) : ParticleType<T>(overrideLimiter, EnhancedDeserializer as ParticleOptions.Deserializer<T>) {
 
-    private val deserializer = this.EnhancedDeserializer()
+    final override fun getDeserializer(): ParticleOptions.Deserializer<T> = super.getDeserializer()
 
-    override fun getDeserializer(): ParticleOptions.Deserializer<T> = deserializer
+    final override fun codec(): Codec<T> = codec
 
-    override fun codec(): Codec<T> = codec
+    protected open fun fromCommand(reader: StringReader): CynosureParticleOptions<T> {
+        reader.expect(' ')
+        return codec.parse(NbtOps.INSTANCE, TagParser(reader).readValue())
+            .getOrThrow(false, Cynosure::error)
+    }
 
-    private inner class EnhancedDeserializer : ParticleOptions.Deserializer<T> {
+    private object EnhancedDeserializer : ParticleOptions.Deserializer<CynosureParticleOptions<*>> {
 
-        override fun fromCommand(p0: ParticleType<T>, p1: StringReader): T {
-            p1.expect(' ')
-            return codec.parse(NbtOps.INSTANCE, TagParser(p1).readValue())
-                .getOrThrow(false) { Cynosure.error(it) }
+        override fun fromCommand(p0: ParticleType<CynosureParticleOptions<*>>, p1: StringReader): CynosureParticleOptions<*> {
+            return (p0 as CynosureParticleType<*>).fromCommand(p1)
         }
 
-        override fun fromNetwork(p0: ParticleType<T>, p1: FriendlyByteBuf): T {
-            return networkCodec.decode(p1)
+        override fun fromNetwork(p0: ParticleType<CynosureParticleOptions<*>>, p1: FriendlyByteBuf): CynosureParticleOptions<*> {
+            return (p0 as CynosureParticleType<*>).networkCodec.decode(p1)
         }
-
     }
 }
 

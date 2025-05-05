@@ -1,46 +1,35 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.mayaqq.cynosure.utils
 
 import com.mojang.serialization.Codec
-import dev.mayaqq.cynosure.utils.Either.Companion.left
-import dev.mayaqq.cynosure.utils.Either.Companion.right
+import dev.mayaqq.cynosure.utils.Either.Left
+import dev.mayaqq.cynosure.utils.Either.Right
 
 public sealed interface Either<out L, out R> {
-
-    public companion object {
-
-        public fun <L, R> left(value: L): Either<L, R> = Left(value)
-
-        public fun <L, R> right(value: R): Either<L, R> = Right(value)
-    }
-
-    public val isLeft: Boolean
-        get() = this is Left
-
-    public val isRight: Boolean
-        get() = this is Right
 
     public val left: L?
 
     public val right: R?
 
-    public fun swap(): Either<R, L> = when(this) {
-        is Left -> right(left)
-        is Right -> left(right)
+    public class Left<out L, out R>(override val left: L) : Either<L, R> {
+        override val right: R?
+            get() = null
     }
 
+    public class Right<out L,  out R>(override val right: R) : Either<L, R> {
+        override val left: L?
+            get() = null
+    }
+
+    public fun swap(): Either<R, L> = when(this) {
+        is Left -> Right(left)
+        is Right -> Left(right)
+    }
+
+    public companion object
 }
 
-@PublishedApi
-internal class Left<out L, out R>(override val left: L) : Either<L, R> {
-    override val right: R?
-        get() = null
-}
-
-@PublishedApi
-internal class Right<out L,  out R>(override val right: R) : Either<L, R> {
-    override val left: L?
-        get() = null
-}
 
 public inline fun <L, R> Either<L, R>.ifLeft(action: (L) -> Unit): Either<L, R> {
     if (this is Left) action(left)
@@ -86,7 +75,13 @@ public fun <L, R> Either.Companion.codec(left: Codec<L>, right: Codec<R>): Codec
     .xmap(com.mojang.datafixers.util.Either<L, R>::toCynosure, Either<L, R>::toDFU)
 
 public fun <L, R> com.mojang.datafixers.util.Either<L, R>.toCynosure(): Either<L, R> =
-    map({ left(it) }, { right(it) })
+    map({ Left(it) }, { Right(it) })
 
 public fun <L, R> Either<L, R>.toDFU(): com.mojang.datafixers.util.Either<L, R> =
     fold({ com.mojang.datafixers.util.Either.left(it) }, { com.mojang.datafixers.util.Either.right(it) })
+
+public inline val Either<*, *>.isLeft: Boolean
+    get() = this is Left
+
+public inline val Either<*, *>.isRight: Boolean
+    get() = this is Right

@@ -2,7 +2,6 @@ package dev.mayaqq.cynosure.events.entity.player
 
 import dev.mayaqq.cynosure.events.api.Event
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.player.Player
 
 public sealed class PlayerTickEvent(public val player: Player) : Event {

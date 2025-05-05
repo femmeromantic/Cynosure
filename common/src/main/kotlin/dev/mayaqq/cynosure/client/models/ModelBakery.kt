@@ -48,7 +48,7 @@ private class ModelBakery {
 
         resetBounds()
         data.groups.associate {
-            it.name to it.compile(data) { index ->
+            it.name to it.compile(data, null) { index ->
                 if (ungrouped.remove(index)) data.elements[index]
                 else throw IllegalStateException("Element $index referenced in multiple groups")
             }
@@ -58,11 +58,11 @@ private class ModelBakery {
             data.renderType, Vector3f(minBound), Vector3f(maxBound), ZERO_VEC, rootGroups)
     }
 
-    private fun ModelElementGroup.compile(parent: ModelData, resolver: (Int) -> ModelElement): BakedModelTree = BakedModelTree(
+    private fun ModelElementGroup.compile(root: ModelData, parent: ModelElementGroup?, resolver: (Int) -> ModelElement): BakedModelTree = BakedModelTree(
         bakeMesh(indices.map(resolver)),
-        renderType ?: parent.renderType,
+        renderType ?: root.renderType,
         Vector3f(minBound), Vector3f(maxBound), origin,
-        subgroups.associate { it.name to it.compile(parent, resolver) }
+        subgroups.associate { (parent?.let { "${parent.name}/$name" } ?: name) to it.compile(root, parent, resolver) }
     )
 
     private fun resetBounds() {

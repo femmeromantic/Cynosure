@@ -17,9 +17,8 @@ public val Dispatchers.MinecraftClient: CoroutineDispatcher by lazy {
     else error("Tried to access minecraft client dispatcher from server environment")
 }
 
-public val Dispatchers.MinecraftServer: CoroutineDispatcher by lazy {
-    MinecraftCoroutineDispatcher { GameInstance.currentServer?.execute(it) }
-}
+public val Dispatchers.MinecraftServer: CoroutineDispatcher
+    get() = GameInstance.currentServer?.coroutineDispatcher ?: Main
 
 public val Dispatchers.Background: CoroutineDispatcher by constant(Util.backgroundExecutor().asCoroutineDispatcher())
 
