@@ -2,6 +2,14 @@ package dev.mayaqq.cynosure.utils
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.gui.GuiGraphics
+import org.joml.Matrix3f
+import org.joml.Matrix4f
+
+public inline val PoseStack.lastPose: Matrix4f get() = last().pose()
+
+public inline val PoseStack.lastNormal: Matrix3f get() = last().normal()
+
+public inline val PoseStack.last: PoseStack.Pose get() = last()
 
 public fun PoseStack.translate(x: Number, y: Number, z: Number) {
     this.translate(x.toFloat(), y.toFloat(), z.toFloat())
