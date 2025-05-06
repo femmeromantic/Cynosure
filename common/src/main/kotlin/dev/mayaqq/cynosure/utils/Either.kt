@@ -12,6 +12,13 @@ public sealed interface Either<out L, out R> {
 
     public val right: R?
 
+    public fun swap(): Either<R, L> = when(this) {
+        is Left -> Right(left)
+        is Right -> Left(right)
+    }
+
+    public companion object;
+
     public data class Left<out L, out R>(override val left: L) : Either<L, R> {
         override val right: R?
             get() = null
@@ -21,13 +28,6 @@ public sealed interface Either<out L, out R> {
         override val left: L?
             get() = null
     }
-
-    public fun swap(): Either<R, L> = when(this) {
-        is Left -> Right(left)
-        is Right -> Left(right)
-    }
-
-    public companion object
 }
 
 
