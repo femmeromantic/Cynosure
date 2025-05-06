@@ -8,7 +8,7 @@ import dev.mayaqq.cynosure.utils.atMost
 import dev.mayaqq.cynosure.utils.codecs.Codecs
 import dev.mayaqq.cynosure.utils.codecs.fieldOf
 import dev.mayaqq.cynosure.utils.codecs.forGetter
-import dev.mayaqq.cynosure.utils.foldLeft
+import dev.mayaqq.cynosure.utils.foldToLeft
 import dev.mayaqq.cynosure.utils.result.*
 import dev.mayaqq.cynosure.utils.toCynosure
 import kotlinx.serialization.Serializable
@@ -31,7 +31,7 @@ public value class Color(@PublishedApi internal val value: Int) {
 
         private val INT_OR_NFLOAT: Codec<Int> = Codec.either(Codec.INT, Codec.FLOAT)
             .xmap(
-                { it.toCynosure().foldLeft { ((it atMost 1.0f) * 255).toInt() } },
+                { it.toCynosure().foldToLeft { ((it atMost 1.0f) * 255).toInt() } },
                 { Either.left(it) }
             )
 
