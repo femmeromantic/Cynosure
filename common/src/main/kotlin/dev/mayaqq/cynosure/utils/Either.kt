@@ -12,12 +12,12 @@ public sealed interface Either<out L, out R> {
 
     public val right: R?
 
-    public class Left<out L, out R>(override val left: L) : Either<L, R> {
+    public data class Left<out L, out R>(override val left: L) : Either<L, R> {
         override val right: R?
             get() = null
     }
 
-    public class Right<out L,  out R>(override val right: R) : Either<L, R> {
+    public data class Right<out L,  out R>(override val right: R) : Either<L, R> {
         override val left: L?
             get() = null
     }
