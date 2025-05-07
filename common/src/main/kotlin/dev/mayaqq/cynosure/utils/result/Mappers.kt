@@ -36,3 +36,5 @@ public inline fun <A> Result<A>.mapError(transform: (Throwable) -> Throwable): R
     fold({ it.success() }, { transform(it).failure() })
 
 
+public inline fun <A> Result<A>.flatRecover(func: (Throwable) -> Result<A>): Result<A> =
+    if(this.isFailure) func(exceptionOrNull()!!) else this
