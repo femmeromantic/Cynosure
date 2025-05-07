@@ -13,16 +13,53 @@ import dev.mayaqq.cynosure.utils.result.*
 import dev.mayaqq.cynosure.utils.toCynosure
 import kotlinx.serialization.Serializable
 
+/**
+ * Creates a [Color] from integer-based red, green, blue, and optional alpha components (0–255).
+ *
+ * @param red The red component.
+ * @param green The green component.
+ * @param blue The blue component.
+ * @param alpha The alpha component, defaults to fully opaque.
+ * @return A new [Color] instance.
+ */
 public fun Color(red: Int, green: Int, blue: Int, alpha: Int = 255): Color =
     Color((alpha shl 24) or (red shl 16) or (green shl 8) or blue)
 
+/**
+ * Creates a [Color] from float-based red, green, blue, and optional alpha components (0.0f–1.0f).
+ *
+ * @param red The red component.
+ * @param green The green component.
+ * @param blue The blue component.
+ * @param alpha The alpha component, defaults to fully opaque.
+ * @return A new [Color] instance.
+ */
 public fun Color(red: Float, green: Float, blue: Float, alpha: Float = 1.0f): Color =
     Color((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha * 255).toInt())
 
-public fun Color(argb: UInt, format: ColorFormat = ColorFormat.ARGB): Color = format.toColor(argb.toInt())
+/**
+ * Creates a [Color] from an [UInt] using the given [ColorFormat].
+ *
+ * @param value The color value.
+ * @param format The format to interpret the integer, defaults to [ColorFormat.ARGB].
+ * @return A new [Color] instance.
+ */
+public fun Color(value: UInt, format: ColorFormat = ColorFormat.ARGB): Color = format.toColor(value.toInt())
 
+/**
+ * Creates a [Color] from an [Int] using the given [ColorFormat].
+ *
+ * @param value The color value.
+ * @param format The format to interpret the integer as, defaults to [ColorFormat.ARGB].
+ * @return A new [Color] instance.
+ */
 public fun Color(value: Int, format: ColorFormat = ColorFormat.ARGB): Color = format.toColor(value)
 
+/**
+ * Represents an immutable color value.
+ *
+ * @property value The internal integer representation of the color.
+ */
 @JvmInline
 @Serializable
 public value class Color(@PublishedApi internal val value: Int) {
@@ -72,6 +109,13 @@ public value class Color(@PublishedApi internal val value: Int) {
         @JvmField
         public val NETWORK_CODEC: ByteCodec<Color> = ByteCodec.INT.map(::Color, Color::value)
 
+        /**
+         * Parses a color from a given string representation.
+         *
+         * @param data The color string to parse.
+         * @param defaultFormat The default color format if not specified explicitly.
+         * @return Parsed `Color` object.
+         */
         @OptIn(ExperimentalStdlibApi::class)
         public fun parse(data: String, defaultFormat: ColorFormat = ColorFormat.ARGB): Color = data.lowercase().let {
             when {
@@ -86,6 +130,14 @@ public value class Color(@PublishedApi internal val value: Int) {
             }
         }
 
+
+        /**
+         * Attempts to parse a color from a given string representation.
+         *
+         * @param from The color string to parse.
+         * @param defaultFormat The default color format if parsing fails.
+         * @return A [Result] containing either a successful parsed [Color] or a [Throwable].
+         */
         @OptIn(ExperimentalStdlibApi::class)
         public fun tryParse(from: String, defaultFormat: ColorFormat = ColorFormat.ARGB): Result<Color> = from.lowercase().let {
             when {
@@ -113,8 +165,21 @@ public value class Color(@PublishedApi internal val value: Int) {
 
     public inline val alpha: Int get() = value ushr 24
 
+    /**
+     * Mixes this color with another color using a default weight of 0.5.
+     *
+     * @param other The other color to mix with.
+     * @return A new [Color] representing the mixed color.
+     */
     public infix fun mix(other: Color): Color = this.mix(other, 0.5f)
 
+    /**
+     * Mixes this color with another color using a specified weight.
+     *
+     * @param other The other color to mix with.
+     * @param weight The blending weight (0.0-1.0), where 0 is fully this color and 1 is fully the other.
+     * @return A new [Color] representing the mixed color.
+     */
     public fun mix(other: Color, weight: Float): Color = Color(
         (this.red + (other.red - this.red) * weight).toInt(),
         (this.green + (other.green - this.green) * weight).toInt(),
